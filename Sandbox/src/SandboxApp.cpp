@@ -5,11 +5,11 @@ class Sandbox : public Vi::Application
 public:
 	Sandbox()
 	{
-
+		
 	}
 	~Sandbox()
 	{
-
+		
 	}
 };
 

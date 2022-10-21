@@ -2,8 +2,9 @@
 
 //For Use By Vi Applications
 
-#include <stdio.h>
+
 #include "Vi/Application.h"
+#include "Vi/Log.h"
 
 //Entry Point
 
