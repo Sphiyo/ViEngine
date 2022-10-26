@@ -7,9 +7,6 @@
     <Filter Include="Vi\Events">
       <UniqueIdentifier>{287D60C6-94E7-143D-DD25-C6E249CFF291}</UniqueIdentifier>
     </Filter>
-    <Filter Include="Platform">
-      <UniqueIdentifier>{d6acf612-0b4d-485b-afb0-f787b3090322}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Vi.h" />
@@ -38,9 +35,7 @@
       <Filter>Vi</Filter>
     </ClInclude>
     <ClInclude Include="src\Vipch.h" />
-    <ClInclude Include="Window.h">
-      <Filter>Vi</Filter>
-    </ClInclude>
+    <ClInclude Include="src\Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Vi\Application.cpp">
