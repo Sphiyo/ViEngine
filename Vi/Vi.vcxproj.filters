@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Vi">
+      <UniqueIdentifier>{C4755900-B001-880B-19B0-880B055B880B}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Vi\Events">
+      <UniqueIdentifier>{287D60C6-94E7-143D-DD25-C6E249CFF291}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\Vi.h" />
+    <ClInclude Include="src\Vi\Application.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\EntryPoint.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Events\ApplicationEvent.h">
+      <Filter>Vi\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Events\Event.h">
+      <Filter>Vi\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Events\KeyEvent.h">
+      <Filter>Vi\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Events\MouseEvent.h">
+      <Filter>Vi\Events</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Log.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vipch.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="src\Vi\Application.cpp">
+      <Filter>Vi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Log.cpp">
+      <Filter>Vi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vipch.cpp" />
+  </ItemGroup>
+</Project>
