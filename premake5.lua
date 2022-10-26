@@ -20,18 +20,21 @@ project "Vi"
 	targetdir ("bin/" .. outputdir .. "%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
 
+	pchheader "Vipch.h"
+	pchsource "Vi/src/Vipch.cpp"
+
+
+
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.hpp",
-		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/src/**.c"
+		"%{prj.name}/src/**.cpp"
 	}
 
 	includedirs
 	{
+		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
-
 	}
 
 	filter "system:windows"
@@ -50,7 +53,7 @@ project "Vi"
 	
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox")
+		   "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
 		}
 
 	filter "configurations:Debug"
@@ -77,10 +80,8 @@ project "Sandbox"
 
 	files
 	{
-		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.hpp",
+		"%{prj.name}/src/**.h",	
 		"%{prj.name}/src/**.cpp",
-		"%{prj.name}/src/**.c"
 	}
 
 	includedirs
