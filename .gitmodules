@@ -1,5 +1,5 @@
-[submodule "VI/vendor/spdlog"]
-	path = VI/vendor/spdlog
+[submodule "Vi/vendor/spdlog"]
+	path = Vi/vendor/spdlog
 	url = https://github.com/gabime/spdlog
 [submodule "Vi/vendor/GLFW"]
 	path = Vi/vendor/GLFW

@@ -162,6 +162,7 @@
     <ClInclude Include="src\Vi\Events\MouseEvent.h" />
     <ClInclude Include="src\Vi\Log.h" />
     <ClInclude Include="src\Vipch.h" />
+    <ClInclude Include="Window.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Vi\Application.cpp" />
