@@ -9,3 +9,5 @@
 #else
     #error Vi is only supported for windows
 #endif // VI_PLATFORM_WINDOWS
+
+#define BIT(x) (1 << x)
