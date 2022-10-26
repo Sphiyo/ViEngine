@@ -2,7 +2,7 @@
 
 #include "Vipch.h"
 
-#include "Vi/Core.h"
+#include "Core.h"
 #include "Vi/Events/Event.h"
 
 
