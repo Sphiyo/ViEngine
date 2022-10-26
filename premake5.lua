@@ -12,6 +12,12 @@ workspace "Vi"
 	
 outputdir = "%{cfg.buildcfg}-%{cfg.system}-%{cfg.architeture}"
 
+-- Include directories relative to root folder (solution directory)
+includeDir = {}
+IncludeDir["GLFW"] = "Vi/vendor/GLFW/include"
+
+include "Vi/vendor/GLFW/"
+
 project "Vi"
 	location "Vi"
 	kind "SharedLib"
@@ -35,7 +41,16 @@ project "Vi"
 	{
 		"%{prj.name}/src",
 		"%{prj.name}/vendor/spdlog/include"
+		"%{IncludeDir.GLFW}"
 	}
+
+	links
+	{
+		"GLFW"
+		"opengl32.lib"
+	}
+
+
 
 	filter "system:windows"
 		cppdialect "C++17"
