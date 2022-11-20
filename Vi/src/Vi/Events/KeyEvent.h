@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 
 #include "Event.h"
 
@@ -12,7 +11,7 @@ namespace Vi {
 	public:
 		inline int GetKeyCode() const { return m_KeyCode; }
 
-		
+
 		EVENT_CLASS_CATEGORY(EventCategoryKeyboard | EventCategoryInput)
 
 	protected:
@@ -59,3 +58,4 @@ namespace Vi {
 		EVENT_CLASS_TYPE(KeyReleased)
 	};
 
+}

@@ -4,3 +4,6 @@
 [submodule "Vi/vendor/GLFW"]
 	path = Vi/vendor/GLFW
 	url = https://github.com/TheCherno/glfw
+[submodule "Vi/vendor/imgui"]
+	path = Vi/vendor/imgui
+	url = https://github.com/TheCherno/imgui

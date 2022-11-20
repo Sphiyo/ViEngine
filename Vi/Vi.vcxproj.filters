@@ -4,6 +4,9 @@
     <Filter Include="Platform">
       <UniqueIdentifier>{2AC788B4-1694-E3BF-3FAD-D1672BD9184E}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Platform\OpenGL">
+      <UniqueIdentifier>{1E7D2C1D-8A08-9AE1-9319-1DD6FF23F6E1}</UniqueIdentifier>
+    </Filter>
     <Filter Include="Platform\Windows">
       <UniqueIdentifier>{64FBD71A-50F4-F66C-7926-DCF1657ED678}</UniqueIdentifier>
     </Filter>
@@ -13,8 +16,14 @@
     <Filter Include="Vi\Events">
       <UniqueIdentifier>{287D60C6-94E7-143D-DD25-C6E249CFF291}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Vi\ImGui">
+      <UniqueIdentifier>{EE2D7CDF-DAFA-D6EA-0314-C592EF3F0C79}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.h">
+      <Filter>Platform\OpenGL</Filter>
+    </ClInclude>
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h">
       <Filter>Platform\Windows</Filter>
     </ClInclude>
@@ -40,6 +49,15 @@
     <ClInclude Include="src\Vi\Events\MouseEvent.h">
       <Filter>Vi\Events</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h">
+      <Filter>Vi\ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Layer.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\LayerStack.h">
+      <Filter>Vi</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Log.h">
       <Filter>Vi</Filter>
     </ClInclude>
@@ -49,10 +67,22 @@
     <ClInclude Include="src\Vipch.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\OpenGL\ImGuiOpenGLRenderer.cpp">
+      <Filter>Platform\OpenGL</Filter>
+    </ClCompile>
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>Platform\Windows</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Application.cpp">
+      <Filter>Vi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp">
+      <Filter>Vi\ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Layer.cpp">
+      <Filter>Vi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\LayerStack.cpp">
       <Filter>Vi</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Log.cpp">

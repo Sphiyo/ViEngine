@@ -2,6 +2,8 @@
 
 #include "Vi/Window.h"
 
+
+
 #include <GLFW/glfw3.h>
 
 namespace Vi {
@@ -11,6 +13,8 @@ namespace Vi {
 		public:
 				WindowsWindow(const WindowProps& props);
 				virtual ~WindowsWindow();
+
+				void window_size_callback(GLFWwindow* window, int width, int height);
 
 				void OnUpdate() override;
 
@@ -22,9 +26,13 @@ namespace Vi {
 				void SetVSync(bool enabled) override;
 				bool IsVSync() const override;
 
-
+			//	void (*funcs)(GLFWwindow* window, int button, int action, int mods){};
+			//void function(GLFWwindow* window, int button, int action, int mods);
+			void (*GLFWmousebuttonfun)(GLFWwindow* window, int button, int action, int mods);
 		private:
-				virtual void Init(const WindowProps& props);
+			
+
+			virtual void Init(const WindowProps& props);
 				virtual void Shutdown();
 		private:
 				GLFWwindow* m_Window;
