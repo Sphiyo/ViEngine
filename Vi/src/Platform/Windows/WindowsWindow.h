@@ -14,7 +14,7 @@ namespace Vi {
 				WindowsWindow(const WindowProps& props);
 				virtual ~WindowsWindow();
 
-				void window_size_callback(GLFWwindow* window, int width, int height);
+			//	void window_size_callback(GLFWwindow* window, int width, int height);
 
 				void OnUpdate() override;
 
@@ -28,7 +28,7 @@ namespace Vi {
 
 			//	void (*funcs)(GLFWwindow* window, int button, int action, int mods){};
 			//void function(GLFWwindow* window, int button, int action, int mods);
-			void (*GLFWmousebuttonfun)(GLFWwindow* window, int button, int action, int mods);
+			//void (*GLFWmousebuttonfun)(GLFWwindow* window, int button, int action, int mods);
 		private:
 			
 

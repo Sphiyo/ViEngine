@@ -21,3 +21,6 @@
 
 
 #define BIT(x) (1 << x)
+
+
+#define VI_BINDEVENT(x) std::bind(&x, this, std::placeholders::_1)
