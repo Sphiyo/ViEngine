@@ -94,7 +94,7 @@
       <ImportLibrary>..\bin\Debug-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Debug-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-Vi\Vi.dll "..\bin\Debug-windows-\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-Vi\Vi.dll "..\bin\Debug-windows-\Sandbox\" &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Debug-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Debug-windows-Vi\Vi.dll "..\bin\Debug-windows-Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Debug-windows-Vi\Vi.dll "..\bin\Debug-windows-Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -121,7 +121,7 @@
       <ImportLibrary>..\bin\Release-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Release-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-Vi\Vi.dll "..\bin\Release-windows-\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-Vi\Vi.dll "..\bin\Release-windows-\Sandbox\" &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Release-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Release-windows-Vi\Vi.dll "..\bin\Release-windows-Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Release-windows-Vi\Vi.dll "..\bin\Release-windows-Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Dist|x64'">
@@ -150,7 +150,7 @@
       <ImportLibrary>..\bin\Dist-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
     <PostBuildEvent>
-      <Command>IF EXIST ..\bin\Dist-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-Vi\Vi.dll "..\bin\Dist-windows-\Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-Vi\Vi.dll "..\bin\Dist-windows-\Sandbox\" &gt; nul)</Command>
+      <Command>IF EXIST ..\bin\Dist-windows-Vi\Vi.dll\ (xcopy /Q /E /Y /I ..\bin\Dist-windows-Vi\Vi.dll "..\bin\Dist-windows-Sandbox\" &gt; nul) ELSE (xcopy /Q /Y /I ..\bin\Dist-windows-Vi\Vi.dll "..\bin\Dist-windows-Sandbox\" &gt; nul)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>

@@ -81,7 +81,7 @@ project "Vi"
 		}
 		postbuildcommands
 		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "Sandbox/\"")
 		  -- "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
 		  
 		}
