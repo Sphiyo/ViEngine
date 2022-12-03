@@ -76,13 +76,13 @@ project "Vi"
 	
 		prebuildcommands
 		{
-			"{mkdir} ../bin/" .. outputdir .. "Sandbox"
+			--"{mkdir} ../bin/" .. outputdir .. "Sandbox"
 
 		}
 		postbuildcommands
 		{
-			
-		   "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
+			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "/Sandbox/\"")
+		  -- "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
 		  
 		}
 
