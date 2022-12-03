@@ -10,7 +10,11 @@
     #error Vi is only supported for windows
 #endif // VI_PLATFORM_WINDOWS
 
-#ifdef HZ_ENABLE_ASSERTS
+#ifdef VI_DEBUG
+    #define VI_ENABLE_ASSERTS
+#endif
+
+#ifdef VI_ENABLE_ASSERTS
     #define VI_ASSERT(x, ...){ if(!(x)) { VI_ERROR("Assertion Failed : {0}" , __VA_ARGS__) ; __debugbreak(); } }
     #define VI_CORE_ASSERT(x, ...) { if (!(x)) { VI_CORE_ERROR("Assertion Failed : {0}", __VA_ARGS__); __debugbreak(); } }
 #else

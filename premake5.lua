@@ -26,10 +26,11 @@ project "Vi"
 	location "Vi"
 	kind "SharedLib"
 	language "C++"
+	staticruntime "Off"
 
 	targetdir ("bin/" .. outputdir .. "%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
-
+--	os.mkdir("../bin/" .. outputdir .. "%{prj.name}")
 	pchheader "Vipch.h"
 	pchsource "Vi/src/Vipch.cpp"
 
@@ -59,11 +60,10 @@ project "Vi"
 		"opengl32.lib"
 	}
 
-
+	
 
 	filter "system:windows"
-		cppdialect "C++17"
-		
+		cppdialect "C++17"		
 		systemversion "latest"
 	 
 		defines
@@ -74,25 +74,31 @@ project "Vi"
 			"GLFW_INCLUDE_NONE"
 		}
 	
-	
+		prebuildcommands
+		{
+			"{mkdir} ../bin/" .. outputdir .. "Sandbox"
+
+		}
 		postbuildcommands
 		{
+			
 		   "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
+		  
 		}
 
 	filter "configurations:Debug"
 		defines "VI_DEBUG"
-		staticruntime "Off"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "VI_RELEASE"
-		staticruntime "Off"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "VI_DIST"
-		staticruntime "Off"
+		runtime "Release"
 		optimize "On"
 
 
@@ -100,10 +106,12 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-
+	staticruntime "Off"
 	
 	targetdir ("bin/" .. outputdir .. "%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
+--	os.mkdir("bin/" .. "Debug-%{cfg.system}-%{cfg.architeture}" .. "%{prj.name}")
+	
 
 	files
 	{
@@ -127,7 +135,6 @@ project "Sandbox"
 
 	filter "system:windows"
 		cppdialect "C++17"
-
 		systemversion "latest"
 	 
 		defines
@@ -141,15 +148,15 @@ project "Sandbox"
 
 	filter "configurations:Debug"
 		defines "VI_DEBUG"
-		staticruntime "Off"
+		runtime "Debug"
 		symbols "On"
 
 	filter "configurations:Release"
 		defines "VI_RELEASE"
-		staticruntime "On"
+		runtime "Release"
 		optimize "On"
 
 	filter "configurations:Dist"
 		defines "VI_DIST"
-		staticruntime "On"
+		runtime "Release"
 		optimize "On"

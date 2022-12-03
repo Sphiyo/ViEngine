@@ -93,6 +93,9 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Debug-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
+    <PreBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Debug-windows-Sandbox (mkdir ..\bin\Debug-windows-Sandbox)</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I ..\bin\Debug-windows-Vi\Vi.dll ..\bin\Debug-windows-Sandbox</Command>
     </PostBuildEvent>
@@ -120,6 +123,9 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Release-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
+    <PreBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Release-windows-Sandbox (mkdir ..\bin\Release-windows-Sandbox)</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I ..\bin\Release-windows-Vi\Vi.dll ..\bin\Release-windows-Sandbox</Command>
     </PostBuildEvent>
@@ -147,6 +153,9 @@
       <AdditionalDependencies>opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
       <ImportLibrary>..\bin\Dist-windows-Vi\Vi.lib</ImportLibrary>
     </Link>
+    <PreBuildEvent>
+      <Command>IF NOT EXIST ..\bin\Dist-windows-Sandbox (mkdir ..\bin\Dist-windows-Sandbox)</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
       <Command>xcopy /Q /E /Y /I ..\bin\Dist-windows-Vi\Vi.dll ..\bin\Dist-windows-Sandbox</Command>
     </PostBuildEvent>
