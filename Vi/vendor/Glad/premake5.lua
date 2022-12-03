@@ -18,7 +18,6 @@ project "Glad"
 		"include"
 	}
 
-	
 
 	filter "configurations:Debug"
 		runtime "Debug"
