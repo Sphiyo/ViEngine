@@ -129,6 +129,7 @@ project "Sandbox"
 	{
 		"Vi/vendor/spdlog/include",
 		"Vi/src",
+		"Vi/vendor",
 		"%{IncludeDir.glm}"
 
 	}
