@@ -92,7 +92,7 @@ namespace Vi {
 
 		});
 
-
+		
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -161,7 +161,7 @@ namespace Vi {
 		
 
 		});
-
+		
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -170,12 +170,18 @@ namespace Vi {
 			data.EventCallback(event);
 
 		});
+		
 
 	}
 
 	void WindowsWindow::Shutdown()
 	{
 		glfwDestroyWindow(m_Window);
+	}
+
+	void* WindowsWindow::GetNativeWindow() const
+	{
+		return m_Window;
 	}
 
 	void WindowsWindow::OnUpdate()

@@ -17,6 +17,7 @@ IncludeDir = {}
 IncludeDir["GLFW"] = "Vi/vendor/GLFW/include"
 IncludeDir["Glad"] = "Vi/vendor/Glad/include"
 IncludeDir["ImGui"] = "Vi/vendor/imgui"
+IncludeDir["glm"] = "Vi/vendor/glm"
 
 include "Vi/vendor/GLFW/"
 include "Vi/vendor/Glad/"
@@ -39,7 +40,9 @@ project "Vi"
 	files
 	{
 		"%{prj.name}/src/**.h",
-		"%{prj.name}/src/**.cpp"
+		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/vendor/glm/glm/**.hpp",
+		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
 	includedirs
@@ -48,7 +51,8 @@ project "Vi"
 		"%{prj.name}/vendor/spdlog/include",
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
-		"%{IncludeDir.ImGui}"
+		"%{IncludeDir.ImGui}",
+		"%{IncludeDir.glm}"
 
 	}
 
@@ -117,14 +121,16 @@ project "Sandbox"
 	files
 	{
 		"%{prj.name}/src/**.h",	
-		"%{prj.name}/src/**.cpp",
+		"%{prj.name}/src/**.cpp"
+		
 	}
 
 	includedirs
 	{
 		"Vi/vendor/spdlog/include",
-		"Vi/src"
-		
+		"Vi/src",
+		"%{IncludeDir.glm}"
+
 	}
 
 	links

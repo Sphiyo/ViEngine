@@ -7,6 +7,7 @@
 #include "Events/Event.h"
 #include "Vi/Events/ApplicationEvent.h"
 
+#include "Vi/ImGui/ImGuiLayer.h"
 
 
 
@@ -35,6 +36,7 @@ namespace Vi {
 		bool OnWindowClosed(WindowCloseEvent& e);
 		
 		std::unique_ptr<Window> m_Window;
+		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
 

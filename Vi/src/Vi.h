@@ -7,6 +7,11 @@
 #include "Vi/Layer.h"
 #include "Vi/Log.h"
 
+#include "Vi/Input.h"
+#include "Vi/KeyCodes.h"
+#include "Vi/MouseButtonCodes.h"
+
+
 #include "Vi/ImGui/ImGuiLayer.h"
 
 

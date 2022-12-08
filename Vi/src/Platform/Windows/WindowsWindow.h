@@ -48,6 +48,9 @@ namespace Vi {
 				};
 
 				WindowData m_Data;
+
+				// Inherited via Window
+				inline virtual void* GetNativeWindow() const override;
 		};
 
 }
