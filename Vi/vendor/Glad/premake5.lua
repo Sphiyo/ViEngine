@@ -18,6 +18,8 @@ project "Glad"
 		"include"
 	}
 
+	filter "system:windows"
+		systemversion "latest"
 
 	filter "configurations:Debug"
 		runtime "Debug"
@@ -26,8 +28,3 @@ project "Glad"
 	filter "configurations:Release"
 		runtime "Release"
 		optimize "on"
-
-	filter "configurations:Dist"
-		runtime "Release"
-		optimize "on"
-        symbols "off"

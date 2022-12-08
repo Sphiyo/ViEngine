@@ -25,13 +25,14 @@ include "Vi/vendor/ImGui/"
 
 project "Vi"
 	location "Vi"
-	kind "SharedLib"
+	kind "StaticLib"
 	language "C++"
-	staticruntime "Off"
+	cppdialect "C++17"		
+	staticruntime "on"
 
 	targetdir ("bin/" .. outputdir .. "%{prj.name}")
 	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
---	os.mkdir("../bin/" .. outputdir .. "%{prj.name}")
+
 	pchheader "Vipch.h"
 	pchsource "Vi/src/Vipch.cpp"
 
@@ -45,6 +46,10 @@ project "Vi"
 		"%{prj.name}/vendor/glm/glm/**.inl"
 	}
 
+	defines
+	{
+		"_CRT_SECURE_NO_WARNINGS"
+	}
 	includedirs
 	{
 		"%{prj.name}/src",
@@ -67,7 +72,7 @@ project "Vi"
 	
 
 	filter "system:windows"
-		cppdialect "C++17"		
+		
 		systemversion "latest"
 	 
 		defines
@@ -78,27 +83,16 @@ project "Vi"
 			"GLFW_INCLUDE_NONE"
 		}
 	
-		prebuildcommands
-		{
-			--"{mkdir} ../bin/" .. outputdir .. "Sandbox"
-
-		}
-		postbuildcommands
-		{
-			("{COPY} %{cfg.buildtarget.relpath} \"../bin/" .. outputdir .. "Sandbox/\"")
-		  -- "{COPYDIR} %{cfg.buildtarget.relpath} ../bin/" .. outputdir .. "Sandbox"
-		  
-		}
-
+	
 	filter "configurations:Debug"
 		defines "VI_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "VI_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "VI_DIST"
@@ -111,12 +105,11 @@ project "Sandbox"
 	location "Sandbox"
 	kind "ConsoleApp"
 	language "C++"
-	staticruntime "Off"
+	cppdialect "C++17"
+	staticruntime "on"
 	
 	targetdir ("bin/" .. outputdir .. "%{prj.name}")
-	objdir ("bin-int/" .. outputdir .. "%{prj.name}")
---	os.mkdir("bin/" .. "Debug-%{cfg.system}-%{cfg.architeture}" .. "%{prj.name}")
-	
+	objdir ("bin-int/" .. outputdir .. "%{prj.name}")	
 
 	files
 	{
@@ -142,7 +135,6 @@ project "Sandbox"
 
 
 	filter "system:windows"
-		cppdialect "C++17"
 		systemversion "latest"
 	 
 		defines
@@ -157,15 +149,15 @@ project "Sandbox"
 	filter "configurations:Debug"
 		defines "VI_DEBUG"
 		runtime "Debug"
-		symbols "On"
+		symbols "on"
 
 	filter "configurations:Release"
 		defines "VI_RELEASE"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 
 	filter "configurations:Dist"
 		defines "VI_DIST"
 		runtime "Release"
-		optimize "On"
+		optimize "on"
 		symbols "off"

@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Vi/Window.h"
-
-
+#include "Vi/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
+
 
 namespace Vi {
 
@@ -32,11 +32,12 @@ namespace Vi {
 		private:
 			
 
-			virtual void Init(const WindowProps& props);
+				virtual void Init(const WindowProps& props);
 				virtual void Shutdown();
 		private:
 				GLFWwindow* m_Window;
 
+				GraphicsContext* m_Context;
 	
 				struct WindowData
 				{

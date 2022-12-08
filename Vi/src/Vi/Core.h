@@ -1,10 +1,14 @@
 #pragma once
 
 #ifdef VI_PLATFORM_WINDOWS
-    #ifdef VI_BUILD_DLL
-        #define VI_API __declspec(dllexport)
+    #if HZ_DYNAMIC_LINK
+        #ifdef VI_BUILD_DLL
+            #define VI_API __declspec(dllexport)
+        #else
+            #define VI_API __declspec(dllimport)
+        #endif
     #else
-        #define VI_API __declspec(dllimport)
+        #define VI_API
     #endif
 #else
     #error Vi is only supported for windows
