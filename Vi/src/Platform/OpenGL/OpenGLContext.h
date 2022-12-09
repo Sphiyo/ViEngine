@@ -15,6 +15,10 @@ namespace Vi {
 		virtual void SwapBuffers() override;
 	private:
 		GLFWwindow* m_WindowHandle;
+		float x = 0.0f;
+		float y = 1.0f;
+		bool Addx = true;
+		bool Addy = true;
 	};
 
 }

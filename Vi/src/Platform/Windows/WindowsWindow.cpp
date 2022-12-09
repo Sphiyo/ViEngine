@@ -7,7 +7,11 @@
 
 #include "Platform/OpenGL/OpenGLContext.h"
 
-
+//test
+/*#include "Vi/Input.h"
+#include "Vi/KeyCodes.h"
+#include "Vi/Application.h"
+*/
 
 namespace Vi {
 
@@ -36,11 +40,11 @@ namespace Vi {
 	}
 
 
-	
+
 	
 	void WindowsWindow::Init(const WindowProps& props)
 	{
-	
+
 
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -52,22 +56,28 @@ namespace Vi {
 		{
 			//todo glfwterminate on system shutdown
 			int success = glfwInit();
+			//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+			//glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
+			//glfwWindowHint(GLFW_FLOATING, GLFW_TRUE);
+			//glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
+			//glfwWindowHint(GLFW_CENTER_CURSOR , GLFW_TRUE); // Doesn't Work On Windowed Mode
+			//glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE); // GLFW_DONT_CARE For Unlimited
 			VI_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErroeCallback);
 			s_GLFWInitialized = true;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr, nullptr);
-
-
+		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr/*glfwGetPrimaryMonitor() // ForFullScreen*/, nullptr);
+		
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
-
+		
 
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
 		
 		//Set GLFW Callbacks
+
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -77,26 +87,14 @@ namespace Vi {
 			
 			WindowResizeEvent event(width, height);
 			data.EventCallback(event);
-		});
-
-		/*
-			GLFWwindowsizefun sizewindow = [](GLFWwindow* window, int width, int height) { 
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			data.Width = width; 
-			data.Height = height;
-			WindowResizeEvent event(width, height);
-			data.EventCallback(event);};
-		*/
-	
+		});	
 		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {  
 			
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 			WindowCloseEvent event;
 			data.EventCallback(event);
 
-		});
-
-		
+		});		
 		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -130,9 +128,7 @@ namespace Vi {
 			KeyTypedEvent event(key);
 			data.EventCallback(event);
 		
-		});
-		
-		
+		});				
 		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -154,8 +150,7 @@ namespace Vi {
 
 			}
 			
-		});
-		
+		});		
 		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -164,8 +159,7 @@ namespace Vi {
 			data.EventCallback(event);
 		
 
-		});
-		
+		});		
 		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
 
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -173,8 +167,7 @@ namespace Vi {
 			MouseMovedEvent event((float)xpos, (float)ypos);
 			data.EventCallback(event);
 
-		});
-		
+		});		
 
 	}
 
@@ -190,10 +183,18 @@ namespace Vi {
 
 	void WindowsWindow::OnUpdate()
 	{
+		//test
+		/*if (Input::IsKeyPressed(VI_KEY_ESCAPE))
+			{ Application::Get().CloseWindow(); };
+
+		if (Input::IsKeyPressed(VI_KEY_F11))
+			{ glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE); };*/
+		//
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 		
-		//myImplementation Closed = glfwWindowShouldClose(m_Window);
+		
+		//myImplementation Closed = glfwWindowShouldClose(m_Window);										 
 	}
 
 	void WindowsWindow::SetVSync(bool enabled)

@@ -164,6 +164,7 @@
     <ClInclude Include="src\Vi\Log.h" />
     <ClInclude Include="src\Vi\MouseButtonCodes.h" />
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Vi\Renderer\Shader.h" />
     <ClInclude Include="src\Vi\Window.h" />
     <ClInclude Include="src\Vipch.h" />
     <ClInclude Include="vendor\glm\glm\common.hpp" />
@@ -596,6 +597,7 @@
     <ClCompile Include="src\Vipch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

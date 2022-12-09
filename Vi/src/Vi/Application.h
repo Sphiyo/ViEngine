@@ -9,6 +9,8 @@
 
 #include "Vi/ImGui/ImGuiLayer.h"
 
+// temp
+#include "Vi/Renderer/Shader.h"
 
 
 namespace Vi {
@@ -30,7 +32,9 @@ namespace Vi {
 
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
-
+		// test
+		inline void CloseWindow() { m_Running = false; }
+		///
 	private:
 		
 		bool OnWindowClosed(WindowCloseEvent& e);
@@ -39,6 +43,10 @@ namespace Vi {
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true;
 		LayerStack m_LayerStack;
+	
+		unsigned int m_VertexArray, m_VertexBuffer, m_IndexBuffer;
+		std::unique_ptr<Shader> m_Shader;
+
 
 	private:
 
