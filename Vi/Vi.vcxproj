@@ -594,10 +594,10 @@
     <ClCompile Include="src\Vi\Layer.cpp" />
     <ClCompile Include="src\Vi\LayerStack.cpp" />
     <ClCompile Include="src\Vi\Log.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Shader.cpp" />
     <ClCompile Include="src\Vipch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\Shader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">
