@@ -1362,6 +1362,13 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Buffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Vi\Renderer\Renderer.h" />
+    <ClInclude Include="src\Platform\D3D12\D3D12Buffer.h" />
+    <ClInclude Include="src\Platform\D3D12\D3D12Context.h" />
+    <ClInclude Include="src\Platform\Vulcan\VulcanContext.h" />
+    <ClInclude Include="src\Platform\Vulcan\VulcanBuffer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
@@ -1397,5 +1404,12 @@
     <ClCompile Include="src\Vipch.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
+    <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp" />
+    <ClCompile Include="src\Platform\D3D12\D3D12Context.cpp" />
+    <ClCompile Include="src\Platform\Vulcan\VulcanBuffer.cpp" />
+    <ClCompile Include="src\Platform\Vulcan\VulcanContext.cpp" />
   </ItemGroup>
 </Project>
