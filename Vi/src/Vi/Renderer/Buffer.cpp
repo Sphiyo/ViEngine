@@ -38,13 +38,15 @@ namespace Vi {
 			case RendererAPI::Vulcan :
 
 				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
-				return new VulcanVertexBuffer(vertices, size);
-			
+		//		return new VulcanVertexBuffer(vertices, size);
+				return nullptr;
+
 			case RendererAPI::D3D12 :
 
 				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
-				return new D3D12VertexBuffer(vertices, size);
-		
+		//		return new D3D12VertexBuffer(vertices, size);
+				return nullptr;
+
 		}
 
 		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");

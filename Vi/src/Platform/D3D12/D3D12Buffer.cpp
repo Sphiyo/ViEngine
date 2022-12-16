@@ -30,6 +30,12 @@ namespace Vi {
 	}
 
 
+
+	void D3D12VertexBuffer::SetLayout(const BufferLayout& layout)
+	{
+	}
+
+
 	///////////////////////////////////////////////////////////////////// IndexBuffer /////////////////////////////////////////////////////////////////////
 
 	D3D12IndexBuffer::D3D12IndexBuffer(uint32_t* vertices, uint32_t count)

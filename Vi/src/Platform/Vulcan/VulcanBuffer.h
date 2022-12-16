@@ -21,6 +21,12 @@ namespace Vi {
 
 		//uint32_t m_RendererID;
 	
+
+		// Inherited via VertexBuffer
+		virtual const BufferLayout& GetLayout() const = 0;
+
+		virtual void SetLayout(const BufferLayout& layout) override;
+
 	};
 
 

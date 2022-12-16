@@ -28,6 +28,12 @@ namespace Vi {
 	}
 
 
+
+	void VulcanVertexBuffer::SetLayout(const BufferLayout& layout)
+	{
+	}
+
+
 	///////////////////////////////////////////////////////////////////// IndexBuffer /////////////////////////////////////////////////////////////////////
 
 	VulcanIndexBuffer::VulcanIndexBuffer(uint32_t* vertices, uint32_t count)
