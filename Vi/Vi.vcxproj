@@ -145,14 +145,16 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Vi\Renderer\RenderCommand.h" />
+    <ClInclude Include="src\Vi\Renderer\RendererAPI.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h" />
     <ClInclude Include="src\Platform\D3D12\D3D12Buffer.h" />
     <ClInclude Include="src\Platform\D3D12\D3D12Context.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Vulcan\VulcanBuffer.h" />
     <ClInclude Include="src\Platform\Vulcan\VulcanContext.h" />
-    <ClInclude Include="src\Vi\Renderer\Renderer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
-    <ClInclude Include="src\Vi\Renderer\Buffer.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h" />
     <ClInclude Include="src\Platform\Windows\WindowsInput.h" />
     <ClInclude Include="src\Platform\Windows\WindowsWindow.h" />
     <ClInclude Include="src\Vi.h" />
@@ -170,7 +172,9 @@
     <ClInclude Include="src\Vi\LayerStack.h" />
     <ClInclude Include="src\Vi\Log.h" />
     <ClInclude Include="src\Vi\MouseButtonCodes.h" />
+    <ClInclude Include="src\Vi\Renderer\Buffer.h" />
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h" />
+    <ClInclude Include="src\Vi\Renderer\Renderer.h" />
     <ClInclude Include="src\Vi\Renderer\Shader.h" />
     <ClInclude Include="src\Vi\Window.h" />
     <ClInclude Include="src\Vipch.h" />
@@ -590,16 +594,19 @@
     <ClInclude Include="vendor\glm\glm\vec3.hpp" />
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
+    <ClInclude Include="src\Vi\Renderer\VertexArray.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
+    <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp" />
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp" />
     <ClCompile Include="src\Platform\D3D12\D3D12Context.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Vulcan\VulcanBuffer.cpp" />
     <ClCompile Include="src\Platform\Vulcan\VulcanContext.cpp" />
-    <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />
-    <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Vi\Application.cpp" />
@@ -608,10 +615,13 @@
     <ClCompile Include="src\Vi\Layer.cpp" />
     <ClCompile Include="src\Vi\LayerStack.cpp" />
     <ClCompile Include="src\Vi\Log.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Vi\Renderer\Shader.cpp" />
     <ClCompile Include="src\Vipch.cpp">
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\VertexArray.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

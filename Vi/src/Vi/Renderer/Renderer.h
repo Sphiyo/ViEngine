@@ -1,26 +1,21 @@
 #pragma once
 
+#include "RenderCommand.h"
+
 namespace Vi {
-
-
-	enum class RendererAPI
-	{
-		None       = 0,
-		OpenGL     = 1,
-		Vulcan     = 2,
-		D3D12     = 3
-	
-	};
 
 	class Renderer
 	{
 	public:
 
-		inline static RendererAPI GetAPI() { return s_RendererAPI; }
+		static void BeginScene();
+		static void EndScene();
 
-	private:
+		static void Submit(const std::shared_ptr<VertexArray>& vertexArray);
 
-		static RendererAPI s_RendererAPI;
+
+		inline static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
+
 	};
 
 }

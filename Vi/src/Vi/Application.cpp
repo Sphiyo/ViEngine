@@ -1,11 +1,9 @@
 #include "Vipch.h"
-
 #include "Application.h"
 
 #include "Vi/Log.h"
 
-
-#include <glad/glad.h>
+#include "Vi/Renderer/Renderer.h"
 
 #include "Input.h"
 
@@ -15,39 +13,6 @@ namespace Vi {
 //#define BIND_EVENT(x) std::bind(&Application::x, this, std::placeholders::_1 )
 
 	Application* Application::s_Instance = nullptr;
-
-	static GLenum ShaderDataToOpenGLType(ShaderDataType type)
-	{
-		switch (type)
-		{
-
-			case Vi::ShaderDataType::Float   :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Float2  :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Float3  :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Float4  :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Mat3    :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Mat4    :   return GL_FLOAT;
-
-			case Vi::ShaderDataType::Int     :   return GL_INT;
-
-			case Vi::ShaderDataType::Int2    :   return GL_INT;
-
-			case Vi::ShaderDataType::Int3    :   return GL_INT;
-
-			case Vi::ShaderDataType::Int4    :   return GL_INT;
-
-			case Vi::ShaderDataType::Bool    :   return GL_BOOL;
-
-
-		}
-		VI_CORE_ASSERT(false, " Unknown ShaderTypeData! ");
-		return 0;
-	}
 
 	Application::Application() {
 
@@ -59,8 +24,11 @@ namespace Vi {
 		m_ImGuiLayer = new ImGuiLayer();
 		PushOverlay(m_ImGuiLayer);
 
-		glGenVertexArrays(1, &m_VertexArray);
-		glBindVertexArray(m_VertexArray);
+		m_VertexArray.reset(VertexArray::Create());
+		
+
+	/*	glGenVertexArrays(1, &m_VertexArray);
+		glBindVertexArray(m_VertexArray);*/
 
 	
 		float vertices[7 * 3] = {
@@ -68,39 +36,58 @@ namespace Vi {
 			 0.0f,  0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
 			 0.5f, -0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
-		m_VertexBuffer.reset(VertexBuffer::Create( vertices, sizeof(vertices)));
 
-		{
-			BufferLayout layout = {
-				{ ShaderDataType::Float3, "a_Position" },
-				{ ShaderDataType::Float4, "a_Color" },
-			};
+		std::shared_ptr<VertexBuffer> vertexBuffer;
+		vertexBuffer.reset(VertexBuffer::Create( vertices, sizeof(vertices)));		
+		BufferLayout layout = {
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float4, "a_Color" },
+		};
 
-			m_VertexBuffer->SetLayout(layout);
-		}
-
-		uint32_t index = 0;
-		const auto& layout = m_VertexBuffer->GetLayout();
-		for (const auto& element : layout)
-		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
-				element.GetComponentCount(), 
-				ShaderDataToOpenGLType(element.Type),
-				element.Normalized ? GL_TRUE : GL_FALSE,
-				layout.GetStride(),
-				(const void*)element.Offset);
-			index++;
-		}
-
+		vertexBuffer->SetLayout(layout);
+		m_VertexArray->AddVertexBuffer(vertexBuffer);
 		
-
+		
+		std::shared_ptr<IndexBuffer> indexBuffer;
 		uint32_t indices[3] = { 0,1,2 };	
-		m_IndexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		indexBuffer.reset(IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		m_VertexArray->SetIndexBuffer(indexBuffer);
 
+
+
+
+
+		/// <summary>
+		/// ////
+		/// </summary>
+
+		m_SquareVA.reset(VertexArray::Create());
+	
+		float squareVertices[4 * 3] = {
+		-0.75f, -0.75f, 0.0f,
+		-0.75f,  0.75f, 0.0f,
+		 0.75f,  0.75f, 0.0f,
+		 0.75f, -0.75f, 0.0f
+		};
+
+		std::shared_ptr<VertexBuffer> squareVB;		
+		squareVB.reset(VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 	
 
-	
+
+		squareVB->SetLayout({ { ShaderDataType::Float3, "a_Position" } });
+		m_SquareVA->AddVertexBuffer(squareVB);
+
+
+		std::shared_ptr<IndexBuffer> squareIB;
+		uint32_t squareIndices[6] = { 0,1,2, 2, 3, 0 };
+		squareIB.reset(IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		m_SquareVA->SetIndexBuffer(squareIB);
+
+		/// <summary>
+		/// /////
+		/// </summary>
+
 		std::string vertexSrc = R"(
 			#version 330 core
 
@@ -134,6 +121,45 @@ namespace Vi {
 		)";
 
 		m_Shader.reset(new Shader(vertexSrc, fragmentSrc));
+
+		/// <summary>
+		/// ////
+		/// </summary>
+		std::string blueVertexSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 a_Position;
+			
+			out vec3 v_Position;
+
+			void main()
+			{
+				v_Position = a_Position;
+				gl_Position = vec4(a_Position,1.0);
+			}
+		)";
+
+		std::string blueFragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 color;
+
+			in vec3 v_Position;
+			
+			void main()
+			{
+				color = vec4(0.0 , 0.0 , 0.8 ,1.0);
+				
+			}
+		)";
+		
+		blueShader.reset(new Shader(blueVertexSrc, blueFragmentSrc));
+		
+
+		/// <summary>
+		/// ////
+		/// </summary>
+		
 	}
 
 	Application::~Application() {
@@ -178,14 +204,21 @@ namespace Vi {
 		
 		while (m_Running) {
 
-			glClearColor(0.1f, 0.1f, 0.1f, 1);
-			glClear(GL_COLOR_BUFFER_BIT);
+			
+			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+			RenderCommand::Clear();
+		
+			Renderer::BeginScene();
+
+			blueShader->Bind();
+			Renderer::Submit(m_SquareVA);
 
 			m_Shader->Bind();
+			Renderer::Submit(m_VertexArray);
 
-			glBindVertexArray(m_VertexArray);
-			glDrawElements(GL_TRIANGLES, m_IndexBuffer->GetCount() , GL_UNSIGNED_INT, nullptr);
+			Renderer::EndScene();
 
+			
 			for (Layer* layer : m_LayerStack)
 				layer->OnUpdate();
 			
