@@ -15,6 +15,7 @@
 #include "Vi/Renderer/VertexArray.h"
 
 
+#include "Vi/Renderer/OrthographicCamera.h"
 
 namespace Vi {
 
@@ -52,22 +53,20 @@ namespace Vi {
 		std::shared_ptr<VertexArray> m_VertexArray;
 	
 		
-
-		/// <summary>
-		/// ///
-		/// </summary>
 		std::shared_ptr<Shader> blueShader;
 		std::shared_ptr<VertexArray> m_SquareVA;
 
-		/// <summary>
-		/// ///
-		/// </summary>
+
+		OrthographicCamera m_Camera;
+
+		glm::vec3 position = { 0.0f, 0.0f, 0.0f};       // temp
+		float rotation = 0.0f;                          // temp
+
 	private:
 
 		static Application* s_Instance;
 
-
-
+		
 	};
 
 	// To Be Defined In Client

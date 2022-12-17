@@ -6,6 +6,7 @@
 #include "Vi/Renderer/Renderer.h"
 
 #include "Input.h"
+#include "KeyCodes.h" // temp
 
 
 namespace Vi {
@@ -14,7 +15,9 @@ namespace Vi {
 
 	Application* Application::s_Instance = nullptr;
 
-	Application::Application() {
+	Application::Application()
+		: m_Camera(-1.6f, 1.6f, -0.9f, 0.9f)
+	{
 
 		VI_CORE_ASSERT(!s_Instance, "Application Already Exists!");
 		s_Instance = this;
@@ -97,11 +100,13 @@ namespace Vi {
 			out vec3 v_Position;
 			out vec4 v_Color;
 
+			uniform mat4 u_ViewProjection;
+
 			void main()
 			{
 				v_Position = a_Position;
 				v_Color = a_Color;
-				gl_Position = vec4(a_Position,1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position,1.0);
 			}
 		)";
 
@@ -132,10 +137,12 @@ namespace Vi {
 			
 			out vec3 v_Position;
 
+			uniform mat4 u_ViewProjection;
+
 			void main()
 			{
 				v_Position = a_Position;
-				gl_Position = vec4(a_Position,1.0);
+				gl_Position = u_ViewProjection * vec4(a_Position,1.0);
 			}
 		)";
 
@@ -156,9 +163,6 @@ namespace Vi {
 		blueShader.reset(new Shader(blueVertexSrc, blueFragmentSrc));
 		
 
-		/// <summary>
-		/// ////
-		/// </summary>
 		
 	}
 
@@ -208,13 +212,22 @@ namespace Vi {
 			RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 			RenderCommand::Clear();
 		
-			Renderer::BeginScene();
+			if (Input::IsKeyPressed(VI_KEY_W)) { position.y -= 0.01f; }           // temp 
+			if (Input::IsKeyPressed(VI_KEY_S)) { position.y += 0.01f; }           // temp 
+			if (Input::IsKeyPressed(VI_KEY_A)) { position.x += 0.01f; }           // temp 
+			if (Input::IsKeyPressed(VI_KEY_D)) { position.x -= 0.01f; }           // temp 
+			if (Input::IsKeyPressed(VI_KEY_Q)) { rotation -= 0.1f; }              // temp 
+			if (Input::IsKeyPressed(VI_KEY_E)) { rotation += 0.1f; }              // temp 
+																		          
+			m_Camera.SetPosition(position);                                       // temp
+			m_Camera.SetRotation(rotation);                                       // temp
+			Renderer::BeginScene(m_Camera);
 
-			blueShader->Bind();
-			Renderer::Submit(m_SquareVA);
+			
+			Renderer::Submit(blueShader, m_SquareVA);
 
-			m_Shader->Bind();
-			Renderer::Submit(m_VertexArray);
+			
+			Renderer::Submit(m_Shader, m_VertexArray);
 
 			Renderer::EndScene();
 

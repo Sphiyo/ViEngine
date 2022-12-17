@@ -1398,8 +1398,15 @@
     <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\RenderCommand.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h" />
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\RenderCommand.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1465,7 +1472,14 @@
     <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp" />
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\OrthographicCamera.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>
