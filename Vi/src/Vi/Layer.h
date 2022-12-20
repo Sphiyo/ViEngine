@@ -1,6 +1,8 @@
 #pragma once
 
 #include"Vi/Core.h"
+#include"Vi/Core/Timestep.h"
+
 #include"Vi/Events/Event.h"
 
 namespace Vi {
@@ -14,7 +16,7 @@ namespace Vi {
 
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
-		virtual void OnUpdate() {}
+		virtual void OnUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 			
@@ -22,7 +24,7 @@ namespace Vi {
 
 	protected:
 		std::string m_DebugName;
-
+		
 	};
 
 

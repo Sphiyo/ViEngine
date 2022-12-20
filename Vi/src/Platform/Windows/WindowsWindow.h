@@ -52,6 +52,8 @@ namespace Vi {
 
 				// Inherited via Window
 				inline virtual void* GetNativeWindow() const override;
+
+				
 		};
 
 }

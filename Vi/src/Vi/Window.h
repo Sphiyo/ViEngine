@@ -44,6 +44,8 @@ namespace Vi {
 		static Window* Create(const WindowProps& props = WindowProps());
 
 		// myImplementation bool Closed = false;
+
+	
 	};
 
 }
