@@ -75,7 +75,7 @@ namespace Vi {
 		
 		while (m_Running) 
 		{
-			float time = (float)glfwGetTime(); // temp Platform::GetTime()
+			float time = Time::GetTime();							// (float)glfwGetTime(); // temp Platform::GetTime()
 			Timestep timestep = time - m_LastFrameTime;
 
 			m_LastFrameTime = time;
@@ -89,7 +89,7 @@ namespace Vi {
 			m_ImGuiLayer->End();
 
 			m_Window->OnUpdate();
-	
+
 		};
 	}
 

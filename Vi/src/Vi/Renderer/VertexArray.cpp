@@ -9,39 +9,27 @@ namespace Vi {
 
 	VertexArray* VertexArray::Create()
 	{
+		switch (Renderer::GetAPI())	{
 
-		switch (Renderer::GetAPI())
-		{
+			case RendererAPI::API::None:
 
-		case RendererAPI::API::None:
+				VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+				return nullptr;
 
-			VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+			case RendererAPI::API::OpenGL:
+
+				return new OpenGLVertexArray();
+
+			case RendererAPI::API::Vulcan:
+				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");			
+				return nullptr;
+
+			case RendererAPI::API::D3D12:
+				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+				return nullptr;
+			}
+
+			VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
 			return nullptr;
-
-		case RendererAPI::API::OpenGL:
-
-			return new OpenGLVertexArray();
-
-		case RendererAPI::API::Vulcan:
-
-			VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
-			//		return new VulcanVertexArray();   // Vulcan Doesn't Support VertexArray
-			return nullptr;
-
-		case RendererAPI::API::D3D12:
-
-			VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
-			//		return new D3D12VertexArray();    // D3D12  Doesn't Support VertexArray
-			return nullptr;
-
-		}
-
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
-		return nullptr;
 	}
-
-
-
-
-
 }

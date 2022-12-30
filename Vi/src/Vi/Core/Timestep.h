@@ -18,4 +18,9 @@ namespace Vi {
 		float m_Time;
 	};
 
+	class Time
+	{
+	public:		
+		static float GetTime();																// temp		
+	};	
 }

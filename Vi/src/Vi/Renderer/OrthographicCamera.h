@@ -8,12 +8,14 @@ namespace Vi {
 	class OrthographicCamera
 	{
 	public:
-		OrthographicCamera(float left, float right, float bottom, float top);
+		OrthographicCamera(float fovy, float aspectratio, float nearPlane, float farPlane);
 
 		const glm::vec3& GetPosition() const { return m_Position; }
 		void SetPosition(const glm::vec3& position) { m_Position = position; RecalculateViewMatrix(); }
-		float GetRotation() const { return m_Rotation; }
-		void SetRotation(float rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
+		void AddPosition(const glm::vec3& positionOffset) { m_Position += positionOffset; RecalculateViewMatrix(); }
+		const glm::vec3 GetRotation() const { return m_Rotation; }
+		void SetRotation(const glm::vec3& rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
+	//	void AddRotation(const glm::vec3& rotation) { m_Rotation = rotation; RecalculateViewMatrix(); }
 
 
 		//void SetAspectRatio(unsigned int width, unsigned int height); // temp /////////////////////////
@@ -25,6 +27,7 @@ namespace Vi {
 
 	private:
 		void RecalculateViewMatrix();
+	//	void RecalculateViewMatrix();
 
 	private:
 		glm::mat4 m_ProjectionMatrix;
@@ -32,7 +35,7 @@ namespace Vi {
 		glm::mat4 m_ViewProjectionMatrix;
 
 		glm::vec3 m_Position = { 0.0f ,0.0f, 0.0f }; //glm::vec3(0.0f)
-		float m_Rotation = 0.0f;
+		glm::vec3 m_Rotation = { 0.0f ,0.0f, 0.0f }; //glm::vec3(0.0f)
 	};
 
 

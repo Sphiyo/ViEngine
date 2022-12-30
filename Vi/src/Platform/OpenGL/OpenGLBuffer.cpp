@@ -11,9 +11,9 @@ namespace Vi {
 	{
 		//glCreateBuffers(1, &m_RendererID);  // Update
 
+		glEnable(GL_DEPTH_TEST);
 		glGenBuffers(1, &m_RendererID);
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
-
 		glBufferData(GL_ARRAY_BUFFER, size, vertices, GL_STATIC_DRAW);
 
 	}
