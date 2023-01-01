@@ -1,5 +1,7 @@
 #pragma once
 
+#include <memory>
+
 #ifdef VI_PLATFORM_WINDOWS
     #if HZ_DYNAMIC_LINK
         #ifdef VI_BUILD_DLL
@@ -32,3 +34,16 @@
 
 
 #define VI_BINDEVENT(x) std::bind(&x, this, std::placeholders::_1)
+
+
+namespace Vi {
+
+    template<typename T>
+    using Scope = std::unique_ptr<T>;
+
+    template<typename T>
+    using Ref = std::shared_ptr<T>;
+
+
+
+}

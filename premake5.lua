@@ -18,6 +18,7 @@ IncludeDir["GLFW"] = "Vi/vendor/GLFW/include"
 IncludeDir["Glad"] = "Vi/vendor/Glad/include"
 IncludeDir["ImGui"] = "Vi/vendor/imgui"
 IncludeDir["glm"] = "Vi/vendor/glm"
+IncludeDir["stb_image"] = "Vi/vendor/stb_image"
 
 include "Vi/vendor/GLFW/"
 include "Vi/vendor/Glad/"
@@ -37,13 +38,15 @@ project "Vi"
 	pchsource "Vi/src/Vipch.cpp"
 
 
-
 	files
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
 		"%{prj.name}/vendor/glm/glm/**.hpp",
-		"%{prj.name}/vendor/glm/glm/**.inl"
+		"%{prj.name}/vendor/glm/glm/**.inl",
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
+
 	}
 
 	defines
@@ -57,7 +60,8 @@ project "Vi"
 		"%{IncludeDir.GLFW}",
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.stb_image}"
 
 	}
 

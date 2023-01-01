@@ -7,8 +7,7 @@
 
 namespace Vi {
 
-	VertexArray* VertexArray::Create()
-	{
+	VertexArray* VertexArray::Create(){
 		switch (Renderer::GetAPI())	{
 
 			case RendererAPI::API::None:
@@ -27,7 +26,7 @@ namespace Vi {
 			case RendererAPI::API::D3D12:
 				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
 				return nullptr;
-			}
+		}
 
 			VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
 			return nullptr;

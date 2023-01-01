@@ -23,6 +23,7 @@
 
 #include"Vi/Renderer/Buffer.h"
 #include"Vi/Renderer/Shader.h"
+#include"Vi/Renderer/Texture.h"
 #include"Vi/Renderer/VertexArray.h"
 
 #include"Vi/Renderer/OrthographicCamera.h"

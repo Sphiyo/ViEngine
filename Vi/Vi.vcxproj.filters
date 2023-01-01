@@ -22,6 +22,9 @@
     <Filter Include="src\Vi">
       <UniqueIdentifier>{7B4B661C-67ED-90F2-50A8-A4463CE91743}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Vi\Core">
+      <UniqueIdentifier>{B3D470E1-1F8A-E9D6-A87E-E3AD1433E0DA}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Vi\Events">
       <UniqueIdentifier>{FFDE1A06-6B9F-963C-34DA-DFB9A059DB18}</UniqueIdentifier>
     </Filter>
@@ -52,6 +55,9 @@
     <Filter Include="vendor\glm\glm\gtx">
       <UniqueIdentifier>{B3A6A76B-9F8A-68C1-08EB-6214F4ED5243}</UniqueIdentifier>
     </Filter>
+    <Filter Include="vendor\stb_image">
+      <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\Platform\D3D12\D3D12Buffer.h">
@@ -64,6 +70,18 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\OpenGL\OpenGLContext.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLTexture.h">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
       <Filter>src\Platform\OpenGL</Filter>
     </ClInclude>
     <ClInclude Include="src\Platform\Vulcan\VulcanBuffer.h">
@@ -86,6 +104,9 @@
     </ClInclude>
     <ClInclude Include="src\Vi\Core.h">
       <Filter>src\Vi</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\Timestep.h">
+      <Filter>src\Vi\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\EntryPoint.h">
       <Filter>src\Vi</Filter>
@@ -129,10 +150,25 @@
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\RenderCommand.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Renderer.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\RendererAPI.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Shader.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Texture.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\VertexArray.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Window.h">
@@ -1389,26 +1425,9 @@
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp">
       <Filter>vendor\glm\glm</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\VertexArray.h">
-      <Filter>src\Vi\Renderer</Filter>
+    <ClInclude Include="vendor\stb_image\stb_image.h">
+      <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\RendererAPI.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLVertexArray.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Platform\OpenGL\OpenGLRendererAPI.h">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\RenderCommand.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Core\Timestep.h" />
-    <ClInclude Include="src\Platform\OpenGL\OpenGLShader.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1421,6 +1440,18 @@
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\OpenGL\OpenGLContext.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLTexture.cpp">
+      <Filter>src\Platform\OpenGL</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
       <Filter>src\Platform\OpenGL</Filter>
     </ClCompile>
     <ClCompile Include="src\Platform\Vulcan\VulcanBuffer.cpp">
@@ -1437,6 +1468,9 @@
     </ClCompile>
     <ClCompile Include="src\Vi\Application.cpp">
       <Filter>src\Vi</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\Time.cpp">
+      <Filter>src\Vi\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp">
       <Filter>src\Vi\ImGui</Filter>
@@ -1456,34 +1490,32 @@
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\Renderer.cpp">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\Shader.cpp">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vipch.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\VertexArray.cpp">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLVertexArray.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Platform\OpenGL\OpenGLRendererAPI.cpp">
-      <Filter>src\Platform\OpenGL</Filter>
-    </ClCompile>
     <ClCompile Include="src\Vi\Renderer\OrthographicCamera.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Core\Time.cpp" />
-    <ClCompile Include="src\Platform\OpenGL\OpenGLShader.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Renderer.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Shader.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Texture.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\VertexArray.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vipch.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="vendor\stb_image\stb_image.cpp">
+      <Filter>vendor\stb_image</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

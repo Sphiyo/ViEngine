@@ -24,7 +24,7 @@ public:
 			 0.5f, -0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
 		};
 
-		std::shared_ptr<Vi::VertexBuffer> vertexBuffer;
+		Vi::Ref<Vi::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Vi::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Vi::BufferLayout layout = {
 			{ Vi::ShaderDataType::Float3, "a_Position" },
@@ -34,33 +34,36 @@ public:
 		vertexBuffer->SetLayout(layout);
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
-		std::shared_ptr<Vi::IndexBuffer> indexBuffer;
+		Vi::Ref<Vi::IndexBuffer> indexBuffer;
 		uint32_t indices[3] = { 0,1,2 };
 		indexBuffer.reset(Vi::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		
 		m_SquareVA.reset(Vi::VertexArray::Create());
 
-		float squareVertices[3 * 4 * 2] = {
-		-0.5f, -0.5f, -0.5f,
-		-0.5f,  0.5f, -0.5f,
-		 0.5f,  0.5f, -0.5f,
-		 0.5f, -0.5f, -0.5f,
+		float squareVertices[5 * 4 * 2] = {
+		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,
 					  
-		-0.5f, -0.5f,  0.5f,
-		-0.5f,  0.5f,  0.5f,
-		 0.5f,  0.5f,  0.5f,
-		 0.5f, -0.5f,  0.5f
-					  
+		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f					  
 		};
 
-		std::shared_ptr<Vi::VertexBuffer> squareVB;
+		Vi::Ref<Vi::VertexBuffer> squareVB;
 		squareVB.reset(Vi::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
 
-		squareVB->SetLayout({ { Vi::ShaderDataType::Float3, "a_Position" } });
+		squareVB->SetLayout({
+			{ Vi::ShaderDataType::Float3, "a_Position" },
+			{ Vi::ShaderDataType::Float2, "a_TexCoord" }
+			});
+		
 		m_SquareVA->AddVertexBuffer(squareVB);
 
-		std::shared_ptr<Vi::IndexBuffer> squareIB;
+		Vi::Ref<Vi::IndexBuffer> squareIB;
 		uint32_t squareIndices[6*6] = {
 			0,1,2,2,3,0,
 			0,4,7,7,3,0,
@@ -69,21 +72,23 @@ public:
 			3,2,6,6,7,3,
 			0,1,5,5,4,0
 		};
+		
+
 		squareIB.reset(Vi::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
 		std::string vertexSrc = R"(
 			#version 330 core
-
+	
 			layout(location = 0) in vec3 a_Position;
 			layout(location = 1) in vec4 a_Color;
-
+	
 			out vec3 v_Position;
 			out vec4 v_Color;
-
+	
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_Transform;
-
+	
 			void main()
 			{
 				v_Position = a_Position;
@@ -91,12 +96,12 @@ public:
 				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
-
+	
 		std::string fragmentSrc = R"(
 			#version 330 core
-
+	
 			layout(location = 0) out vec4 color;
-
+	
 			in vec3 v_Position;
 			in vec4 v_Color;
 			
@@ -106,44 +111,87 @@ public:
 				color = v_Color;
 			}
 		)";
-
+	
 		m_Shader.reset(Vi::Shader::Create(vertexSrc, fragmentSrc));
-
+	
 		std::string flatColorVertexSrc = R"(
 			#version 330 core
-
+	
 			layout(location = 0) in vec3 a_Position;
 			
 			out vec3 v_Position;
-
+	
 			uniform mat4 u_ViewProjection;
 			uniform mat4 u_Transform;
 			
-
+	
 			void main()
 			{
 				v_Position = a_Position;
 				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
-
+	
 		std::string flatColorFragmentSrc = R"(
 			#version 330 core
-
+	
 			layout(location = 0) out vec4 color;
-
+	
 			in vec3 v_Position;
-
+	
 			uniform vec4 u_Color;
-
+	
 			void main()
 			{
 				color = u_Color;
 				
 			}
 		)";
-
+	
 		m_FlatColorShader.reset(Vi::Shader::Create(flatColorVertexSrc, flatColorFragmentSrc));
+
+		std::string textureShaderVertexSrc = R"(
+			#version 330 core
+
+			layout(location = 0) in vec3 a_Position;
+			layout(location = 1) in vec2 a_TexCoord;
+			
+
+			uniform mat4 u_ViewProjection;
+			uniform mat4 u_Transform;
+			
+			out vec2 v_TexCoord;
+
+			void main()
+			{
+				v_TexCoord = a_TexCoord;
+				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
+			}
+		)";
+
+		std::string textureShaderFragmentSrc = R"(
+			#version 330 core
+
+			layout(location = 0) out vec4 color;
+
+			in vec2 v_TexCoord;
+
+			uniform sampler2D u_Texture;
+
+			void main()
+			{
+				color = texture(u_Texture, v_TexCoord) * vec4(0.0,0.0,1.0,1.0) ;
+				
+			}
+		)";
+
+	
+		
+		m_TextureShader.reset(Vi::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+		m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
+
+		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_TextureShader)->Bind();
+		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override
@@ -259,7 +307,7 @@ public:
 				glm::vec3 pos(/*m_SquarePosition.x +*/ x * 0.211f, 0.0f, /*m_SquarePosition.y */+ y * 0.211f);
 				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale; //*glm::rotate(glm::mat4(1.0f), glm::radians(m_SquareRotation), glm::vec3(0, 0, 1));
 			
-			
+				m_Texture->Bind();
 				Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 			}
 		}
@@ -269,12 +317,19 @@ public:
 	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);			// todo 
 
 
-		Vi::Renderer::Submit(m_Shader, m_VertexArray);
+		m_Texture->Bind();
+		
+		Vi::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		
+		// triangle
+		//Vi::Renderer::Submit(m_Shader, m_VertexArray);
 
 		Vi::Renderer::EndScene();
 
 		if (m_CameraRotation.y > 89.0f || -89.0f > m_CameraRotation.y)
 			VI_INFO("Camera Rotation Pitch is out of range {0}", m_Camera.GetRotation().y);
+
+
 	}
 
 	virtual void OnImGuiRender() override
@@ -347,13 +402,14 @@ public:
 private:
 
 
-	std::shared_ptr<Vi::Shader> m_Shader;
-	std::shared_ptr<Vi::VertexArray> m_VertexArray;
+	Vi::Ref<Vi::Shader> m_Shader;
+	Vi::Ref<Vi::VertexArray> m_VertexArray;
 
 
-	std::shared_ptr<Vi::Shader> m_FlatColorShader;
-	std::shared_ptr<Vi::VertexArray> m_SquareVA;
+	Vi::Ref<Vi::Shader> m_FlatColorShader , m_TextureShader;
+	Vi::Ref<Vi::VertexArray> m_SquareVA;
 
+	Vi::Ref<Vi::Texture2D> m_Texture;
 
 	Vi::OrthographicCamera m_Camera;
 
@@ -363,7 +419,7 @@ private:
 	float m_CameraRotateSpeed = 180.0f;
 
 
-	glm::vec4 m_ShaderColor = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 //	glm::vec4 secondColor = glm::vec4(0.2f, 0.3f, 0.8f, 1.0f);
 
 	float LastMouseXPos;				// temp

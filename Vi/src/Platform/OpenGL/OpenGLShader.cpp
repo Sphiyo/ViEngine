@@ -121,8 +121,8 @@ namespace Vi {
 
 	void OpenGLShader::Bind() const
 	{
-		glDisable(GL_CULL_FACE),
-			glUseProgram(m_RendererID);
+		glDisable(GL_CULL_FACE);
+		glUseProgram(m_RendererID);
 	}
 
 	void OpenGLShader::Unbind() const
