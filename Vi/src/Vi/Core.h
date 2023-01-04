@@ -1,5 +1,4 @@
 #pragma once
-
 #include <memory>
 
 #ifdef VI_PLATFORM_WINDOWS
@@ -28,13 +27,9 @@
     #define VI_CORE_ASSERT(x, ...)
 #endif 
 
-
-
 #define BIT(x) (1 << x)
 
-
 #define VI_BINDEVENT(x) std::bind(&x, this, std::placeholders::_1)
-
 
 namespace Vi {
 
@@ -43,7 +38,5 @@ namespace Vi {
 
     template<typename T>
     using Ref = std::shared_ptr<T>;
-
-
 
 }

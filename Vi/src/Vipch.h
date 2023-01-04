@@ -14,11 +14,6 @@
 
 #include "Vi/Log.h"
 
-
-
-
-
-
 #ifdef VI_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif // VI_PLATFORM_WINDOWS

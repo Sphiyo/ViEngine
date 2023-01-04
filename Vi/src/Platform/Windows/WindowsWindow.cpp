@@ -5,13 +5,13 @@
 #include "Vi/Events/KeyEvent.h"
 #include "Vi/Events/MouseEvent.h"
 
-#include "Platform/OpenGL/OpenGLContext.h"
+#include "Platform/OpenGL/OpenGLContext.h"		
 
-//test
-/*#include "Vi/Input.h"
-#include "Vi/KeyCodes.h"
+// test
+#include "Vi/Input.h"
+#include "Vi/KeyCodes.h"										// temp 
 #include "Vi/Application.h"
-*/
+
 
 namespace Vi {
 
@@ -183,12 +183,16 @@ namespace Vi {
 
 	void WindowsWindow::OnUpdate()
 	{
-		//test
-		/*if (Input::IsKeyPressed(VI_KEY_ESCAPE))
+		//test																						// temp 
+		if (Input::IsKeyPressed(VI_KEY_ESCAPE))
 			{ Application::Get().CloseWindow(); };
 
-		if (Input::IsKeyPressed(VI_KEY_F11))
-			{ glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE); };*/
+		if (Input::IsKeyPressed(VI_KEY_F11)) {
+			if(glfwGetWindowMonitor(m_Window) == NULL)
+				glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+			else if(glfwGetWindowMonitor(m_Window) != NULL)
+				glfwSetWindowMonitor(m_Window, NULL, 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+		};
 		//
 		glfwPollEvents();
 		m_Context->SwapBuffers();

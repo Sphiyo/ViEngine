@@ -1,41 +1,38 @@
 #include "Vipch.h"
 #include "LayerStack.h"
 
-Vi::LayerStack::LayerStack()
-{
+Vi::LayerStack::LayerStack() {
+
 }
 
-Vi::LayerStack::~LayerStack()
-{
-	for (Layer* layer : m_Layers)
-		delete layer;
+Vi::LayerStack::~LayerStack() {
+
+	for (Layer* layer : m_Layers) { delete layer; }
 }
 
-void Vi::LayerStack::PushLayer(Layer* layer)
-{
+void Vi::LayerStack::PushLayer(Layer* layer) {
+
 	m_Layers.emplace(m_Layers.begin() + m_LayerInsertIndex, layer);
 	m_LayerInsertIndex++;
 }
 
-void Vi::LayerStack::PushOverlay(Layer* overlay)
-{
+void Vi::LayerStack::PushOverlay(Layer* overlay) {
+
 	m_Layers.emplace_back(overlay);
 }
 
-void Vi::LayerStack::PopLayer(Layer* layer)
-{
+void Vi::LayerStack::PopLayer(Layer* layer) {
+
 	auto it = std::find(m_Layers.begin(), m_Layers.end(), layer);
-	if (it != m_Layers.end())
-	{
+	if (it != m_Layers.end()) {
 		m_Layers.erase(it);
 		m_LayerInsertIndex--;
 	}
 }
 
-void Vi::LayerStack::PopOverlay(Layer* overlay)
-{
+void Vi::LayerStack::PopOverlay(Layer* overlay) {
+
 	auto it = std::find(m_Layers.begin(), m_Layers.end(), overlay);
-	if (it != m_Layers.end())
-		m_Layers.erase(it);		
+	if (it != m_Layers.end()) { m_Layers.erase(it); }
 	
 }

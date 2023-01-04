@@ -1,46 +1,48 @@
 #include <Vi.h>
-
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
-
 #include <glm/gtc/matrix_transform.hpp>
 
-class ExampleLayer : public Vi::Layer
-{
+class ExampleLayer : public Vi::Layer {
+
 public:
 	ExampleLayer()
-		: Layer("Example"), m_Camera(90.0f, 1600.0f/900.0f, 0.1f, 4000.0f), m_CameraPosition(0.0f), m_CameraRotation(0.0f)/*, m_SquarePosition(0.0f)*/
-	{
+		: Layer("Example") , m_Camera(90.0f, 800.0f/600.0f, 0.1f, 4000.0f) {
+
 		m_Camera.SetPosition({ 0.0f,0.0f, 5.0f });
 		m_Camera.SetRotation({ 0.0f,0.0f, 0.0f });
 		LastMouseXPos = Vi::Input::GetMouseX();   // temp
 		LastMouseYPos = Vi::Input::GetMouseY();   // temp
 
+		// VertexArray 
 		m_VertexArray.reset(Vi::VertexArray::Create());
 
-		float vertices[7 * 3] = {
-			-0.5f, -0.5f, 0.0f, 0.8f, 0.2f, 0.8f, 1.0f,
-			 0.0f,  0.5f, 0.0f, 0.2f, 0.3f, 0.8f, 1.0f,
-			 0.5f, -0.5f, 0.0f, 0.8f, 0.8f, 0.2f, 1.0f
+		// VertexBuffer 
+		float vertices[5 * 4] = {
+			-0.5f, -0.5f, 0.0f,    0.0f, 0.0f,
+			-0.5f,  0.5f, 0.0f,    0.0f, 1.0f,
+			 0.5f,  0.5f, 0.0f,    1.0f, 1.0f,
+			 0.5f, -0.5f, 0.0f,    1.0f, 0.0f
 		};
-
 		Vi::Ref<Vi::VertexBuffer> vertexBuffer;
 		vertexBuffer.reset(Vi::VertexBuffer::Create(vertices, sizeof(vertices)));
 		Vi::BufferLayout layout = {
 			{ Vi::ShaderDataType::Float3, "a_Position" },
-			{ Vi::ShaderDataType::Float4, "a_Color" },
+			{ Vi::ShaderDataType::Float2, "a_TexCoord" },
 		};
-
 		vertexBuffer->SetLayout(layout);
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
+		// IndexBuffer 
 		Vi::Ref<Vi::IndexBuffer> indexBuffer;
-		uint32_t indices[3] = { 0,1,2 };
+		uint32_t indices[6] = { 0,1,2,2,3,0 };
 		indexBuffer.reset(Vi::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		
+		// Square VertexArray 
 		m_SquareVA.reset(Vi::VertexArray::Create());
 
+		// Square VertexBuffer 
 		float squareVertices[5 * 4 * 2] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
@@ -52,17 +54,15 @@ public:
 		 0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
 		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f					  
 		};
-
 		Vi::Ref<Vi::VertexBuffer> squareVB;
 		squareVB.reset(Vi::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
-
 		squareVB->SetLayout({
 			{ Vi::ShaderDataType::Float3, "a_Position" },
 			{ Vi::ShaderDataType::Float2, "a_TexCoord" }
 			});
-		
 		m_SquareVA->AddVertexBuffer(squareVB);
-
+		
+		// Square IndexBuffer 
 		Vi::Ref<Vi::IndexBuffer> squareIB;
 		uint32_t squareIndices[6*6] = {
 			0,1,2,2,3,0,
@@ -72,11 +72,10 @@ public:
 			3,2,6,6,7,3,
 			0,1,5,5,4,0
 		};
-		
-
 		squareIB.reset(Vi::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
 		m_SquareVA->SetIndexBuffer(squareIB);
 
+		// ShaderSource Vertex 
 		std::string vertexSrc = R"(
 			#version 330 core
 	
@@ -96,7 +95,7 @@ public:
 				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
-	
+		// ShaderSource Fragment 
 		std::string fragmentSrc = R"(
 			#version 330 core
 	
@@ -112,8 +111,10 @@ public:
 			}
 		)";
 	
+		// Create And Compile Shader 
 		m_Shader.reset(Vi::Shader::Create(vertexSrc, fragmentSrc));
-	
+
+		// flat ShaderSource Vertex 
 		std::string flatColorVertexSrc = R"(
 			#version 330 core
 	
@@ -131,7 +132,7 @@ public:
 				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
 			}
 		)";
-	
+		// flat ShaderSource Fragment 	
 		std::string flatColorFragmentSrc = R"(
 			#version 330 core
 	
@@ -147,198 +148,127 @@ public:
 				
 			}
 		)";
-	
+
+		// Create And Compile flat Shader 
 		m_FlatColorShader.reset(Vi::Shader::Create(flatColorVertexSrc, flatColorFragmentSrc));
 
-		std::string textureShaderVertexSrc = R"(
-			#version 330 core
 
-			layout(location = 0) in vec3 a_Position;
-			layout(location = 1) in vec2 a_TexCoord;
-			
+		// Create And Compile texture Shader 
+		m_TextureShader.reset(Vi::Shader::Create("assets/shaders/Texture.glsl"));
 
-			uniform mat4 u_ViewProjection;
-			uniform mat4 u_Transform;
-			
-			out vec2 v_TexCoord;
-
-			void main()
-			{
-				v_TexCoord = a_TexCoord;
-				gl_Position = u_ViewProjection * u_Transform * vec4(a_Position,1.0);
-			}
-		)";
-
-		std::string textureShaderFragmentSrc = R"(
-			#version 330 core
-
-			layout(location = 0) out vec4 color;
-
-			in vec2 v_TexCoord;
-
-			uniform sampler2D u_Texture;
-
-			void main()
-			{
-				color = texture(u_Texture, v_TexCoord) * vec4(0.0,0.0,1.0,1.0) ;
-				
-			}
-		)";
-
-	
-		
-		m_TextureShader.reset(Vi::Shader::Create(textureShaderVertexSrc, textureShaderFragmentSrc));
+		//Construct And Buffer Texture To Memory
 		m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
+		m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
 
+		// bind texture Shader And Set Uniform
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_TextureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_TextureShader)->UploadUniformInt("u_Texture", 0);
+
 	}
 
-	virtual void OnUpdate(Vi::Timestep ts) override
-	{
+	virtual void OnUpdate(Vi::Timestep ts) override	{
+
 		ExampleLayer::deltaTime = ts;										//temp
+		
+		if (m_MouseMiddleButtonPressed) {
 
-
-		//VI_INFO("DeltaTime: ({0}s) ({1}ms) FramesPerSecond ({2}FPS)", ts, ts.GetMilliSeconds(),1/ ts.GetSeconds());
-		if (m_MouseMiddleButtonPressed)
-		{
 			float XOffset = Vi::Input::GetMouseX() - LastMouseXPos;             // temp
 			float YOffset = Vi::Input::GetMouseY() - LastMouseYPos;				// temp
-							
-			
 			m_CameraPosition.x -= XOffset * 0.2f * ts;								// temp
 			m_CameraPosition.y += YOffset * 0.2f * ts;								// temp
 			LastMouseXPos += XOffset;											// temp
 			LastMouseYPos += YOffset;											// temp
 		}
 
-		if (m_MouseLeftButtonPressed)
-		{
+		if (m_MouseLeftButtonPressed) {
+
 			float XOffset = Vi::Input::GetMouseX() - LastMouseXPos;             // temp
 			float YOffset = Vi::Input::GetMouseY() - LastMouseYPos;				// temp
-
+			VI_INFO( "RotationYaw : {0} ", m_CameraRotation.z);
 			float newYaw = m_CameraRotation.z - (XOffset * 45.0f * ts);
 			float newPitch = m_CameraRotation.y - (YOffset * 45.0f * ts);
-
 			m_CameraRotation.z = newYaw;								// temp
-			
-			if (newPitch > 89.0f )
-			{
-				newPitch =  89.0f;
-				
-			}
-			else if (-89.0f > newPitch)
-			{
-				newPitch = -89.0f;
-				
-			} 
-			
-				m_CameraRotation.y = newPitch;
-			
-		
-
-			/*(-89.0f < newPitch) ? (m_CameraRotation.y = YOffset * 180.5f * ts) : (m_CameraRotation.y = -89.0f);
-			((YOffset * 180.5f * ts) < 89) ? (m_CameraRotation.y -= YOffset * 180.5f * ts) : (m_CameraRotation.y = 89.0f);*/
-																					// temp
-																					// temp
-			
+			if (newPitch > 89.0f) { newPitch = 89.0f; }
+			else if (-89.0f > newPitch) { newPitch = -89.0f; }
+			m_CameraRotation.y = newPitch;
 			LastMouseXPos += XOffset;											// temp
 			LastMouseYPos += YOffset;											// temp
 		}
-
+		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
-
 	
-		if (Vi::Input::IsKeyPressed(VI_KEY_W) || Vi::Input::IsKeyPressed(VI_KEY_UP)) 
-			{ m_CameraPosition.z -= m_CameraMoveSpeed * ts; }           // temp 
+		if (Vi::Input::IsKeyPressed(VI_KEY_W) || Vi::Input::IsKeyPressed(VI_KEY_UP)) {
+			m_CameraPosition.z -= m_CameraMoveSpeed * ts; 
+		}           // temp 
+
+		if (Vi::Input::IsKeyPressed(VI_KEY_S) || Vi::Input::IsKeyPressed(VI_KEY_DOWN)) {
+			m_CameraPosition.z += m_CameraMoveSpeed * ts;
+		}           // temp 
+
+		if (Vi::Input::IsKeyPressed(VI_KEY_A) || Vi::Input::IsKeyPressed(VI_KEY_LEFT)) {
+			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
+		}           // temp 		
+
+		if (Vi::Input::IsKeyPressed(VI_KEY_D) || Vi::Input::IsKeyPressed(VI_KEY_RIGHT)) {
+			m_CameraPosition.x += m_CameraMoveSpeed * ts;
+		}           // temp 
+	
+		if (Vi::Input::IsKeyPressed(VI_KEY_Q)) {
+			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
+		}
 		
-
-		if (Vi::Input::IsKeyPressed(VI_KEY_S) || Vi::Input::IsKeyPressed(VI_KEY_DOWN)) 
-			{ m_CameraPosition.z += m_CameraMoveSpeed * ts; }           // temp 
-
-		//else { m_CameraPosition.z = 0.0f; }
-
-		if (Vi::Input::IsKeyPressed(VI_KEY_A) || Vi::Input::IsKeyPressed(VI_KEY_LEFT)) 
-			{ m_CameraPosition.x -= m_CameraMoveSpeed * ts; }           // temp 		
-
-		if (Vi::Input::IsKeyPressed(VI_KEY_D) || Vi::Input::IsKeyPressed(VI_KEY_RIGHT))
-			{ m_CameraPosition.x += m_CameraMoveSpeed * ts; }           // temp 
-		//else { m_CameraPosition.x = 0.0f; }
-
-		if (Vi::Input::IsKeyPressed(VI_KEY_Q)) 
-			{ m_CameraPosition.y -= m_CameraMoveSpeed * ts; }
-		
-		if (Vi::Input::IsKeyPressed(VI_KEY_E))
-			{ m_CameraPosition.y += m_CameraMoveSpeed * ts; }
-		//else { m_CameraPosition.y = 0.0f; }
-
-		
-		
-
-		//if (Vi::Input::IsKeyPressed(VI_KEY_I) || Vi::Input::IsKeyPressed(VI_KEY_UP))    { m_SquarePosition.y += m_SquareMoveSpeed * ts; }           // temp 
-		//if (Vi::Input::IsKeyPressed(VI_KEY_K) || Vi::Input::IsKeyPressed(VI_KEY_DOWN))  { m_SquarePosition.y -= m_SquareMoveSpeed * ts; }           // temp 
-		//if (Vi::Input::IsKeyPressed(VI_KEY_J) || Vi::Input::IsKeyPressed(VI_KEY_LEFT))  { m_SquarePosition.x -= m_SquareMoveSpeed * ts; }           // temp 
-		//if (Vi::Input::IsKeyPressed(VI_KEY_L) || Vi::Input::IsKeyPressed(VI_KEY_RIGHT)) { m_SquarePosition.x += m_SquareMoveSpeed * ts; }
-		//if (Vi::Input::IsKeyPressed(VI_KEY_U)) { m_SquareRotation -= m_SquareRotateSpeed * ts; }
-		//if (Vi::Input::IsKeyPressed(VI_KEY_O)) { m_SquareRotation += m_SquareRotateSpeed * ts; }
+		if (Vi::Input::IsKeyPressed(VI_KEY_E)) {
+			m_CameraPosition.y += m_CameraMoveSpeed * ts;
+		}
 
 		m_Camera.SetPosition(m_CameraPosition);
 		m_Camera.SetRotation(m_CameraRotation);
+		
 		Vi::Renderer::BeginScene(m_Camera);
-
-		static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
 		
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
 		//Vi::MaterialInstanceRef mi = new Vi::MaterialInstance(material);						// todo 
-		
+		//
 		//mi->SetValue("u_Color", firstColor);													// todo 
 		//mi->SetTexture("u_Color", texture);													// todo 
 		//mesh->SetMaterial(material);															// todo 
 
-
+		//Bind FlatColor Shader And Set Uniform Color 
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
 				
-		for (int y = 0; y < 20; y++)
-		{
-			for (int x = 0; x < 20; x++)
-			{
-				glm::vec3 pos(/*m_SquarePosition.x +*/ x * 0.211f, 0.0f, /*m_SquarePosition.y */+ y * 0.211f);
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale; //*glm::rotate(glm::mat4(1.0f), glm::radians(m_SquareRotation), glm::vec3(0, 0, 1));
-			
+		static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
+		for (int y = 0; y < 20; y++) {
+			for (int x = 0; x < 20; x++) {
+				
+				glm::vec3 pos(x * 0.211f, 0.0f, y * 0.211f);
+				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 				m_Texture->Bind();
 				Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 			}
 		}
-
-
+	 
 	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);			// todo 
-
-
+	
+		// Draw Cube With Texture 
 		m_Texture->Bind();
+		Vi::Renderer::Submit(m_TextureShader, m_SquareVA);
 		
-		Vi::Renderer::Submit(m_TextureShader, m_SquareVA, glm::scale(glm::mat4(1.0f), glm::vec3(1.5f)));
+		// Draw Cube With Alpha Blend Texture 
+		m_TransparentTexture->Bind();
+		Vi::Renderer::Submit(m_TextureShader, m_SquareVA);
+	
 		
-		// triangle
-		//Vi::Renderer::Submit(m_Shader, m_VertexArray);
-
 		Vi::Renderer::EndScene();
-
-		if (m_CameraRotation.y > 89.0f || -89.0f > m_CameraRotation.y)
-			VI_INFO("Camera Rotation Pitch is out of range {0}", m_Camera.GetRotation().y);
-
 
 	}
 
-	virtual void OnImGuiRender() override
-	{
+	virtual void OnImGuiRender() override {
+
 		ImGui::Begin("Settings");														 // temp
 		ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
-
-	//	ImGui::SliderFloat4("ColorFlatChannel1", (float*)&m_ShaderColor, 0.0f, 1.0f);
-	//	ImGui::SliderFloat4("ColorFlatChannel2", (float*)&secondColor, 0.0f, 1.0f);
 		ImGui::End();																   // temp
 		
 		ImGui::Begin("Stats");														   // temp 
@@ -352,40 +282,23 @@ public:
 		ImGui::End();
 	}
 
-	void OnEvent(Vi::Event& event) override
-	{
-		if (event.GetEventType() == Vi::EventType::MouseButtonPressed)                                   // temp
-		{
+	void OnEvent(Vi::Event& event) override {
+
+		if (event.GetEventType() == Vi::EventType::MouseButtonPressed) {
 			LastMouseXPos = Vi::Input::GetMousePosition().first;
 			LastMouseYPos = Vi::Input::GetMousePosition().second;
 			Vi::MouseButtonPressedEvent& e = (Vi::MouseButtonPressedEvent&)event;
-			
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_1)
-			{
-				m_MouseRightButtonPressed = true;
-			}
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_2)
-			{
-				m_MouseLeftButtonPressed = true;
-			}
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE)
-			{
-				m_MouseMiddleButtonPressed = true;
-			}
-
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_1) { m_MouseRightButtonPressed = true; }
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_2) { m_MouseLeftButtonPressed = true; }
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE){ m_MouseMiddleButtonPressed = true; }
 		}																								 // temp
 
-		if (event.GetEventType() == Vi::EventType::MouseButtonReleased)									 // temp
-		{
+		if (event.GetEventType() == Vi::EventType::MouseButtonReleased) {
 			Vi::MouseButtonReleasedEvent& e = (Vi::MouseButtonReleasedEvent&)event;
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_1)
-				m_MouseRightButtonPressed = false;
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_2)
-				m_MouseLeftButtonPressed = false;
-			if (e.GetMouseButton() == VI_MOUSE_BUTTON_3)
-				m_MouseMiddleButtonPressed = false;
-		}																								 // temp
-
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_1) { m_MouseRightButtonPressed = false; }
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_2) { m_MouseLeftButtonPressed = false; }
+			if (e.GetMouseButton() == VI_MOUSE_BUTTON_3) { m_MouseMiddleButtonPressed = false; }																							 // temp
+		}
 		if (event.GetEventType() == Vi::EventType::MouseScrolled)									 // temp
 		{
 			Vi::MouseScrolledEvent& e = (Vi::MouseScrolledEvent&)event;
@@ -409,13 +322,13 @@ private:
 	Vi::Ref<Vi::Shader> m_FlatColorShader , m_TextureShader;
 	Vi::Ref<Vi::VertexArray> m_SquareVA;
 
-	Vi::Ref<Vi::Texture2D> m_Texture;
+	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
 
 	Vi::OrthographicCamera m_Camera;
 
-	glm::vec3 m_CameraPosition;
+	glm::vec3 m_CameraPosition = glm::vec3(0.0f);;
 	float m_CameraMoveSpeed = 5.0f;
-	glm::vec3 m_CameraRotation;
+	glm::vec3 m_CameraRotation = glm::vec3(0.0f);
 	float m_CameraRotateSpeed = 180.0f;
 
 
@@ -451,7 +364,7 @@ public:
 };
 
 
-Vi::Application* Vi::CreateApplication()
-{
+Vi::Application* Vi::CreateApplication() {
+
 	return new Sandbox();
 }
