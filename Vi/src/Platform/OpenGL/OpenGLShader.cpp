@@ -20,9 +20,19 @@ namespace Vi {
 		std::string source = ReadFile(filepath);
 		auto shaderSources = PreProcess(source);
 		Compile(shaderSources);
+
+		// Extract Name From FilePath
+		// example we want to read "Me" from asset/shader/Me.glsl
+		auto lastSlash = filepath.find_last_of("/\\");
+		lastSlash = lastSlash == std::string::npos ? 0 : lastSlash + 1;
+		auto lastDot = filepath.rfind('.');
+		auto count = lastDot == (std::string::npos) ? (filepath.size() - lastSlash) : (lastDot - lastSlash);
+		m_Name = filepath.substr(lastSlash, count);
 	}
-	OpenGLShader::OpenGLShader(const std::string& vertexSrc, const  std::string& fragmentSrc) {
-	
+
+	OpenGLShader::OpenGLShader(const std::string& name, const std::string& vertexSrc, const  std::string& fragmentSrc) {
+		
+		m_Name = name;
 		std::unordered_map<GLenum, std::string> sources;
 		sources[GL_VERTEX_SHADER] = vertexSrc;
 		sources[GL_FRAGMENT_SHADER] = fragmentSrc;
@@ -37,7 +47,7 @@ namespace Vi {
 	std::string OpenGLShader::ReadFile(const std::string& filepath) {
 
 		std::string result;
-		std::ifstream in(filepath, std::ios::in, std::ios::binary);
+		std::ifstream in(filepath, std::ios::in | std::ios::binary);
 		if (in) {
 			in.seekg(0, std::ios::end);
 			result.resize(in.tellg());
@@ -76,7 +86,9 @@ namespace Vi {
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources) {
 
 		GLuint program = glCreateProgram();
-		std::vector<GLenum> glShaderIds(shaderSources.size());
+		VI_CORE_ASSERT(shaderSources.size() <= 2, "");
+		std::array<GLenum, 2> glShaderIds;
+		int glShaderIndex = 0;
 		for (auto& kv : shaderSources) {
 			GLenum type = kv.first;
 			const std::string& source = kv.second;
@@ -100,16 +112,14 @@ namespace Vi {
 				break;
 			}
 			glAttachShader(program, shader);
-			glShaderIds.push_back(shader);
+			glShaderIds[glShaderIndex++] = (shader);
 		}
-		
 		glLinkProgram(program);
 
 		// Note the different functions here: glGetProgram* instead of glGetShader*.
 		GLint isLinked = 0;
 		glGetProgramiv(program, GL_LINK_STATUS, (int*)&isLinked);
-		if (isLinked == GL_FALSE)
-		{
+		if (isLinked == GL_FALSE){
 			GLint maxLength = 0;
 			glGetProgramiv(program, GL_INFO_LOG_LENGTH, &maxLength);
 
@@ -122,7 +132,6 @@ namespace Vi {
 			for(auto id : glShaderIds) {
 				glDeleteShader(id);
 			}
-
 			VI_CORE_ERROR("{0}", infoLog.data());
 			VI_CORE_ASSERT(false, "Shader Link Failure!");
 			return;
@@ -141,10 +150,12 @@ namespace Vi {
 		glUseProgram(m_RendererID);
 	}
 
-	void OpenGLShader::Unbind() const
+	void OpenGLShader::Unbind() const 
 	{
 		glUseProgram(0);
 	}
+
+	const std::string& OpenGLShader::GetName() const { return m_Name; }
 
 	void OpenGLShader::UploadUniformInt(const std::string& name, int value)
 	{

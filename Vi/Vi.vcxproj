@@ -173,6 +173,7 @@
     <ClInclude Include="src\Vi\LayerStack.h" />
     <ClInclude Include="src\Vi\Log.h" />
     <ClInclude Include="src\Vi\MouseButtonCodes.h" />
+    <ClInclude Include="src\Vi\OrthographcCameraController.h" />
     <ClInclude Include="src\Vi\Renderer\Buffer.h" />
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h" />
@@ -622,6 +623,7 @@
     <ClCompile Include="src\Vi\Layer.cpp" />
     <ClCompile Include="src\Vi\LayerStack.cpp" />
     <ClCompile Include="src\Vi\Log.cpp" />
+    <ClCompile Include="src\Vi\OrthographcCameraController.cpp" />
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Vi\Renderer\OrthographicCamera.cpp" />
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
