@@ -289,6 +289,15 @@ public:
 
 		m_CameraController.OnEvent(e);
 
+		if (e.GetEventType() == Vi::EventType::WindowResize)
+		{
+			auto resizeEvent = (Vi::WindowResizeEvent&)e;
+			
+
+			float zoom = resizeEvent.GetHeight() / 900.0f;
+			m_CameraController.SetZoomLevel(zoom);
+		}
+
 		//if (e.GetEventType() == Vi::EventType::MouseButtonPressed) {
 		//	LastMouseXPos = Vi::Input::GetMousePosition().first;
 		//	LastMouseYPos = Vi::Input::GetMousePosition().second;

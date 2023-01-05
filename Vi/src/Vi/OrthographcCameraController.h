@@ -16,6 +16,9 @@ namespace Vi {
 
 		OrthographicCamera& GetCamera() { return m_OCamera; }
 		const OrthographicCamera& GetCamera() const { return m_OCamera; }
+
+		float GetZoomLevel() const { return m_ZoomLevel; }
+		void SetZoomLevel(float zoomLevel) { m_ZoomLevel = zoomLevel; }
 	private:
 		bool OnMouseScrolled(MouseScrolledEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
