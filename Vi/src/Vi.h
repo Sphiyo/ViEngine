@@ -3,16 +3,16 @@
 //For Use By Vi Applications
 //#include "Vipch.h"
 
-#include "Vi/Application.h"
-#include "Vi/Layer.h"
-#include "Vi/Log.h"
+#include "Vi/Core/Application.h"
+#include "Vi/Core/Layer.h"
+#include "Vi/Core/Log.h"
 
 #include "Vi/Core/Timestep.h"
 
-#include "Vi/Input.h"
-#include "Vi/KeyCodes.h"
-#include "Vi/MouseButtonCodes.h"
-#include "Vi/OrthographcCameraController.h"
+#include "Vi/Core/Input.h"
+#include "Vi/Core/KeyCodes.h"
+#include "Vi/Core/MouseButtonCodes.h"
+#include "Vi/Miscs/OrthographcCameraController.h"
 
 #include "Vi/ImGui/ImGuiLayer.h"
 
@@ -32,6 +32,6 @@
 
 /////////////////////////////////////////////////////////////////// Entry Point ///////////////////////////////////////////////////////////////////
 
-#include "Vi/EntryPoint.h"
+#include "Vi/Core/EntryPoint.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

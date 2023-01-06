@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Vi/Input.h"
+#include "Vi/Core/Input.h"
 
-#include "Vi/Application.h"
+#include "Vi/Core/Application.h"
 #include "GLFW/glfw3.h"
 
 

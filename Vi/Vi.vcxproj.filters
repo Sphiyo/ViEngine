@@ -31,6 +31,9 @@
     <Filter Include="src\Vi\ImGui">
       <UniqueIdentifier>{E530F60F-D193-85B4-7A19-BE6A665B5137}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Vi\Miscs">
+      <UniqueIdentifier>{491A3D10-357D-CCB4-DE02-056BCA449837}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Vi\Renderer">
       <UniqueIdentifier>{81A949EF-ED34-B7B3-F645-3AA8625013B4}</UniqueIdentifier>
     </Filter>
@@ -99,17 +102,38 @@
     <ClInclude Include="src\Vi.h">
       <Filter>src</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Application.h">
-      <Filter>src\Vi</Filter>
+    <ClInclude Include="src\Vi\Core\Application.h">
+      <Filter>src\Vi\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Core.h">
-      <Filter>src\Vi</Filter>
+    <ClInclude Include="src\Vi\Core\Core.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\EntryPoint.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\Input.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\KeyCodes.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\Layer.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\LayerStack.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\Log.h">
+      <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Core\MouseButtonCodes.h">
+      <Filter>src\Vi\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Core\Timestep.h">
       <Filter>src\Vi\Core</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\EntryPoint.h">
-      <Filter>src\Vi</Filter>
+    <ClInclude Include="src\Vi\Core\Window.h">
+      <Filter>src\Vi\Core</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Events\ApplicationEvent.h">
       <Filter>src\Vi\Events</Filter>
@@ -126,23 +150,8 @@
     <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h">
       <Filter>src\Vi\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Input.h">
-      <Filter>src\Vi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\KeyCodes.h">
-      <Filter>src\Vi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Layer.h">
-      <Filter>src\Vi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\LayerStack.h">
-      <Filter>src\Vi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Log.h">
-      <Filter>src\Vi</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\MouseButtonCodes.h">
-      <Filter>src\Vi</Filter>
+    <ClInclude Include="src\Vi\Miscs\OrthographcCameraController.h">
+      <Filter>src\Vi\Miscs</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Buffer.h">
       <Filter>src\Vi\Renderer</Filter>
@@ -170,9 +179,6 @@
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\VertexArray.h">
       <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Window.h">
-      <Filter>src\Vi</Filter>
     </ClInclude>
     <ClInclude Include="src\Vipch.h">
       <Filter>src</Filter>
@@ -1428,7 +1434,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\OrthographcCameraController.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1467,8 +1472,17 @@
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp">
       <Filter>src\Platform\Windows</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Application.cpp">
-      <Filter>src\Vi</Filter>
+    <ClCompile Include="src\Vi\Core\Application.cpp">
+      <Filter>src\Vi\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\Layer.cpp">
+      <Filter>src\Vi\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\LayerStack.cpp">
+      <Filter>src\Vi\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\Log.cpp">
+      <Filter>src\Vi\Core</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Core\Time.cpp">
       <Filter>src\Vi\Core</Filter>
@@ -1479,14 +1493,8 @@
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp">
       <Filter>src\Vi\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Layer.cpp">
-      <Filter>src\Vi</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\LayerStack.cpp">
-      <Filter>src\Vi</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\Log.cpp">
-      <Filter>src\Vi</Filter>
+    <ClCompile Include="src\Vi\Miscs\OrthographcCameraController.cpp">
+      <Filter>src\Vi\Miscs</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp">
       <Filter>src\Vi\Renderer</Filter>
@@ -1518,6 +1526,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\OrthographcCameraController.cpp" />
   </ItemGroup>
 </Project>

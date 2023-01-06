@@ -1,7 +1,7 @@
 #include "Vipch.h"
 #include "Application.h"
 
-#include "Vi/Log.h"
+#include "Vi/Core/Log.h"
 
 #include "Vi/Renderer/Renderer.h"
 

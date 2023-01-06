@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Vi/Log.h"
+#include "Vi/Core/Log.h"
 
 #ifdef VI_PLATFORM_WINDOWS
 	#include <Windows.h>

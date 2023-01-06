@@ -1,8 +1,8 @@
 #pragma once
 #include "Core.h"
 #include "Window.h"
-#include "Vi/LayerStack.h"
-#include "Events/Event.h"
+#include "Vi/Core/LayerStack.h"
+#include "Vi/Events/Event.h"
 #include "Vi/Events/ApplicationEvent.h"
 #include "Vi/Core/Timestep.h"
 #include "Vi/ImGui/ImGuiLayer.h"

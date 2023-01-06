@@ -8,9 +8,9 @@
 #include "Platform/OpenGL/OpenGLContext.h"		
 
 // test
-#include "Vi/Input.h"
-#include "Vi/KeyCodes.h"										// temp 
-#include "Vi/Application.h"
+#include "Vi/Core/Input.h"
+#include "Vi/Core/KeyCodes.h"										// temp 
+#include "Vi/Core/Application.h"
 
 
 namespace Vi {

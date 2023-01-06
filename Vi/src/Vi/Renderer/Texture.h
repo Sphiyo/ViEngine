@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#include "Vi/Core.h"
+#include "Vi/Core/Core.h"
 
 namespace Vi {
 

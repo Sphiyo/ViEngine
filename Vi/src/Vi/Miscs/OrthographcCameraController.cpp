@@ -1,8 +1,8 @@
 #include "Vipch.h"
 #include "OrthographcCameraController.h"
 
-#include "Vi/Input.h"
-#include "Vi/KeyCodes.h"
+#include "Vi/Core/Input.h"
+#include "Vi/Core/KeyCodes.h"
 
 namespace Vi {
 

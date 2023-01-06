@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Vi/Window.h"
+#include "Vi/Core/Window.h"
 #include "Vi/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
