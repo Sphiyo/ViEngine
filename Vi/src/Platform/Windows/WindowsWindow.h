@@ -26,6 +26,8 @@ namespace Vi {
 				void SetVSync(bool enabled) override;
 				bool IsVSync() const override;
 
+				void ShowCursor(bool show) override;
+
 			//	void (*funcs)(GLFWwindow* window, int button, int action, int mods){};
 			//void function(GLFWwindow* window, int button, int action, int mods);
 			//void (*GLFWmousebuttonfun)(GLFWwindow* window, int button, int action, int mods);

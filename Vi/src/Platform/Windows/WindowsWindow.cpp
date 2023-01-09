@@ -22,29 +22,21 @@ namespace Vi {
 		VI_CORE_ERROR("GLFW Error ({0}):({1})", error_code, description);
 	}
 
-	Window* Window::Create(const WindowProps& props)
-	{
+	Window* Window::Create(const WindowProps& props) {
+
 		return new WindowsWindow(props);
 	}
 
+	WindowsWindow::WindowsWindow(const WindowProps& props) {
 
-	WindowsWindow::WindowsWindow(const WindowProps& props)
-	{
-	
 		Init(props);
 	}
 
-	WindowsWindow::~WindowsWindow()
-	{	
+	WindowsWindow::~WindowsWindow() {
 		Shutdown();
 	}
-
-
-
 	
-	void WindowsWindow::Init(const WindowProps& props)
-	{
-
+	void WindowsWindow::Init(const WindowProps& props) {
 
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -52,8 +44,7 @@ namespace Vi {
 
 		VI_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-		if (!s_GLFWInitialized)
-		{
+		if (!s_GLFWInitialized) {
 			//todo glfwterminate on system shutdown
 			int success = glfwInit();
 			//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
@@ -171,21 +162,20 @@ namespace Vi {
 
 	}
 
-	void WindowsWindow::Shutdown()
-	{
+	void WindowsWindow::Shutdown() {
+
 		glfwDestroyWindow(m_Window);
 	}
 
-	void* WindowsWindow::GetNativeWindow() const
-	{
+	void* WindowsWindow::GetNativeWindow() const {
+	
 		return m_Window;
 	}
 
-	void WindowsWindow::OnUpdate()
-	{
+	void WindowsWindow::OnUpdate() {
+
 		//test																						// temp 
-		if (Input::IsKeyPressed(VI_KEY_ESCAPE))
-			{ Application::Get().CloseWindow(); };
+		if (Input::IsKeyPressed(VI_KEY_ESCAPE)) { Application::Get().CloseWindow(); };
 
 		if (Input::IsKeyPressed(VI_KEY_F11)) {
 			if(glfwGetWindowMonitor(m_Window) == NULL)
@@ -197,12 +187,10 @@ namespace Vi {
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 		
-		
 		//myImplementation Closed = glfwWindowShouldClose(m_Window);										 
 	}
 
-	void WindowsWindow::SetVSync(bool enabled)
-	{
+	void WindowsWindow::SetVSync(bool enabled) {
 
 		if (enabled)
 			glfwSwapInterval(1);
@@ -212,10 +200,17 @@ namespace Vi {
 		m_Data.VSync = enabled;
 	}
 
-	bool WindowsWindow::IsVSync() const
-	{
+	bool WindowsWindow::IsVSync() const {
+
 		return m_Data.VSync;
 	
 	}
 
+	void WindowsWindow::ShowCursor(bool show) {
+
+		if (!show)
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
+		else
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+	}
 }
