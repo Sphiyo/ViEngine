@@ -66,20 +66,7 @@ void Vi::ImGuiLayer::OnDetach()
     ImGui::DestroyContext();
 }
 
-void Vi::ImGuiLayer::OnImGuiRender()
-{
 
-    //float time = (float)glfwGetTime();
-    //io.DeltaTime = (m_Time > 0.0f) ? (time - m_Time) : (1.0f / 60.0f);
-    //m_Time = time;
-
- 
-
-    static bool show = true;
-    ImGui::ShowDemoWindow(&show);
-
- 
-}
 
 void Vi::ImGuiLayer::Begin()
 {
