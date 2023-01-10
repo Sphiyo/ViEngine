@@ -150,16 +150,13 @@
     <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h">
       <Filter>src\Vi\ImGui</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Miscs\OrthographcCameraController.h">
+    <ClInclude Include="src\Vi\Miscs\CameraController.h">
       <Filter>src\Vi\Miscs</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Buffer.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\RenderCommand.h">
@@ -1434,6 +1431,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Camera.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1493,13 +1491,13 @@
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp">
       <Filter>src\Vi\ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Miscs\OrthographcCameraController.cpp">
+    <ClCompile Include="src\Vi\Miscs\CameraController.cpp">
       <Filter>src\Vi\Miscs</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\OrthographicCamera.cpp">
+    <ClCompile Include="src\Vi\Renderer\Camera.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp">

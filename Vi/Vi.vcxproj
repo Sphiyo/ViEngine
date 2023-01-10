@@ -174,10 +174,10 @@
     <ClInclude Include="src\Vi\Events\KeyEvent.h" />
     <ClInclude Include="src\Vi\Events\MouseEvent.h" />
     <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h" />
-    <ClInclude Include="src\Vi\Miscs\OrthographcCameraController.h" />
+    <ClInclude Include="src\Vi\Miscs\CameraController.h" />
     <ClInclude Include="src\Vi\Renderer\Buffer.h" />
+    <ClInclude Include="src\Vi\Renderer\Camera.h" />
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h" />
-    <ClInclude Include="src\Vi\Renderer\OrthographicCamera.h" />
     <ClInclude Include="src\Vi\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Vi\Renderer\Renderer.h" />
     <ClInclude Include="src\Vi\Renderer\RendererAPI.h" />
@@ -623,9 +623,9 @@
     <ClCompile Include="src\Vi\Core\Time.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Vi\Miscs\OrthographcCameraController.cpp" />
+    <ClCompile Include="src\Vi\Miscs\CameraController.cpp" />
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Vi\Renderer\OrthographicCamera.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Camera.cpp" />
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp" />
