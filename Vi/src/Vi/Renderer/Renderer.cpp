@@ -8,10 +8,10 @@ namespace Vi {
 	Renderer::SceneData* Renderer::m_SceneData = new Renderer::SceneData;
 
 
-	void Renderer::BeginScene2D(OrthographicCamera& camera) {
-
-		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
-	}
+//	void Renderer::BeginScene2D(OrthographicCamera& camera) {
+//
+//		m_SceneData->ViewProjectionMatrix = camera.GetViewProjectionMatrix();
+//	}
 
 
 	void Renderer::BeginScene3D(Camera& camera) {
