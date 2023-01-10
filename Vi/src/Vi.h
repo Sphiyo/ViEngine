@@ -12,7 +12,7 @@
 #include "Vi/Core/Input.h"
 #include "Vi/Core/KeyCodes.h"
 #include "Vi/Core/MouseButtonCodes.h"
-#include "Vi/Miscs/OrthographcCameraController.h"
+#include "Vi/Miscs/CameraController.h"
 
 #include "Vi/ImGui/ImGuiLayer.h"
 
@@ -26,7 +26,7 @@
 #include "Vi/Renderer/Texture.h"
 #include "Vi/Renderer/VertexArray.h"
 
-#include "Vi/Renderer/OrthographicCamera.h"
+#include "Vi/Renderer/Camera.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

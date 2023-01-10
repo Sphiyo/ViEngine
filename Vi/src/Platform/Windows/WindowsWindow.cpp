@@ -53,22 +53,39 @@ namespace Vi {
 			//glfwWindowHint(GLFW_MAXIMIZED, GLFW_TRUE);
 			//glfwWindowHint(GLFW_CENTER_CURSOR , GLFW_TRUE); // Doesn't Work On Windowed Mode
 			//glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE); // GLFW_DONT_CARE For Unlimited
+		//	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 			VI_CORE_ASSERT(success, "Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErroeCallback);
 			s_GLFWInitialized = true;
 		}
 
 		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr/*glfwGetPrimaryMonitor() // ForFullScreen*/, nullptr);
-		
+	//	glfwDefaultWindowHints();
 		m_Context = new OpenGLContext(m_Window);
 		m_Context->Init();
-		
 
+		////////
+		glfwSetWindowPos(m_Window, (int)props.Width / 4, (int)props.Height/4 );
+	//	glfwShowWindow(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
-		
-		//Set GLFW Callbacks
+		{
+			int monitorCount = 0;
+			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
 
+			if (monitorCount == sizeof(monitors) / sizeof(GLFWmonitor**)) {
+				for (int i = 0; i < monitorCount; i++)
+				{
+					m_Data.m_Monitors.push_back(monitors[i]);
+				}
+				VI_CORE_INFO("{} : Monitors Connected", monitorCount);
+			}
+
+			else 
+				VI_CORE_ASSERT("Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
+		}
+
+		//Set GLFW Callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			
 			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
@@ -178,36 +195,54 @@ namespace Vi {
 		if (Input::IsKeyPressed(VI_KEY_ESCAPE)) { Application::Get().CloseWindow(); };
 
 		if (Input::IsKeyPressed(VI_KEY_F11)) {
-			if(glfwGetWindowMonitor(m_Window) == NULL)
-				glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
-			else if(glfwGetWindowMonitor(m_Window) != NULL)
-				glfwSetWindowMonitor(m_Window, NULL, 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
-		};
-		//
+			if(!m_Data.FullScreen) 
+				SetFullScreen(true);
+			else
+				SetFullScreen(false);
+		};		
 		glfwPollEvents();
 		m_Context->SwapBuffers();
-		
-		//myImplementation Closed = glfwWindowShouldClose(m_Window);										 
+											 
 	}
 
-	void WindowsWindow::SetVSync(bool enabled) {
+	bool WindowsWindow::IsFullScreen() const {
 
+		return m_Data.FullScreen;
+	}
+	bool& WindowsWindow::IsFullScreenRef() {
+
+		return m_Data.FullScreen;
+	}
+
+	void WindowsWindow::SetFullScreen(bool enable) {	
+		if (enable)
+			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);		
+		else 
+			glfwSetWindowMonitor(m_Window, NULL, m_Data.Width/4, m_Data.Height /4, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+		m_Data.FullScreen = enable;
+	}
+
+	void WindowsWindow::SetResolution(int width, int height) {
+
+		glfwSetWindowSize(m_Window, width, height);
+		m_Data.Width = width;
+		m_Data.Height = height;
+	}
+
+
+	void WindowsWindow::SetVSync(bool enabled) {
 		if (enabled)
 			glfwSwapInterval(1);
 		else
 			glfwSwapInterval(0);
-
 		m_Data.VSync = enabled;
 	}
 
 	bool WindowsWindow::IsVSync() const {
-
-		return m_Data.VSync;
-	
+		return m_Data.VSync;	
 	}
 
-	void WindowsWindow::ShowCursor(bool show) {
-
+	void WindowsWindow::ShowCursor(bool show) const {
 		if (!show)
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 		else

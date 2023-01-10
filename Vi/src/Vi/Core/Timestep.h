@@ -2,13 +2,13 @@
 
 namespace Vi {
 
+	class Timestep {
 
-	class Timestep
-	{
 	public:
-		Timestep(float time) : m_Time(time)
-		{
+		Timestep(float time) : m_Time(time) {
+
 		}
+		
 		operator float() const { return m_Time; }
 
 		inline float GetSeconds() const { return m_Time; }
@@ -18,8 +18,8 @@ namespace Vi {
 		float m_Time;
 	};
 
-	class Time
-	{
+	class Time {
+
 	public:		
 		static float GetTime();																// temp		
 	};	

@@ -7,7 +7,7 @@ class ExampleLayer : public Vi::Layer {
 
 public:
 	ExampleLayer()
-		: Layer("Example") , m_CameraController(1600.0f/900.0f, true) {
+		: Layer("Example") , m_CameraController(1600.0f/900.0f) {
 
 	
 		// VertexArray 
@@ -158,6 +158,7 @@ public:
 		// bind texture Shader And Set Uniform
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
+		Vi::Application::Get().GetWindow().SetResolution(2560, 1440);
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
@@ -208,7 +209,7 @@ public:
 	
 		
 		Vi::Renderer::EndScene();
-
+		fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
 	}
 
 	virtual void OnImGuiRender() override {
@@ -218,6 +219,9 @@ public:
 		ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
 		ImGui::End();																   // temp
 		
+		
+
+
 		ImGui::Begin("Stats");														   // temp 
 		ImGui::Text("Fps  %.0fFps", 1/ ExampleLayer::deltaTime);
 		ImGui::Text("ts  %.3fms" , ExampleLayer::deltaTime);
@@ -236,8 +240,48 @@ public:
 				window.SetFullScreen(false);
 			}
 		}
+		const char* items[] = { "800x600","1600x900","1920x1080", "2560x1440" };
+		static const char* current_item = NULL;
+		int temporary = -1;
+		if (ImGui::BeginCombo("##Resolution", current_item))
+		{
 			
-		
+			
+			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
+			{
+				bool is_selected = (current_item == items[n]);
+				if (ImGui::Selectable(items[n], is_selected))
+				{
+					current_item = items[n];
+					temporary = n;
+				}
+				if (is_selected)
+				{
+					ImGui::SetItemDefaultFocus();
+					
+					
+				}
+			}
+
+			ImGui::EndCombo();
+			switch (temporary)
+			{
+			case 0:
+				window.SetResolution(800, 600);
+				break;
+			case 1:
+				window.SetResolution(1600, 900);
+				break;
+			case 2:
+				window.SetResolution(1920, 1080);
+				break;
+			case 3:
+				window.SetResolution(2560, 1440);
+				break;
+			default:
+				break;
+			}
+		}
 
 		
 		ImGui::End();

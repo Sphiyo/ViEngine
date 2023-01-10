@@ -14,8 +14,6 @@ namespace Vi {
 				WindowsWindow(const WindowProps& props);
 				virtual ~WindowsWindow();
 
-			//	void window_size_callback(GLFWwindow* window, int width, int height);
-
 				void OnUpdate() override;
 
 				inline unsigned int GetWidth() const override { return m_Data.Width; }
@@ -23,17 +21,17 @@ namespace Vi {
 
 					// Window attributes
 				inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
+
 				void SetVSync(bool enabled) override;
 				bool IsVSync() const override;
 
-				void ShowCursor(bool show) override;
-
-			//	void (*funcs)(GLFWwindow* window, int button, int action, int mods){};
-			//void function(GLFWwindow* window, int button, int action, int mods);
-			//void (*GLFWmousebuttonfun)(GLFWwindow* window, int button, int action, int mods);
-		private:
+				void ShowCursor(bool show) const override;
+				void SetFullScreen(bool enable) override;
+				bool IsFullScreen() const override;
+				bool& IsFullScreenRef() override;
+				void SetResolution(int width, int height) override;
 			
-
+		private:			
 			virtual void Init(const WindowProps& props);
 				virtual void Shutdown();
 		private:
@@ -46,8 +44,10 @@ namespace Vi {
 						std::string Title;
 						unsigned int Width, Height;
 						bool VSync;
-
-						EventCallbackFn EventCallback;
+						bool FullScreen;
+						EventCallbackFn EventCallback;						
+						std::vector<GLFWmonitor*>m_Monitors;						
+						int m_ActiveMonitor;
 				};
 
 				WindowData m_Data;

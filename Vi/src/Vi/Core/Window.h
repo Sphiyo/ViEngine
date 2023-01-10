@@ -35,7 +35,11 @@ namespace Vi {
 		virtual bool IsVSync() const = 0;
 		virtual void* GetNativeWindow() const = 0;
 		static Window* Create(const WindowProps& props = WindowProps());
-		virtual void ShowCursor(bool show) = 0;
+		virtual void ShowCursor(bool show) const = 0;
+		virtual bool IsFullScreen() const = 0;
+		virtual bool& IsFullScreenRef() = 0;
+		virtual void SetFullScreen(bool enable) = 0;
+		virtual void SetResolution(int width, int height) = 0;
 	};
 
 }
