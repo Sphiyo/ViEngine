@@ -9,9 +9,7 @@ public:
 	ExampleLayer()
 		: Layer("Example") , m_CameraController(1600.0f/900.0f, true) {
 
-		LastMouseXPos = Vi::Input::GetMouseX();   // temp
-		LastMouseYPos = Vi::Input::GetMouseY();   // temp
-
+	
 		// VertexArray 
 		m_VertexArray.reset(Vi::VertexArray::Create());
 
@@ -150,11 +148,9 @@ public:
 		// Create And Compile flat Shader 
 		m_FlatColorShader = Vi::Shader::Create("FlatColorShader",flatColorVertexSrc, flatColorFragmentSrc);
 
-
 		// Create And Compile texture Shader 
 		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 		
-
 		//Construct And Buffer Texture To Memory
 		m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
 		m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
@@ -162,72 +158,19 @@ public:
 		// bind texture Shader And Set Uniform
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
-
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
 
 		ExampleLayer::deltaTime = ts;										//temp
-		
-		if (m_MouseMiddleButtonPressed) {
-
-			float XOffset = Vi::Input::GetMouseX() - LastMouseXPos;             // temp
-			float YOffset = Vi::Input::GetMouseY() - LastMouseYPos;				// temp
-			m_CameraPosition.x -= XOffset * 0.2f * ts;								// temp
-			m_CameraPosition.y += YOffset * 0.2f * ts;								// temp
-			LastMouseXPos += XOffset;											// temp
-			LastMouseYPos += YOffset;											// temp
-		}
-
-//		if (m_MouseLeftButtonPressed) {
-//
-//			float XOffset = Vi::Input::GetMouseX() - LastMouseXPos;             // temp
-//			float YOffset = Vi::Input::GetMouseY() - LastMouseYPos;				// temp
-//			VI_INFO( "RotationYaw : {0} ", m_CameraRotation.z);
-//			float newYaw = m_CameraRotation.z - (XOffset * 45.0f * ts);
-//			float newPitch = m_CameraRotation.y - (YOffset * 45.0f * ts);
-//			m_CameraRotation.z = newYaw;								// temp
-//			if (newPitch > 89.0f) { newPitch = 89.0f; }
-//			else if (-89.0f > newPitch) { newPitch = -89.0f; }
-//			m_CameraRotation.y = newPitch;
-//			LastMouseXPos += XOffset;											// temp
-//			LastMouseYPos += YOffset;											// temp
-//		}		
-		
 
 		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
-	
-////////////////////////////// PerspectiveController ////////////////////////////////////
-//		if (Vi::Input::IsKeyPressed(VI_KEY_W) || Vi::Input::IsKeyPressed(VI_KEY_UP)) {
-//			m_CameraPosition.z -= m_CameraMoveSpeed * ts; 
-//		}           // temp 
-//		
-//		if (Vi::Input::IsKeyPressed(VI_KEY_S) || Vi::Input::IsKeyPressed(VI_KEY_DOWN)) {
-//			m_CameraPosition.z += m_CameraMoveSpeed * ts;
-//		}           // temp 
-//		
-//		if (Vi::Input::IsKeyPressed(VI_KEY_A) || Vi::Input::IsKeyPressed(VI_KEY_LEFT)) {
-//			m_CameraPosition.x -= m_CameraMoveSpeed * ts;
-//		}           // temp 		
-//		
-//		if (Vi::Input::IsKeyPressed(VI_KEY_D) || Vi::Input::IsKeyPressed(VI_KEY_RIGHT)) {
-//			m_CameraPosition.x += m_CameraMoveSpeed * ts;
-//		}           // temp 
-//		
-//		if (Vi::Input::IsKeyPressed(VI_KEY_Q)) {
-//			m_CameraPosition.y -= m_CameraMoveSpeed * ts;
-//		}
-//		
-//		if (Vi::Input::IsKeyPressed(VI_KEY_E)) {
-//			m_CameraPosition.y += m_CameraMoveSpeed * ts;
-//		}
-///////////////////////////////////////////////////////////////////////////////////////////
-		
-		
-		Vi::Renderer::BeginScene(m_CameraController.GetCamera());
+			
+		Vi::Renderer::BeginScene3D(m_CameraController.GetCamera3D());
 		m_CameraController.OnUpdate(ts);
+
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
 		//Vi::MaterialInstanceRef mi = new Vi::MaterialInstance(material);						// todo 
 		//
@@ -250,8 +193,8 @@ public:
 			}
 		}
 	 
-	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
-	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);			// todo 
+	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);									// todo 
+	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);												// todo  
 
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 	
@@ -270,6 +213,7 @@ public:
 
 	virtual void OnImGuiRender() override {
 
+		auto& window = Vi::Application::Get().GetWindow();
 		ImGui::Begin("Settings");														 // temp
 		ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
 		ImGui::End();																   // temp
@@ -281,7 +225,21 @@ public:
 
 		ImGui::Begin("GraphicsSetting");		
 		ImGui::Checkbox("Vsync", &vSync);
-		Vi::Application::Get().GetWindow().SetVSync(vSync);
+		window.SetVSync(vSync);
+		bool fullscreen = window.IsFullScreen();
+		ImGui::Checkbox("FullScreen", &fullScreen);
+		if (fullScreen != fullscreen) {
+			if (fullScreen) {
+				window.SetFullScreen(true);
+			}
+			else {
+				window.SetFullScreen(false);
+			}
+		}
+			
+		
+
+		
 		ImGui::End();
 	}
 
@@ -291,38 +249,8 @@ public:
 
 		if (e.GetEventType() == Vi::EventType::WindowResize)
 		{
-			auto resizeEvent = (Vi::WindowResizeEvent&)e;
-			
-
-			float zoom = resizeEvent.GetHeight() / 900.0f;
-			m_CameraController.SetZoomLevel(zoom);
+			auto resizeEvent = (Vi::WindowResizeEvent&)e;			
 		}
-
-		//if (e.GetEventType() == Vi::EventType::MouseButtonPressed) {
-		//	LastMouseXPos = Vi::Input::GetMousePosition().first;
-		//	LastMouseYPos = Vi::Input::GetMousePosition().second;
-		//	Vi::MouseButtonPressedEvent& e = (Vi::MouseButtonPressedEvent&)e;
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_1) { m_MouseRightButtonPressed = true; }
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_2) { m_MouseLeftButtonPressed = true; }
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE){ m_MouseMiddleButtonPressed = true; }
-		//}																								 // temp
-		//
-		//if (e.GetEventType() == Vi::EventType::MouseButtonReleased) {
-		//	Vi::MouseButtonReleasedEvent& e = (Vi::MouseButtonReleasedEvent&)e;
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_1) { m_MouseRightButtonPressed = false; }
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_2) { m_MouseLeftButtonPressed = false; }
-		//	if (e.GetMouseButton() == VI_MOUSE_BUTTON_3) { m_MouseMiddleButtonPressed = false; }																							 // temp
-		//}
-		//if (e.GetEventType() == Vi::EventType::MouseScrolled)									 // temp
-		//{
-		//	Vi::MouseScrolledEvent& e = (Vi::MouseScrolledEvent&)e;
-		//	m_CameraPosition.z -= e.GetYOffset();
-		////	m_Camera.SetPosition({ m_Camera.GetPosition().x, m_Camera.GetPosition().y, m_Camera.GetPosition().y + 10000.0f + e.GetYOffset() });
-		////	m_Camera.SetPosition({ m_Camera.GetPosition().x, m_Camera.GetPosition().y, m_Camera.GetPosition().y + 10000.0f + e.GetYOffset()});
-		//	VI_WARN("scrollmouseevent {}" ,e.GetYOffset());
-		//	
-		//}																								 // temp
-
 	}
 	
 
@@ -338,7 +266,7 @@ private:
 
 	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
 
-	Vi::OrthographicCameraController m_CameraController;
+	Vi::CameraController m_CameraController;
 
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 
@@ -358,6 +286,7 @@ private:
 
 	static float deltaTime;				// temp
 	bool vSync;                          // temp
+	bool fullScreen;                          // temp
 };
 float ExampleLayer::deltaTime = 0.016f;
 
