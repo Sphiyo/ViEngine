@@ -13,7 +13,7 @@ namespace Vi {
 #else 
 	float Time::GetTime()
 	{
-		VI_CORE_ASSERT(0, " GetTime Only Defined For Windows, You Can Define It In Your Platform !");
+		VI_CORE_ASSERT(0, "(Time) GetTime Only Defined For Windows, You Can Define It In Your Platform !");
 		return -1;
 	}
 #endif

@@ -34,7 +34,7 @@ namespace Vi {
 			case Vi::ShaderDataType::Bool:   return GL_BOOL;
 
 		}
-		VI_CORE_ASSERT(false, " Unknown ShaderTypeData! ");
+		VI_CORE_ASSERT(false, "(OpenGLVertexArray) Unknown ShaderTypeData! ");
 		return 0;
 	}
 
@@ -66,7 +66,7 @@ namespace Vi {
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
-		VI_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "Vertex Buffer has no layout!");
+		VI_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "(OpenGLVertexArray) Vertex Buffer has no layout!");
 		
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();

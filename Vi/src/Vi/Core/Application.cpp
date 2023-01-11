@@ -18,7 +18,7 @@ namespace Vi {
 
 	Application::Application()	{
 
-		VI_CORE_ASSERT(!s_Instance, "Application Already Exists!");
+		VI_CORE_ASSERT(!s_Instance, "(Application) Application Already Exists!");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
 		m_Window->SetEventCallback(VI_BINDEVENT(Application::OnEvent));

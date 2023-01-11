@@ -15,7 +15,7 @@ namespace Vi {
 		int width, height, channels;
 		stbi_set_flip_vertically_on_load(1);
 		unsigned char* data = stbi_load(path.c_str(), &width, &height, &channels, 0);
-		VI_CORE_ASSERT(data, "Failed To Upload Image! ");
+		VI_CORE_ASSERT(data, "(OpenGLTexture) Failed To Upload Image! ");
 		m_Width = width;
 		m_Height = height;
 		glGenTextures(1, &m_RendererID);
@@ -32,7 +32,7 @@ namespace Vi {
 			internalFormat = GL_RGBA8;
 			format = GL_RGBA;
 		}
-		VI_CORE_ASSERT(internalFormat & format, "Texture Format Not Supported !");
+		VI_CORE_ASSERT(internalFormat & format, "(OpenGLTexture) Texture Format Not Supported !");
 		
 	//	glTextureStorage2D(m_RendererID, 1, internalFormat, m_Width, m_Height);
 		glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);

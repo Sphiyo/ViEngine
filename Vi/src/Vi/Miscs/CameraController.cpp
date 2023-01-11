@@ -120,7 +120,6 @@ namespace Vi {
 			
 			m_Camera3d.AddFOV(fovOffset);
 		}
-		VI_CORE_INFO("Fov : {}", m_Camera3d.GetFOV());
 
 		return false;
 	}

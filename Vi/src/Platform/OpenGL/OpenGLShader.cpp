@@ -11,7 +11,7 @@ namespace Vi {
 	
 		if (type == "vertex") { return GL_VERTEX_SHADER; }
 		if (type == "fragment" || type == "pixel") { return GL_FRAGMENT_SHADER; }
-		VI_CORE_ASSERT(false, "Unknown Shader Type!");
+		VI_CORE_ASSERT(false, "(OpenGLShader) Unknown Shader Type!");
 		return 0;
 	}
 
@@ -57,7 +57,7 @@ namespace Vi {
 
 		}
 		else {
-			VI_CORE_ERROR("Could Not Load Shader From : '{0}'", filepath);
+			VI_CORE_ERROR("(OpenGLShader) Could Not Load Shader From : '{0}'", filepath);
 		}
 		return result;
 	}
@@ -70,10 +70,10 @@ namespace Vi {
 		size_t pos = source.find(typeToken, 0);
 		while (pos != std::string::npos) {
 			size_t eol = source.find_first_of("\r\n", pos);
-			VI_CORE_ASSERT(eol != std::string::npos, "Syntax error");
+			VI_CORE_ASSERT(eol != std::string::npos, "(OpenGLShader) Syntax error");
 			size_t begin = pos + typeTokenLength + 1;
 			std::string type = source.substr(begin, eol - begin);
-			VI_CORE_ASSERT(ShaderTypeFromString(type), "Invalid shader type specified");
+			VI_CORE_ASSERT(ShaderTypeFromString(type), "(OpenGLShader) Invalid shader type specified");
 			
 			size_t nextLinePos = source.find_first_not_of("\r\n", eol);
 			pos = source.find(typeToken, nextLinePos);
@@ -86,7 +86,7 @@ namespace Vi {
 	void OpenGLShader::Compile(const std::unordered_map<GLenum, std::string>& shaderSources) {
 
 		GLuint program = glCreateProgram();
-		VI_CORE_ASSERT(shaderSources.size() <= 2, "");
+		VI_CORE_ASSERT(shaderSources.size() <= 2, "(OpenGLShader) shaderSources Not Velid!");
 		std::array<GLenum, 2> glShaderIds;
 		int glShaderIndex = 0;
 		for (auto& kv : shaderSources) {
@@ -104,10 +104,10 @@ namespace Vi {
 				std::vector<GLchar> infoLog(maxLength);
 				glGetShaderInfoLog(shader, maxLength, &maxLength, &infoLog[0]);
 				glDeleteShader(shader);
-				VI_CORE_ERROR("{0}", infoLog.data());
+				VI_CORE_ERROR("(OpenGLShader) {0}", infoLog.data());
 				std::string tempStr;
-				if (type == GL_VERTEX_SHADER) { tempStr = "VertexShader Compilation Failure!"; }
-				else if (type == GL_FRAGMENT_SHADER) { tempStr = "FragmentShader(PixelShader) Compilation Failure!"; }
+				if (type == GL_VERTEX_SHADER) { tempStr = "(OpenGLShader) VertexShader Compilation Failure!"; }
+				else if (type == GL_FRAGMENT_SHADER) { tempStr = "(OpenGLShader) FragmentShader(PixelShader) Compilation Failure!"; }
 				VI_CORE_ASSERT(false, tempStr);
 				break;
 			}
@@ -132,8 +132,8 @@ namespace Vi {
 			for(auto id : glShaderIds) {
 				glDeleteShader(id);
 			}
-			VI_CORE_ERROR("{0}", infoLog.data());
-			VI_CORE_ASSERT(false, "Shader Link Failure!");
+			VI_CORE_ERROR("(OpenGLShader) {0}", infoLog.data());
+			VI_CORE_ASSERT(false, "(OpenGLShader) Shader Link Failure!");
 			return;
 		}
 

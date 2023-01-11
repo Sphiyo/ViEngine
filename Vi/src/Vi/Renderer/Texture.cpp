@@ -11,22 +11,22 @@ namespace Vi {
 		switch (Renderer::GetAPI()) {
 
 			case RendererAPI::API::None:
-				VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+				VI_CORE_ASSERT(false, "(Texture) NoRendererAPI is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
 				return std::make_shared<OpenGLTexture2D>(path, slot);
 
 			case RendererAPI::API::Vulcan:
-				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
+				VI_CORE_ASSERT(false, "(Texture) Vulcan is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::D3D12:
-				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+				VI_CORE_ASSERT(false, "(Texture) DX3D12 is currently not supported!");
 				return nullptr;
 		}
 
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(Texture) Unknown Renderer API Selected !");
 		return nullptr;
 		return Ref<Texture2D>();
 	}

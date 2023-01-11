@@ -13,7 +13,7 @@ namespace Vi {
 
 		case RendererAPI::API::None:
 
-			VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+			VI_CORE_ASSERT(false, "(Shader) NoRendererAPI is currently not supported!");
 			return nullptr;
 
 		case RendererAPI::API::OpenGL:
@@ -21,15 +21,15 @@ namespace Vi {
 			return std::make_shared<OpenGLShader>(filepath);
 
 		case RendererAPI::API::Vulcan:
-			VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
+			VI_CORE_ASSERT(false, "(Shader) Vulcan is currently not supported!");
 			return nullptr;
 
 		case RendererAPI::API::D3D12:
-			VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+			VI_CORE_ASSERT(false, "(Shader) DX3D12 is currently not supported!");
 			return nullptr;
 		}
 
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(Shader) Unknown Renderer API Selected !");
 		return nullptr;
 	}
 
@@ -39,7 +39,7 @@ namespace Vi {
 
 			case RendererAPI::API::None:
 
-				VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+				VI_CORE_ASSERT(false, "(Shader) NoRendererAPI is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
@@ -47,21 +47,21 @@ namespace Vi {
 				return std::make_shared<OpenGLShader>(name ,vertexSrc, fragmentSrc);
 
 			case RendererAPI::API::Vulcan:
-				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
+				VI_CORE_ASSERT(false, "(Shader) Vulcan is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::D3D12:
-				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+				VI_CORE_ASSERT(false, "(Shader) DX3D12 is currently not supported!");
 				return nullptr;
 		}
 
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(Shader) Unknown Renderer API Selected !");
 		return nullptr;
 	}
 
 	void ShaderLibrary::Add(const std::string& name, const Ref<Shader>& shader)
 	{
-		VI_CORE_ASSERT(!Exists(name), "This Shader Exists Already !");
+		VI_CORE_ASSERT(!Exists(name), "(Shader) This Shader Exists Already !");
 		m_Shaders[name] = shader;
 	}
 
@@ -85,7 +85,7 @@ namespace Vi {
 	}
 	Ref<Shader> ShaderLibrary::Get(const std::string& name)
 	{
-		VI_CORE_ASSERT(Exists(name), "Shader Not Found !");
+		VI_CORE_ASSERT(Exists(name), "(Shader) Shader Not Found !");
 		return m_Shaders[name];
 	}
 	bool ShaderLibrary::Exists(const std::string& name) const

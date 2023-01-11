@@ -28,7 +28,7 @@ namespace Vi {
 
 			case RendererAPI::API::None :
 
-				VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+				VI_CORE_ASSERT(false, "(Buffer) NoRendererAPI is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL :
@@ -37,19 +37,19 @@ namespace Vi {
 
 			case RendererAPI::API::Vulcan :
 
-				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
+				VI_CORE_ASSERT(false, "(Buffer) Vulcan is currently not supported!");
 		//		return new VulcanVertexBuffer(vertices, size);
 				return nullptr;
 
 			case RendererAPI::API::D3D12 :
 
-				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+				VI_CORE_ASSERT(false, "(Buffer) DX3D12 is currently not supported!");
 		//		return new D3D12VertexBuffer(vertices, size);
 				return nullptr;
 
 		}
 
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(Buffer) Unknown Renderer API Selected !");
 		return nullptr;
 	}
 
@@ -64,7 +64,7 @@ namespace Vi {
 
 		case RendererAPI::API::None :
 
-			VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+			VI_CORE_ASSERT(false, "(Buffer) NoRendererAPI is currently not supported!");
 			return nullptr;
 
 		case RendererAPI::API::OpenGL :
@@ -73,17 +73,17 @@ namespace Vi {
 
 		case RendererAPI::API::Vulcan :
 
-			VI_CORE_ASSERT(false, "Vulcan is currently not supported!");
+			VI_CORE_ASSERT(false, "(Buffer) Vulcan is currently not supported!");
 			return new VulcanIndexBuffer(indices, count);
 
 		case RendererAPI::API::D3D12 :
 
-			VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+			VI_CORE_ASSERT(false, "(Buffer) DX3D12 is currently not supported!");
 			return new D3D12IndexBuffer(indices, count);
 
 		}
 
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(Buffer) Unknown Renderer API Selected !");
 		return nullptr;
 	}
 

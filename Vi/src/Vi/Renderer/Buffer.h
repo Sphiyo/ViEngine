@@ -44,7 +44,7 @@ namespace Vi {
 					
 		}
 
-		VI_CORE_ASSERT(false, " Unknown ShaderTypeData! ");
+		VI_CORE_ASSERT(false, "(Buffer) Unknown ShaderTypeData! ");
 		return 0;
 	}
 
@@ -96,7 +96,7 @@ namespace Vi {
 			
 			}
 
-			VI_CORE_ASSERT(false, " Unknown ShaderTypeData! ");
+			VI_CORE_ASSERT(false, "(Buffer) Unknown ShaderTypeData! ");
 			return 0;
 		}
 

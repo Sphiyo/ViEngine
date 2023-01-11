@@ -19,7 +19,7 @@ namespace Vi {
 
 	static void GLFWErroeCallback(int error_code, const char* description) {
 
-		VI_CORE_ERROR("GLFW Error ({0}):({1})", error_code, description);
+		VI_CORE_ERROR("(WindowsWindow) GLFW Error ({0}):({1})", error_code, description);
 	}
 
 	Window* Window::Create(const WindowProps& props) {
@@ -42,7 +42,7 @@ namespace Vi {
 		m_Data.Width = props.Width;
 		m_Data.Height = props.Height;
 
-		VI_CORE_INFO("Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
+		VI_CORE_INFO("(WindowsWindow) Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
 		if (!s_GLFWInitialized) {
 			//todo glfwterminate on system shutdown
@@ -54,7 +54,7 @@ namespace Vi {
 			//glfwWindowHint(GLFW_CENTER_CURSOR , GLFW_TRUE); // Doesn't Work On Windowed Mode
 			//glfwWindowHint(GLFW_REFRESH_RATE, GLFW_DONT_CARE); // GLFW_DONT_CARE For Unlimited
 		//	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
-			VI_CORE_ASSERT(success, "Could not initialize GLFW!");
+			VI_CORE_ASSERT(success, "(WindowsWindow) Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErroeCallback);
 			s_GLFWInitialized = true;
 		}
@@ -78,11 +78,11 @@ namespace Vi {
 				{
 					m_Data.m_Monitors.push_back(monitors[i]);
 				}
-				VI_CORE_INFO("{} : Monitors Connected", monitorCount);
+				VI_CORE_INFO("(WindowsWindow) {} : Monitors Connected", monitorCount);
 			}
 
 			else 
-				VI_CORE_ASSERT(false, "Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
+				VI_CORE_ASSERT(false, "(WindowsWindow) Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
 		}
 		SetCursor(CursorState::DISABLED);
 		//Set GLFW Callbacks
@@ -210,7 +210,7 @@ namespace Vi {
 				SetCursor(CursorState::UNAVAILABLE);
 				break;
 			default:
-				VI_CORE_ASSERT(false, " Cursor State Unknown! ");
+				VI_CORE_ASSERT(false, "(WindowsWindow) Cursor State Unknown! ");
 				break;
 			}
 			

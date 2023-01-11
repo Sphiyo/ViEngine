@@ -10,21 +10,21 @@ namespace Vi {
 		switch (Renderer::GetAPI())	{
 
 			case RendererAPI::API::None:
-				VI_CORE_ASSERT(false, "NoRendererAPI is currently not supported!");
+				VI_CORE_ASSERT(false, "(VertexArray) NoRendererAPI is currently not supported!");
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
 				return new OpenGLVertexArray();
 
 			case RendererAPI::API::Vulcan:
-				VI_CORE_ASSERT(false, "Vulcan is currently not supported!");			
+				VI_CORE_ASSERT(false, "(VertexArray) Vulcan is currently not supported!");			
 				return nullptr;
 
 			case RendererAPI::API::D3D12:
-				VI_CORE_ASSERT(false, "DX3D12 is currently not supported!");
+				VI_CORE_ASSERT(false, "(VertexArray) DX3D12 is currently not supported!");
 				return nullptr;
 		}
-		VI_CORE_ASSERT(false, "Unknown Renderer API Selected !");
+		VI_CORE_ASSERT(false, "(VertexArray) Unknown Renderer API Selected !");
 		return nullptr;
 	}
 
