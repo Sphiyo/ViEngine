@@ -82,7 +82,7 @@ namespace Vi {
 			}
 
 			else 
-				VI_CORE_ASSERT(false,"Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
+				VI_CORE_ASSERT("Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
 		}
 
 		//Set GLFW Callbacks
