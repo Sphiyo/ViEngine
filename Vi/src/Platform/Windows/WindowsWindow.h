@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vi/Core/Window.h"
-#include "Vi/Renderer/GraphicsContext.h"
+
 
 #include <GLFW/glfw3.h>
 
@@ -18,6 +18,8 @@ namespace Vi {
 
 				inline unsigned int GetWidth() const override { return m_Data.Width; }
 				inline unsigned int GetHeight() const override { return m_Data.Height; }
+
+				GraphicsContext* GetContext() const override { return m_Context; }
 
 					// Window attributes
 				inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }

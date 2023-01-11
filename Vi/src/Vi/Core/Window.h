@@ -3,6 +3,7 @@
 #include "Vipch.h"
 #include "Core.h"
 #include "Vi/Events/Event.h"
+#include "Vi/Renderer/GraphicsContext.h"
 
 namespace Vi {
 
@@ -29,6 +30,9 @@ namespace Vi {
 		virtual void OnUpdate() = 0;
 		virtual uint32_t GetWidth() const = 0;
 		virtual uint32_t GetHeight() const = 0;
+
+		virtual GraphicsContext* GetContext() const = 0;
+
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
