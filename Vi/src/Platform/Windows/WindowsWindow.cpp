@@ -73,7 +73,7 @@ namespace Vi {
 			int monitorCount = 0;
 			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
 
-			if (monitorCount == sizeof(monitors) / sizeof(GLFWmonitor**)) {
+			if (monitorCount == (sizeof(monitors) / sizeof(GLFWmonitor**))) {
 				for (int i = 0; i < monitorCount; i++)
 				{
 					m_Data.m_Monitors.push_back(monitors[i]);

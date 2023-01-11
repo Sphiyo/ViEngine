@@ -62,9 +62,8 @@ namespace Vi {
 
 		while (m_Running) {
 
-			float time = Time::GetTime();
-			Timestep timestep = time - m_LastFrameTime;
-			m_LastFrameTime = time;
+			Timestep timestep = Time::GetTime() - m_LastFrameTime;
+			m_LastFrameTime = Time::GetTime();
 			if(!m_Minimized) {
 				for (Layer* layer : m_LayerStack) { layer->OnUpdate(timestep); }
 			}
