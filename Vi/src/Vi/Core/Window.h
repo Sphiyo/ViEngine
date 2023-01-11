@@ -7,6 +7,11 @@
 
 namespace Vi {
 
+	enum class CursorState {
+
+		NORMAL = 0, HIDDEN, DISABLED, UNAVAILABLE
+	};
+
 	struct WindowProps {
 
 		std::string Title;
@@ -23,7 +28,7 @@ namespace Vi {
 
 	// Interface representing a desktop system based Window
 	class VI_API Window {
-
+		
 	public:
 		using EventCallbackFn = std::function<void(Event&)>;
 		virtual ~Window() = default;
@@ -39,7 +44,10 @@ namespace Vi {
 		virtual bool IsVSync() const = 0;
 		virtual void* GetNativeWindow() const = 0;
 		static Window* Create(const WindowProps& props = WindowProps());
-		virtual void ShowCursor(bool show) const = 0;
+
+		virtual const CursorState& GetCursor() const = 0;
+		virtual void SetCursor(CursorState cursorState) = 0;
+
 		virtual bool IsFullScreen() const = 0;
 		virtual bool& IsFullScreenRef() = 0;
 		virtual void SetFullScreen(bool enable) = 0;

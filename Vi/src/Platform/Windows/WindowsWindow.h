@@ -27,7 +27,9 @@ namespace Vi {
 				void SetVSync(bool enabled) override;
 				bool IsVSync() const override;
 
-				void ShowCursor(bool show) const override;
+				const CursorState& GetCursor() const override { return m_CursorState; }
+				void SetCursor(CursorState cursorState) override;
+
 				void SetFullScreen(bool enable) override;
 				bool IsFullScreen() const override;
 				bool& IsFullScreenRef() override;
@@ -57,6 +59,7 @@ namespace Vi {
 				// Inherited via Window
 				inline virtual void* GetNativeWindow() const override;
 
+				CursorState m_CursorState;
 				
 		};
 
