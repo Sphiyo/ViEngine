@@ -32,7 +32,7 @@ namespace Vi {
 		float m_AspectRatio;
 		glm::vec3 m_CameraPosition = { 0.0f,0.0f,0.0f };
 		float m_CameraRotation = 0.0f;
-		float m_CameraTranslationSpeed = 2.0f, m_CameraRotationSpeed = 90.0f;
+		float m_CameraTranslationSpeed = 5.0f, m_CameraRotationSpeed = 45.0f, m_MouseXSensitivity = 1.0f, m_MouseYSensitivity = 1.0f;
 
 		// temp 
 		Camera m_Camera3d;

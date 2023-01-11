@@ -8,20 +8,21 @@
 namespace Vi {
 
 	
-	CameraController::CameraController(float aspectRatio) : m_AspectRatio(aspectRatio), m_Camera3d() {
-
+	CameraController::CameraController(float aspectRatio) : m_AspectRatio(aspectRatio), m_Camera3d(glm::vec3(-3.0f,1.0f,15.0f), glm::vec3(15.0f, 70.0f, 0.0f)) {
+		
 	}
 
 	void CameraController::OnUpdate(Timestep ts) {
 
-		glm::vec3 locOffset(0.0f);
+		glm::vec3 locationOffset(0.0f);
+	//	glm::vec3 rotationOffset(0.0f);
 
 		if (m_MouseMiddleButtonPressed) {
 
 			float XOffset = Vi::Input::GetMouseX() - LastMiddleMouseXPos;
 			float YOffset = Vi::Input::GetMouseY() - LastMiddleMouseYPos;
 
-			locOffset += glm::vec3(0.0f, XOffset, -YOffset);
+			locationOffset += glm::vec3(0.0f, XOffset * m_MouseXSensitivity * m_CameraTranslationSpeed, -YOffset *  m_MouseYSensitivity * m_CameraTranslationSpeed);
 
 			LastMiddleMouseXPos += XOffset;
 			LastMiddleMouseYPos += YOffset;
@@ -32,8 +33,9 @@ namespace Vi {
 			float XOffset = Vi::Input::GetMouseX() - LastRightMouseXPos;
 			float YOffset = Vi::Input::GetMouseY() - LastRightMouseYPos;
 
-			m_Camera3d.AddLocalRotation(ts * m_CameraRotationSpeed, XOffset, YOffset);
-			
+			m_Camera3d.AddLocalRotation(ts, XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, YOffset * m_MouseYSensitivity * m_CameraRotationSpeed);
+	//		rotationOffset += glm::vec3(XOffset * m_MouseXSensitivity, YOffset * m_MouseYSensitivity, 0.0f);
+
 			LastRightMouseXPos += XOffset;
 			LastRightMouseYPos += YOffset;
 		}
@@ -43,38 +45,38 @@ namespace Vi {
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
 			float YOffset = Vi::Input::GetMouseY() - LastLeftMouseYPos;
 
-	//		locOffset += glm::vec3(-YOffset, 0.0f, 0.0f);
-			m_Camera3d.AddForwardWorldOffset(ts * m_CameraTranslationSpeed, glm::vec3(-YOffset, 0.0f, 0.0f));
-			m_Camera3d.AddLocalRotation(ts * m_CameraRotationSpeed, XOffset, 0.0f);
+	//		locationOffset += glm::vec3(-YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f);
+			m_Camera3d.AddForwardWorldOffset(ts, glm::vec3(-YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f));
+			m_Camera3d.AddLocalRotation(ts , XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f);
 
 			LastLeftMouseXPos += XOffset;
 			LastLeftMouseYPos += YOffset;
 		}
 
 		if (Input::IsKeyPressed(VI_KEY_W) || Input::IsKeyPressed(VI_KEY_UP)) {
-			locOffset += glm::vec3(1.0f, 0.0f, 0.0f);
+			locationOffset += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}          
 
 		if (Input::IsKeyPressed(VI_KEY_S) || Input::IsKeyPressed(VI_KEY_DOWN)) {
-			locOffset += glm::vec3(-1.0f, 0.0f, 0.0f);
+			locationOffset += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}           
 
 		if (Input::IsKeyPressed(VI_KEY_D) || Input::IsKeyPressed(VI_KEY_RIGHT)) {
-			locOffset += glm::vec3(0.0f, 1.0f, 0.0f);
+			locationOffset += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}          
 
 		if (Input::IsKeyPressed(VI_KEY_A) || Input::IsKeyPressed(VI_KEY_LEFT)) {
-			locOffset += glm::vec3(0.0f, -1.0f, 0.0f);
+			locationOffset += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}          	
 				
 		if (Input::IsKeyPressed(VI_KEY_E)) {
-			locOffset += glm::vec3(0.0f, 0.0f, 1.0f);
+			locationOffset += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}
 		if (Input::IsKeyPressed(VI_KEY_Q)) {
-			locOffset += glm::vec3(0.0f, 0.0f, -1.0f);
+			locationOffset += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed);
 		}
 
-		m_Camera3d.AddLocalOffset(ts * m_CameraTranslationSpeed, locOffset);
+		m_Camera3d.AddLocalOffset(ts , locationOffset);
 	//	m_Camera.SetWorldRotation(m_CameraRotation);
 
 		

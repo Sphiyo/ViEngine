@@ -5,26 +5,26 @@
 
 namespace Vi {
 
-	Camera::Camera(const glm::vec3& position, const glm::vec3& direction, const glm::vec3& worldUpVector, float fovy) {
+	Camera::Camera(const glm::vec3& location, const glm::vec3& rotation) {
 		
 		m_ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.7778f, 0.01f, 4000.f);
 		m_ViewMatrix = glm::mat4(1.0f);
 
 		m_WorldForwardVector = glm::vec3(0.0f, 0.0f, 1.0f);
 		m_WorldRightVector = glm::vec3(1.0f, 0.0f, 0.0f);
-		m_WorldUpVector = worldUpVector;
-		m_WorldLocation = position;
+		m_WorldUpVector = glm::vec3(0.0f, 1.0f, 0.0f);
+		m_WorldLocation = location;
 		m_RightVector = glm::vec3(0.0f);
-		m_UpVector = worldUpVector;
+		m_UpVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		//	m_ProjectionMatrix = glm::ortho(left, right, bottom, top, -1.0f, 1.0f);
 		//	m_ViewMatrix = glm::mat4(1.0f);
 		//	m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
-		m_WorldRotation.x = 0.0f;
-		m_WorldRotation.y = -90.0f;
-		m_WorldRotation.z = 0.0f;
+		m_WorldRotation.x = rotation.x;
+		m_WorldRotation.y = rotation.y - 90.0f;
+		m_WorldRotation.z = rotation.z;
 
-		m_FOV = fovy;
+		m_FOV = 90.0f;
 		CheckFOV();
 
 		RecalculateViewMatrix();
@@ -67,14 +67,15 @@ namespace Vi {
 
 	void Camera::SetWorldRotation(float pitch, float yaw, float roll) {
 
-		m_WorldRotation = { pitch,yaw, roll }; RecalculateViewMatrix();
+		m_WorldRotation = { pitch,yaw - 90.0f, roll }; RecalculateViewMatrix();
 	}
 
-	void Camera::AddLocalRotation(const float& ts, const float& offsetYaw, const float& offsetPitch) {
+	void Camera::AddLocalRotation(const float& ts, const float& offsetYaw, const float& offsetPitch, const float& offsetRoll) {
 
-		m_WorldRotation = { m_WorldRotation.x - offsetPitch * ts, m_WorldRotation.y + offsetYaw * ts,0.0f };
+		m_WorldRotation = { m_WorldRotation.x - offsetPitch * ts, m_WorldRotation.y + offsetYaw * ts, m_WorldRotation.z + offsetRoll * ts};
 		m_WorldRotation.x = glm::clamp<float>(m_WorldRotation.x, -89.0f, 89.0f);
 		m_WorldRotation.y = glm::clamp<float>(m_WorldRotation.y, -360.0f, 360.0f);
+		m_WorldRotation.z = glm::clamp<float>(m_WorldRotation.y, -360.0f, 360.0f);
 		RecalculateViewMatrix();
 	}
 

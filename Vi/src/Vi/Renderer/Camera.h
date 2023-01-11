@@ -10,10 +10,7 @@ namespace Vi {
 	class Camera
 	{
 	public:
-		Camera(const glm::vec3& position = glm::vec3(0.0f, 0.0f, 1.0f),
-			const glm::vec3& direction = glm::vec3(0.0f, 0.0f, 1.0f),
-			const glm::vec3& worldUpVector = glm::vec3(0.0f, 1.0f, 0.0f),
-			float fovy = 90.0f);
+		Camera(const glm::vec3& location = glm::vec3(0.0f, 0.0f, 0.0f), const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f));
 	
 		~Camera() {}
 		
@@ -32,7 +29,7 @@ namespace Vi {
 
 		void SetWorldRotation(float pitch, float yaw, float roll);
 
-		void AddLocalRotation(const float& ts, const float& offsetYaw, const float& offsetPitch);
+		void AddLocalRotation(const float& ts = 0.0f, const float& offsetYaw = 0.0f, const float& offsetPitch = 0.0f, const float& offsetRoll = 0.0f);
 		
 		const glm::vec3& GetForwardVector() const;
 
