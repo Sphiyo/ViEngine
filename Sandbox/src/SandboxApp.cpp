@@ -2,7 +2,13 @@
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
+
+#include <stdlib.h>					// temp 
+#include <time.h>					// temp 
+
 //		m_Camera(90.0f, 800.0f / 600.0f, 0.1f, 4000.0f)
+
+
 class ExampleLayer : public Vi::Layer {
 
 public:
@@ -158,7 +164,7 @@ public:
 		// bind texture Shader And Set Uniform
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
-		Vi::Application::Get().GetWindow().SetResolution(2560, 1440);
+		Vi::Application::Get().GetWindow().SetResolution(1600, 900);
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
@@ -183,20 +189,21 @@ public:
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
 				
-		static glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.1f));
-		for (int y = 0; y < 25; y++) {
+		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
 				
-				glm::vec3 pos(x * 0.211f, 0.0f, y * 0.211f);
-				glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				m_Texture->Bind();
+				const float random = 1.0f + (x*y / 5.0f);
+				const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.9f, random,0.9f));
+
+				const glm::vec3 pos(x * 0.5f * random, random /2.0f, y * 0.5f* random);
+				const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+			//	m_Texture->Bind();
 				Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
 			}
 		}
 	 
 	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);									// todo 
 	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);												// todo  
-
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 	
 		// Draw Cube With Texture 
@@ -207,6 +214,18 @@ public:
 		m_TransparentTexture->Bind();
 		Vi::Renderer::Submit(textureShader, m_SquareVA);
 	
+		{
+			const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1000.0f, 0.0f, 1000.0f));
+			
+			const glm::vec3 pos(15.f, 0.0f, 15.f);
+
+			const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+
+			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
+			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColor);
+			Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
+		}
+		
 		
 		Vi::Renderer::EndScene();
 		fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
@@ -217,6 +236,7 @@ public:
 		auto& window = Vi::Application::Get().GetWindow();
 		ImGui::Begin("Settings");														 // temp
 		ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
+		ImGui::ColorEdit4("GroundShader", (float*)&m_GroundColor);
 		ImGui::End();																   // temp
 		
 		
@@ -293,7 +313,7 @@ public:
 
 		if (e.GetEventType() == Vi::EventType::WindowResize)
 		{
-			auto resizeEvent = (Vi::WindowResizeEvent&)e;			
+			Vi::WindowResizeEvent resizeEvent = (Vi::WindowResizeEvent&)e;
 		}
 	}
 	
@@ -315,8 +335,8 @@ private:
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 
 
-	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
-//	glm::vec4 secondColor = glm::vec4(0.2f, 0.3f, 0.8f, 1.0f);
+	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.2f, 0.2f, 0.5f);
+	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
 
 	float LastMouseXPos;				// temp
 	float LastMouseYPos;				// temp
