@@ -164,7 +164,7 @@ public:
 		// bind texture Shader And Set Uniform
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
-		Vi::Application::Get().GetWindow().SetResolution(1600, 900);
+	//	Vi::Application::Get().GetWindow().SetResolution(1600, 900);
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
@@ -188,11 +188,11 @@ public:
 		//Bind FlatColor Shader And Set Uniform Color 
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
-				
+
+		const float random = 1.0f;
 		for (int y = 0; y < 10; y++) {
 			for (int x = 0; x < 10; x++) {
 				
-				const float random = 1.0f + (x*y / 5.0f);
 				const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.9f, random,0.9f));
 
 				const glm::vec3 pos(x * 0.5f * random, random /2.0f, y * 0.5f* random);
@@ -260,13 +260,15 @@ public:
 				window.SetFullScreen(false);
 			}
 		}
-		const char* items[] = { "800x600","1600x900","1920x1080", "2560x1440" };
+		const char* items[] = { 
+			"800x600","1024x768","1128x634","1152x864","1280x600",
+			"1280x720","1280x768","1280x960","1280x1024","1360x768",
+			"1366x768","1440x900","1600x900","1600x1200","1680x1050",
+			"1760x990","1920x1080","1920x1200", "2560x1440"};
 		static const char* current_item = NULL;
 		int temporary = -1;
 		if (ImGui::BeginCombo("##Resolution", current_item))
-		{
-			
-			
+		{			
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 			{
 				bool is_selected = (current_item == items[n]);
@@ -282,7 +284,6 @@ public:
 					
 				}
 			}
-
 			ImGui::EndCombo();
 			switch (temporary)
 			{
@@ -290,12 +291,57 @@ public:
 				window.SetResolution(800, 600);
 				break;
 			case 1:
-				window.SetResolution(1600, 900);
+				window.SetResolution(1024, 768);
 				break;
 			case 2:
-				window.SetResolution(1920, 1080);
+				window.SetResolution(1128, 634);
 				break;
 			case 3:
+				window.SetResolution(1152, 900);
+				break;
+			case 4:
+				window.SetResolution(1280, 600);
+				break;
+			case 5:
+				window.SetResolution(1280, 720);
+				break;
+			case 6:
+				window.SetResolution(1280, 786);
+				break;
+			case 7:
+				window.SetResolution(1280, 960);
+				break;
+			case 8:
+				window.SetResolution(1280, 1024);
+				break;
+			case 9:
+				window.SetResolution(1360, 768);
+				break;
+			case 10:
+				window.SetResolution(1366, 768);
+				break;
+			case 11:
+				window.SetResolution(1440, 900);
+				break;
+			case 12:
+				window.SetResolution(1600, 900);
+				break;
+			case 13:
+				window.SetResolution(1600, 1200);
+				break;
+			case 14:
+				window.SetResolution(1680, 1050);
+				break;
+			case 15:
+				window.SetResolution(1760, 990);
+				break;
+			case 16:
+				window.SetResolution(1920, 1080);
+				break;
+			case 17:
+				window.SetResolution(1920, 1200);
+				break;
+			case 18:
 				window.SetResolution(2560, 1440);
 				break;
 			default:
