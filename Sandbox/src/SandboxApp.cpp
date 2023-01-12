@@ -1,12 +1,8 @@
 #include <Vi.h>
+
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
-
-#include <stdlib.h>					// temp 
-#include <time.h>					// temp 
-
-//		m_Camera(90.0f, 800.0f / 600.0f, 0.1f, 4000.0f)
 
 
 class ExampleLayer : public Vi::Layer {
@@ -165,17 +161,19 @@ public:
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
 	//	Vi::Application::Get().GetWindow().SetResolution(1600, 900);
+
+		
 	}
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
-
+		
 		ExampleLayer::deltaTime = ts;										//temp
 
 		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
 			
-		Vi::Renderer::BeginScene3D(m_CameraController.GetCamera3D());
+		Vi::Renderer::BeginScene(m_CameraController.GetCamera());
 		m_CameraController.OnUpdate(ts);
 
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
@@ -376,7 +374,6 @@ private:
 	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
 
 	Vi::CameraController m_CameraController;
-
 	glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 
 

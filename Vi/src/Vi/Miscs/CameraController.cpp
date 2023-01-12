@@ -8,9 +8,11 @@
 namespace Vi {
 
 	
-	CameraController::CameraController() : m_Camera3d(glm::vec3(-3.0f,1.0f,15.0f), glm::vec3(15.0f, 70.0f, 0.0f)) {
+	CameraController::CameraController(const glm::vec3& worldLocation, const glm::vec3& worldRotation)		
+										: m_Camera(glm::vec3(worldLocation), glm::vec3(worldRotation))	{
 		
 	}
+
 
 	void CameraController::OnUpdate(Timestep ts) {
 
@@ -44,7 +46,7 @@ namespace Vi {
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
 			float YOffset = LastLeftMouseYPos - Vi::Input::GetMouseY();
 			
-			m_Camera3d.AddWorldLocationOffset(ts, glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f));
+			m_Camera.AddWorldLocationOffset(ts, glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f));
 			
 			rotationOffset += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f, 0.0f);
 
@@ -75,8 +77,8 @@ namespace Vi {
 			locationOffset += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}
 
-		m_Camera3d.AddLocalOffset(ts , locationOffset);
-		m_Camera3d.AddLocalRotation(ts, rotationOffset);
+		m_Camera.AddLocalOffset(ts , locationOffset);
+		m_Camera.AddLocalRotation(ts, rotationOffset);
 	}
 
 	void CameraController::OnEvent(Event& e) {
@@ -85,16 +87,15 @@ namespace Vi {
 		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(CameraController::OnKeyPressed));
 		dispatcher.Dispatch<KeyReleasedEvent>(VI_BINDEVENT(CameraController::OnKeyReleased));
 		dispatcher.Dispatch<MouseScrolledEvent>(VI_BINDEVENT(CameraController::OnMouseScrolled));
-		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(CameraController::OnWindowResized));
 		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(CameraController::OnMouseButtonPressed));
 		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(CameraController::OnMouseButtonReleased));
+		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(CameraController::OnWindowResized));
 
 	}
 
 	bool CameraController::OnKeyPressed(KeyPressedEvent& e) {
 
 		if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-
 			m_BoostFactor = 3;
 		}
 		return false;
@@ -103,7 +104,6 @@ namespace Vi {
 	bool CameraController::OnKeyReleased(KeyReleasedEvent& e) {
 
 		if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-
 			m_BoostFactor = 1;
 		}
 		return false;
@@ -112,56 +112,46 @@ namespace Vi {
 	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e) {
 
 		if (!m_MouseRightButtonPressed) {
-			m_Camera3d.AddLocalOffset(1.0f, glm::vec3(e.GetYOffset(), 0.0, 0.0));
+			m_Camera.AddLocalOffset(1.0f, glm::vec3(e.GetYOffset(), 0.0, 0.0));
 		}
-		else {
-			
-			float fovOffset = - e.GetYOffset() * 5.0f;
-			
-			m_Camera3d.AddFOV(fovOffset);
+		else {			
+			float fovOffset = - e.GetYOffset() * 5.0f;			
+			m_Camera.AddFOV(fovOffset);
 		}
-
 		return false;
 	}
 
 	bool CameraController::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
-		
-		
+				
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) {
-
 			LastMiddleMouseXPos = Vi::Input::GetMousePosition().first;
 			LastMiddleMouseYPos = Vi::Input::GetMousePosition().second;
 			m_MouseMiddleButtonPressed = true;
 		}
-		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) {
 
+		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) {
 			LastRightMouseXPos = Vi::Input::GetMousePosition().first;
 			LastRightMouseYPos = Vi::Input::GetMousePosition().second;
 			m_MouseRightButtonPressed = true;
-
-			m_FOVCache = m_Camera3d.GetFOV();
+			m_FOVCache = m_Camera.GetFOV();
 		}
-		if (e.GetMouseButton() == VI_MOUSE_BUTTON_LEFT) {
 
+		if (e.GetMouseButton() == VI_MOUSE_BUTTON_LEFT) {
 			LastLeftMouseXPos = Vi::Input::GetMousePosition().first;
 			LastLeftMouseYPos = Vi::Input::GetMousePosition().second;
 			m_MouseLeftButtonPressed = true;
-		}
-		
+		}		
 		return false;
 	}
 
 	bool CameraController::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
-
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) { m_MouseMiddleButtonPressed = false; }
-		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) { m_MouseRightButtonPressed = false;		m_Camera3d.SetFOV(m_FOVCache); }
+		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) { m_MouseRightButtonPressed = false;		m_Camera.SetFOV(m_FOVCache); }
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_LEFT) { m_MouseLeftButtonPressed = false; }
-
 		return false;
 	}
 
 	bool CameraController::OnWindowResized(WindowResizeEvent& e) {
-
 	//	m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
 	//	m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;

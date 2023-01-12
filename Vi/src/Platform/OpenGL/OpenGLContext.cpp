@@ -31,7 +31,7 @@ namespace Vi {
 	}
 
 	void OpenGLContext::SwapBuffers() {
-
+	//	glFlush();
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
