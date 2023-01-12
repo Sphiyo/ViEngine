@@ -15,6 +15,25 @@
 
 #include "Vi/Core/Log.h"
 
+
+
 #ifdef VI_PLATFORM_WINDOWS
 	#include <Windows.h>
-#endif // VI_PLATFORM_WINDOWS
+#endif
+
+
+////////////////////////////				// temp 
+
+#include <thread>
+#include <atomic>
+#include <mutex>
+#include <shared_mutex>
+#include <future>
+
+////////////////////////////				// temp 
+
+// for srand() and rand()
+#include <stdlib.h>
+#include <time.h>
+
+////////////////////////////				// temp 
