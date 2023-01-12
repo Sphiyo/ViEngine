@@ -189,18 +189,16 @@ public:
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
 
-		const float random = 1.0f;
-		const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(0.9f, random, 0.9f));
-		for (int y = 0; y < 10; y++) {
-			for (int x = 0; x < 10; x++) {
-				
-				
 
-				const glm::vec3 pos(x * 1.5f * random, random /2.0f, y * 1.5f* random);
+		const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 0.5f, 1.5f));
+		
+		for (int x = 0; x < 5; x++) {
+				
+				const glm::vec3 pos( 1.5f, 1.0f /2.0f + x,- x * 1.5f);
 				const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 			//	m_Texture->Bind();
 				Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
-			}
+			
 		}
 	 
 	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);									// todo 
