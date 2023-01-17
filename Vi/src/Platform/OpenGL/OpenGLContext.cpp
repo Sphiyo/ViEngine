@@ -30,8 +30,7 @@ namespace Vi {
 		//glViewport(0, 450, 800, 450);
 	}
 
-	void OpenGLContext::SwapBuffers() {
-	//	glFlush();
+	void OpenGLContext::SwapBuffers() {	
 		glfwSwapBuffers(m_WindowHandle);
 	}
 
