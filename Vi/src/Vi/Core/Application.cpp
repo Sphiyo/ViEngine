@@ -1,23 +1,15 @@
 #include "Vipch.h"
 #include "Application.h"
 
-#include "Vi/Core/Log.h"
-
 #include "Vi/Renderer/Renderer.h"
-
 #include "Input.h"
-
-#include <GLFW/glfw3.h>
 
 
 namespace Vi {
 
-//#define BIND_EVENT(x) std::bind(&Application::x, this, std::placeholders::_1 )
-
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()	{
-
 		VI_CORE_ASSERT(!s_Instance, "(Application) Application Already Exists!");
 		s_Instance = this;
 		m_Window = std::unique_ptr<Window>(Window::Create());
@@ -28,7 +20,38 @@ namespace Vi {
 	}
 
 	Application::~Application() {
+	}
 
+	void Application::PushLayer(Layer* layer) {
+		m_LayerStack.PushLayer(layer);
+		layer->OnAttach();
+	}
+
+	void Application::PushOverlay(Layer* overlay) {
+		m_LayerStack.PushOverlay(overlay);
+		overlay->OnAttach();
+	}
+
+	void Application::Run() {	
+
+		while (m_Running) {
+			Timestep timestep = Time::GetTime() - m_LastFrameTime;
+			m_LastFrameTime = Time::GetTime();
+			
+			if(!m_Minimized) {
+				for (Layer* layer : m_LayerStack) { layer->OnUpdate(timestep); }
+			}
+
+			//ImGui Loop
+			m_ImGuiLayer->Begin();			
+			for (Layer* layer : m_LayerStack) {
+				layer->OnImGuiRender();
+			}
+			m_ImGuiLayer->End();
+
+			// Window Poll Event And Swap Buffers
+			m_Window->OnUpdate();
+		};
 	}
 
 	void Application::OnEvent(Event& e) {
@@ -36,42 +59,16 @@ namespace Vi {
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(VI_BINDEVENT(Application::OnWindowClosed));
 		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(Application::OnWindowResize));
+		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(Application::OnKeyPressed));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(Application::OnMouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(Application::OnMouseButtonReleased));
 		
 		// LookForTheLastPossibleLayerThatCanRecieveEventAndIfItGetsHandledThenBreak
 		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
 
 			(*--it)->OnEvent(e);
 			if (e.Handled) { break; }
-		}
-	
-	}
-
-	void Application::PushLayer(Layer* layer) {
-
-		m_LayerStack.PushLayer(layer);
-		layer->OnAttach();
-	}
-
-	void Application::PushOverlay(Layer* overlay) {
-
-		m_LayerStack.PushOverlay(overlay);
-		overlay->OnAttach();
-	}
-
-	void Application::Run() {
-
-		while (m_Running) {
-
-			Timestep timestep = Time::GetTime() - m_LastFrameTime;
-			m_LastFrameTime = Time::GetTime();
-			if(!m_Minimized) {
-				for (Layer* layer : m_LayerStack) { layer->OnUpdate(timestep); }
-			}
-			m_ImGuiLayer->Begin();
-			for (Layer* layer : m_LayerStack) { layer->OnImGuiRender(); }
-			m_ImGuiLayer->End();
-			m_Window->OnUpdate();
-		};
+		}	
 	}
 
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
@@ -80,8 +77,7 @@ namespace Vi {
 		return true;
 	}
 
-	bool Application::OnWindowResize(WindowResizeEvent& e)
-	{
+	bool Application::OnWindowResize(WindowResizeEvent& e) {
 		if (e.GetHeight() == 0 || e.GetWidth() == 0) {
 
 			m_Minimized = true;
@@ -92,5 +88,26 @@ namespace Vi {
 
 		return false;
 	}
-
+	bool Application::OnKeyPressed(KeyPressedEvent& e) {
+		if(e.GetKeyCode() == VI_KEY_ESCAPE) {
+			CloseWindow();
+		};
+		if (e.GetKeyCode() == VI_KEY_F11) {
+			if (!m_Window->IsFullScreen())
+				m_Window->SetFullScreen(true);
+			else
+				m_Window->SetFullScreen(false);
+		};
+		return false;
+	}
+	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
+	{
+		m_Window->SetCursor(CursorState::DISABLED);
+		return false;
+	}
+	bool Application::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
+	{
+		m_Window->SetCursor(CursorState::NORMAL);
+		return false;
+	}
 }

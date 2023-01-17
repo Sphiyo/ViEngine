@@ -1,6 +1,9 @@
 #pragma once
 #include "Core.h"
 
+#include "Vi/Core/KeyCodes.h"
+#include "Vi/Core/MouseButtonCodes.h"
+	
 namespace Vi {
 
 	class VI_API Input {

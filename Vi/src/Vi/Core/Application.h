@@ -12,6 +12,7 @@ namespace Vi {
 	class Application {
 
 	public:
+
 		Application();
 		virtual ~Application();
 		void Run();
@@ -23,10 +24,16 @@ namespace Vi {
 		inline void CloseWindow() { m_Running = false; }
 	
 	private:
+
 		bool OnWindowClosed(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
+
+		bool OnKeyPressed(KeyPressedEvent& e);
+		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 		
 	private:
+
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
 		bool m_Running = true, m_Minimized = false;
@@ -34,8 +41,9 @@ namespace Vi {
 		float m_LastFrameTime = 0.0f;
 		
 	private:
+
 		static Application* s_Instance;
-	
+
 	};
 
 	// To Be Defined In Client

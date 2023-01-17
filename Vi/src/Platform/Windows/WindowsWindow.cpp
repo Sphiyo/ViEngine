@@ -84,7 +84,8 @@ namespace Vi {
 			else 
 				VI_CORE_ASSERT(false, "(WindowsWindow) Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
 		}
-		SetCursor(CursorState::DISABLED);
+		SetCursor(CursorState::NORMAL);
+
 		//Set GLFW Callbacks
 		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
 			
@@ -191,39 +192,6 @@ namespace Vi {
 
 	void WindowsWindow::OnUpdate() {
 
-		// temp 
-
-		if (Input::IsKeyPressed(VI_KEY_ESCAPE))
-		{
-			switch (m_CursorState)
-			{
-			case CursorState::NORMAL:
-				SetCursor(CursorState::DISABLED);
-				break;
-			case CursorState::HIDDEN:
-				SetCursor(CursorState::DISABLED);
-				break;
-			case CursorState::DISABLED:
-				SetCursor(CursorState::NORMAL);
-				break;
-			case CursorState::UNAVAILABLE:
-				SetCursor(CursorState::UNAVAILABLE);
-				break;
-			default:
-				VI_CORE_ASSERT(false, "(WindowsWindow) Cursor State Unknown! ");
-				break;
-			}
-			
-		};
-		
-	//	if (Input::IsKeyPressed(VI_KEY_ESCAPE)) { Application::Get().CloseWindow(); };
-
-		if (Input::IsKeyPressed(VI_KEY_F11)) {
-			if(!m_Data.FullScreen) 
-				SetFullScreen(true);
-			else
-				SetFullScreen(false);
-		};		
 		glfwPollEvents();
 		m_Context->SwapBuffers();
 											 
@@ -267,18 +235,19 @@ namespace Vi {
 	}
 		
 
-	void WindowsWindow::SetCursor(CursorState cursorState) {
-	
+	void WindowsWindow::SetCursor(CursorState cursorState, bool center) {
+
+		
+		if (center) { glfwSetCursorPos(m_Window, (double)(m_Data.Width / 2.0), (double)(m_Data.Height / 2.0)); }
 		switch (cursorState)
 		{
 		case Vi::CursorState::NORMAL:
-			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
-			
+			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);			
 			break;
 		case Vi::CursorState::HIDDEN:
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_HIDDEN);
 			break;
-		case Vi::CursorState::DISABLED:
+		case Vi::CursorState::DISABLED:			
 			glfwSetInputMode(m_Window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 			break;
 		case Vi::CursorState::UNAVAILABLE:
@@ -291,4 +260,27 @@ namespace Vi {
 
 		m_CursorState = cursorState;
 	}
+
+	void WindowsWindow::ToggleCursor() {
+
+		switch (m_CursorState)
+		{
+		case CursorState::NORMAL:
+			SetCursor(CursorState::DISABLED);
+			break;
+		case CursorState::HIDDEN:
+			SetCursor(CursorState::NORMAL);
+			break;
+		case CursorState::DISABLED:
+			SetCursor(CursorState::NORMAL);
+			break;
+		case CursorState::UNAVAILABLE:
+			SetCursor(CursorState::UNAVAILABLE);
+			break;
+		default:
+			VI_CORE_ASSERT(false, "(WindowsWindow) Cursor State Unknown! ");
+			break;
+		}		
+	}
+	
 }

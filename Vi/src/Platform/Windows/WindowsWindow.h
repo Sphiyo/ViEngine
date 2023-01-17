@@ -28,7 +28,9 @@ namespace Vi {
 				bool IsVSync() const override;
 
 				const CursorState& GetCursor() const override { return m_CursorState; }
-				void SetCursor(CursorState cursorState) override;
+				void SetCursor(CursorState cursorState, bool center = false) override;
+
+				void ToggleCursor() override;
 
 				void SetFullScreen(bool enable) override;
 				bool IsFullScreen() const override;
@@ -40,18 +42,16 @@ namespace Vi {
 				virtual void Shutdown();
 		private:
 				GLFWwindow* m_Window;
-
 				GraphicsContext* m_Context;
 	
-				struct WindowData
-				{
-						std::string Title;
-						unsigned int Width, Height;
-						bool VSync;
-						bool FullScreen;
-						EventCallbackFn EventCallback;						
-						std::vector<GLFWmonitor*>m_Monitors;						
-						int m_ActiveMonitor;
+				struct WindowData {
+					std::string Title;
+					unsigned int Width, Height;
+					bool VSync;
+					bool FullScreen;
+					EventCallbackFn EventCallback;						
+					std::vector<GLFWmonitor*>m_Monitors;						
+					int m_ActiveMonitor;
 				};
 
 				WindowData m_Data;

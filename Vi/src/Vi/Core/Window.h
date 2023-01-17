@@ -46,8 +46,9 @@ namespace Vi {
 		static Window* Create(const WindowProps& props = WindowProps());
 
 		virtual const CursorState& GetCursor() const = 0;
-		virtual void SetCursor(CursorState cursorState) = 0;
-
+		virtual void SetCursor(CursorState cursorState, bool center = false) = 0;
+		virtual void ToggleCursor() = 0;
+		
 		virtual bool IsFullScreen() const = 0;
 		virtual bool& IsFullScreenRef() = 0;
 		virtual void SetFullScreen(bool enable) = 0;
