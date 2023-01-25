@@ -18,7 +18,7 @@ namespace Vi {
 		uint32_t Width;
 		uint32_t Height;
 
-		WindowProps(const std::string& title = "VI Engine", uint32_t width = 1600, uint32_t height = 900) {
+		WindowProps(const std::string& title = "VI Engine", uint32_t width = 1920, uint32_t height = 1080) {
 			
 			Title = title;
 			Width = width;
@@ -49,10 +49,16 @@ namespace Vi {
 		virtual void SetCursor(CursorState cursorState, bool center = false) = 0;
 		virtual void ToggleCursor() = 0;
 		
+
+		// Ignoring monitorIndex Sets Index To The Last Active Monitor
+		virtual void SetFullScreen(bool enable, int16_t monitorIndex = -1) = 0;
 		virtual bool IsFullScreen() const = 0;
 		virtual bool& IsFullScreenRef() = 0;
-		virtual void SetFullScreen(bool enable) = 0;
+		virtual void ToggleFullScreen() = 0;
+
+
 		virtual void SetResolution(int width, int height) = 0;
+		virtual void CheckMonitors() = 0;
 	};
 
 }

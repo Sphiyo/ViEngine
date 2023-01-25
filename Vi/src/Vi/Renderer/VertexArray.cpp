@@ -5,7 +5,7 @@
 
 namespace Vi {
 
-	VertexArray* VertexArray::Create(){
+	Ref<VertexArray> VertexArray::Create(){
 
 		switch (Renderer::GetAPI())	{
 
@@ -14,7 +14,7 @@ namespace Vi {
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return new OpenGLVertexArray();
+				return std::make_shared<OpenGLVertexArray>();
 
 			case RendererAPI::API::Vulcan:
 				VI_CORE_ASSERT(false, "(VertexArray) Vulcan is currently not supported!");			

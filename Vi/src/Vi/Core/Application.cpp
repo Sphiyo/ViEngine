@@ -89,15 +89,29 @@ namespace Vi {
 		return false;
 	}
 	bool Application::OnKeyPressed(KeyPressedEvent& e) {
+
 		if(e.GetKeyCode() == VI_KEY_ESCAPE) {
+
 			CloseWindow();
 		};
 		if (e.GetKeyCode() == VI_KEY_F11) {
-			if (!m_Window->IsFullScreen())
-				m_Window->SetFullScreen(true);
-			else
-				m_Window->SetFullScreen(false);
+			
+			m_Window->ToggleFullScreen();
 		};
+
+		///// To Remove ////////////////////////
+		if (e.GetKeyCode() == VI_KEY_0) {
+
+			m_Window->SetFullScreen(true,0);			
+		};
+
+		if (e.GetKeyCode() == VI_KEY_1) {
+
+			m_Window->SetFullScreen(true, 1);
+		};
+		////////////////////////////////////////
+	
+
 		return false;
 	}
 	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)

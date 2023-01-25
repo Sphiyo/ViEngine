@@ -69,21 +69,18 @@ namespace Vi {
 	//	glfwShowWindow(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
 		SetVSync(true);
-		{
-			int monitorCount = 0;
-			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-
-			if (monitorCount == (sizeof(monitors) / sizeof(GLFWmonitor**))) {
-				for (int i = 0; i < monitorCount; i++)
-				{
-					m_Data.m_Monitors.push_back(monitors[i]);
-				}
-				VI_CORE_INFO("(WindowsWindow) {} : Monitors Connected", monitorCount);
-			}
-
-			else 
-				VI_CORE_ASSERT(false, "(WindowsWindow) Check Monitors Setup (m_Data.m_MonitorCount) doesn't equal arrayLenght ");			
-		}
+		CheckMonitors();
+//		{
+//			int monitorCount = 0;
+//			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+//			
+//			for (int i = 0; i < monitorCount; i++) {
+//
+//				m_Data.m_Monitors.push_back(monitors[i]);
+//			}
+//			VI_CORE_INFO("(WindowsWindow) {} : Monitors Connected", monitorCount);
+//			
+//		}
 		SetCursor(CursorState::NORMAL);
 
 		//Set GLFW Callbacks
@@ -206,11 +203,51 @@ namespace Vi {
 		return m_Data.FullScreen;
 	}
 
-	void WindowsWindow::SetFullScreen(bool enable) {	
-		if (enable)
-			glfwSetWindowMonitor(m_Window, glfwGetPrimaryMonitor(), 0, 0, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);		
-		else 
-			glfwSetWindowMonitor(m_Window, NULL, m_Data.Width/4, m_Data.Height /4, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+	void WindowsWindow::ToggleFullScreen()
+	{
+		if (!IsFullScreen()) {
+			SetFullScreen(true);
+			return;
+		}
+			
+		else
+			SetFullScreen(false);
+	}
+
+	
+	void WindowsWindow::SetFullScreen(bool enable, int16_t monitorIndex) {
+		
+		CheckMonitors();
+		int lastMonitorIndex = m_Data.m_MonitorsCount - 1;
+
+		if (monitorIndex < 0) {
+
+			monitorIndex = m_Data.m_ActiveMonitor;
+			VI_CORE_INFO(" (WindowsWindow) Set Monitor Index To The Last Active Monitor");
+		}
+
+				
+		if (monitorIndex > lastMonitorIndex) {
+
+			VI_CORE_WARN(" (WindowsWindow) Monitor Index : {} Not Found.", monitorIndex);
+			VI_CORE_WARN(" (WindowsWindow) The Last Monitor Index Is : {}.", lastMonitorIndex);
+			monitorIndex = lastMonitorIndex;
+			VI_CORE_WARN(" (WindowsWindow) Set Monitor Index To Last Index : {}.", lastMonitorIndex);
+		}
+
+		if (enable) {
+
+			m_Data.m_ActiveMonitor = monitorIndex;
+			VI_CORE_INFO(" (WindowsWindow) Set FullScreen Mode, Active Monitor Index Is : {}", m_Data.m_ActiveMonitor);
+			glfwSetWindowMonitor(m_Window, m_Data.m_Monitors[m_Data.m_ActiveMonitor], 0, 0, m_Data.Width, m_Data.Height, 30);
+		}
+
+		else {
+
+			VI_CORE_INFO(" (WindowsWindow) Set Windowed Mode, Last Active Monitor Index Is : {}", m_Data.m_ActiveMonitor);
+			glfwSetWindowMonitor(m_Window, NULL, m_Data.Width / 4, m_Data.Height / 4, m_Data.Width, m_Data.Height, GLFW_DONT_CARE);
+		}
+		
 		m_Data.FullScreen = enable;
 	}
 
@@ -219,6 +256,34 @@ namespace Vi {
 		glfwSetWindowSize(m_Window, width, height);
 		m_Data.Width = width;
 		m_Data.Height = height;
+	}
+
+	void WindowsWindow::CheckMonitors()
+	{
+		/////////// Check For Monitors Count ///////////////////
+		int monitorCount = 0;
+		GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
+		////////////////////////////////////////////////////////
+
+		/////////// Set Monitors Count ///////
+		m_Data.m_MonitorsCount = monitorCount;
+		//////////////////////////////////////
+
+		/////////// Set Vector Array //////////////////////////////////////////////
+		if (m_Data.m_Monitors.size() == monitorCount) { return; }
+
+		else {
+			m_Data.m_Monitors.clear();
+
+			for (int i = 0; i < monitorCount; i++) {
+				
+				m_Data.m_Monitors.push_back(monitors[i]);
+			}
+			
+
+			VI_CORE_INFO("(WindowsWindow) {} : Monitors Connected", monitorCount);
+		}
+		///////////////////////////////////////////////////////////////////////////
 	}
 
 

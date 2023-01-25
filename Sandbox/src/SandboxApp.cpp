@@ -1,9 +1,11 @@
 #include <Vi.h>
+#include <Vi/Core/EntryPoint.h>
 
 #include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
 
+#include "Sandbox3D.h"
 
 class ExampleLayer : public Vi::Layer {
 
@@ -13,7 +15,7 @@ public:
 
 	
 		// VertexArray 
-		m_VertexArray.reset(Vi::VertexArray::Create());
+		m_VertexArray = Vi::VertexArray::Create();
 
 		// VertexBuffer 
 		float vertices[5 * 4] = {
@@ -38,8 +40,8 @@ public:
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		
 		// Square VertexArray 
-		m_SquareVA.reset(Vi::VertexArray::Create());
-
+		m_CubeVA = Vi::VertexArray::Create();
+		
 		// Square VertexBuffer 
 		float squareVertices[5 * 4 * 2] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
@@ -58,7 +60,7 @@ public:
 			{ Vi::ShaderDataType::Float3, "a_Position" },
 			{ Vi::ShaderDataType::Float2, "a_TexCoord" }
 			});
-		m_SquareVA->AddVertexBuffer(squareVB);
+		m_CubeVA->AddVertexBuffer(squareVB);
 		
 		// Square IndexBuffer 
 		Vi::Ref<Vi::IndexBuffer> squareIB;
@@ -71,7 +73,7 @@ public:
 			0,1,5,5,4,0
 		};
 		squareIB.reset(Vi::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
-		m_SquareVA->SetIndexBuffer(squareIB);
+		m_CubeVA->SetIndexBuffer(squareIB);
 
 		// ShaderSource Vertex 
 		std::string vertexSrc = R"(
@@ -168,13 +170,13 @@ public:
 	virtual void OnUpdate(Vi::Timestep ts) override	{
 		
 		ExampleLayer::deltaTime = ts;										//temp
+		m_CameraController.OnUpdate(ts);
 
 		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
 			
 		Vi::Renderer::BeginScene(m_CameraController.GetCamera());
-		m_CameraController.OnUpdate(ts);
 
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
 		//Vi::MaterialInstanceRef mi = new Vi::MaterialInstance(material);						// todo 
@@ -195,21 +197,21 @@ public:
 				const glm::vec3 pos( 1.5f, 1.0f /2.0f + x,- x * 1.5f);
 				const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 			//	m_Texture->Bind();
-				Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
+				Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 			
 		}
 	 
-	//	Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);									// todo 
-	//	Vi::Renderer::Submit(mi, m_SquareVA, transform);												// todo  
+	//	Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);									// todo 
+	//	Vi::Renderer::Submit(mi, m_CubeVA, transform);												// todo  
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 	
 		// Draw Cube With Texture 
 		m_Texture->Bind();
-		Vi::Renderer::Submit(textureShader, m_SquareVA);
+		Vi::Renderer::Submit(textureShader, m_CubeVA);
 		
 		// Draw Cube With Alpha Blend Texture 
 		m_TransparentTexture->Bind();
-		Vi::Renderer::Submit(textureShader, m_SquareVA);
+		Vi::Renderer::Submit(textureShader, m_CubeVA);
 	
 		{
 			const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1000.0f, 0.0f, 1000.0f));
@@ -220,7 +222,7 @@ public:
 
 			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
 			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColor);
-			Vi::Renderer::Submit(m_FlatColorShader, m_SquareVA, transform);
+			Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 		}
 		
 		
@@ -354,10 +356,7 @@ public:
 
 		m_CameraController.OnEvent(e);
 
-		if (e.GetEventType() == Vi::EventType::WindowResize)
-		{
-			Vi::WindowResizeEvent resizeEvent = (Vi::WindowResizeEvent&)e;
-		}
+	
 	}
 	
 
@@ -369,12 +368,11 @@ private:
 
 
 	Vi::Ref<Vi::Shader> m_FlatColorShader;
-	Vi::Ref<Vi::VertexArray> m_SquareVA;
+	Vi::Ref<Vi::VertexArray> m_CubeVA;
 
 	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
 
 	Vi::CameraController m_CameraController;
-	glm::vec3 m_CameraPosition = glm::vec3(0.0f);
 
 
 	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
@@ -401,7 +399,8 @@ class Sandbox : public Vi::Application
 public:
 	Sandbox()
 	{
-		PushLayer(new ExampleLayer());
+	//	PushLayer(new ExampleLayer());
+		PushLayer(new Sandbox3D());
 	}
 	~Sandbox()
 	{
