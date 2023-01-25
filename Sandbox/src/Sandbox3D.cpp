@@ -32,16 +32,14 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 
 	Vi::Renderer3D::BeginScene(m_CameraController.GetCamera());
 
-	Vi::Renderer3D::DrawCube({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f },m_CubeColor );
+	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f }, m_CubeColor );
+	Vi::Renderer3D::DrawCube(m_Cube2Position, { 0.0f,0.0f,0.0f }, { 2.0f,0.1f,2.0f }, m_GroundColor);
+	
 
 	Vi::Renderer3D::EndScene();
+
+
 	fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
-
-
-	////Bind FlatColor Shader And Set Uniform Color 
-	//std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-	//std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_CubeColor);
-
 }
 
 void Sandbox3D::OnImGuiRender() {
@@ -52,7 +50,25 @@ void Sandbox3D::OnImGuiRender() {
 	ImGui::ColorEdit4("GroundShader", (float*)&m_GroundColor);
 	ImGui::End();																   // temp
 
+	float tempPosition[3];
 
+	tempPosition[0] = m_Cube1Position.x;
+	tempPosition[1] = m_Cube1Position.y;
+	tempPosition[2] = m_Cube1Position.z;
+
+	ImGui::DragFloat3("Cube1Position", tempPosition,0.01f);
+	m_Cube1Position.x= tempPosition[0];
+	m_Cube1Position.y= tempPosition[1];
+	m_Cube1Position.z= tempPosition[2];
+
+	tempPosition[0] = m_Cube2Position.x;
+	tempPosition[1] = m_Cube2Position.y;
+	tempPosition[2] = m_Cube2Position.z;
+
+	ImGui::DragFloat3("Cube2Position", tempPosition, 0.01f);
+	m_Cube2Position.x = tempPosition[0];
+	m_Cube2Position.y = tempPosition[1];
+	m_Cube2Position.z = tempPosition[2];
 
 
 	ImGui::Begin("Stats");														   // temp 

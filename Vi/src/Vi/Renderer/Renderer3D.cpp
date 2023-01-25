@@ -5,7 +5,8 @@
 #include "Shader.h"
 #include "RenderCommand.h"
 
-#include "Platform/OpenGL/OpenGLShader.h"
+
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace Vi {
 
@@ -66,9 +67,8 @@ namespace Vi {
 
 	void Renderer3D::BeginScene(const Camera& camera) {
 
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformMat4("u_Transform", glm::mat4(1.0f));
+		s_Data->FlatColorShader->Bind();
+		s_Data->FlatColorShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 	}
 
 	void Renderer3D::EndScene() {
@@ -76,8 +76,17 @@ namespace Vi {
 	}
 	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color)
 	{
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<OpenGLShader>(s_Data->FlatColorShader)->UploadUniformFloat4("u_Color", color);
+		s_Data->FlatColorShader->Bind();
+		s_Data->FlatColorShader->SetFloat4("u_Color", color);
+
+		glm::mat4 transform =	glm::translate(glm::mat4(1.0f), position) *
+								glm::rotate(glm::mat4(1.0f), rotation.x, { 1.0f,0.0f,0.0f }) *
+								glm::rotate(glm::mat4(1.0f), rotation.y, { 0.0f,1.0f,0.0f }) *
+								glm::rotate(glm::mat4(1.0f), rotation.z, { 0.0f,0.0f,1.0f }) *
+								glm::scale(glm::mat4(1.0f), scale);
+
+
+		s_Data->FlatColorShader->SetMat4("u_Transform", transform);
 
 		s_Data->CubeVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->CubeVertexArray);

@@ -1,10 +1,9 @@
 #pragma once
-
 #include <Vi.h>
 
-#include "Platform/OpenGL/OpenGLShader.h"
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 
 class Sandbox3D : public Vi::Layer {
 	
@@ -32,6 +31,8 @@ private:
 	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
 
 
+	glm::vec3 m_Cube1Position = glm::vec3(0.0f);
+	glm::vec3 m_Cube2Position = glm::vec3(0.0f);
 	float LastMouseXPos = 0.f;				// temp
 	float LastMouseYPos = 0.f;				// temp
 	bool m_MouseRightButtonPressed = false;  // temp
