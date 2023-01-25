@@ -187,7 +187,7 @@ public:
 
 		//Bind FlatColor Shader And Set Uniform Color 
 		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
+		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_CubeColor);
 
 
 		const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 0.5f, 1.5f));
@@ -234,7 +234,7 @@ public:
 
 		auto& window = Vi::Application::Get().GetWindow();
 		ImGui::Begin("Settings");														 // temp
-		ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
+		ImGui::ColorEdit4("ColorShader", (float*)&m_CubeColor);
 		ImGui::ColorEdit4("GroundShader", (float*)&m_GroundColor);
 		ImGui::End();																   // temp
 		
@@ -375,7 +375,7 @@ private:
 	Vi::CameraController m_CameraController;
 
 
-	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
 	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
 
 	float LastMouseXPos;				// temp

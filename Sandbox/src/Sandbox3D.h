@@ -28,7 +28,7 @@ private:
 	Vi::Ref<Vi::Shader> m_FlatColorShader;
 
 
-	glm::vec4 m_ShaderColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
 	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
 
 

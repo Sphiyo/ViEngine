@@ -11,44 +11,6 @@ Sandbox3D::Sandbox3D()
 
 void Sandbox3D::OnAttach() {
 
-	// Square VertexArray 
-	m_CubeVA = Vi::VertexArray::Create();
-
-	// Square VertexBuffer 
-	float cubeVertices[5 * 4 * 2] = {
-	-0.5f, -0.5f, -0.5f,
-	-0.5f,  0.5f, -0.5f,
-	 0.5f,  0.5f, -0.5f,
-	 0.5f, -0.5f, -0.5f,
-
-	-0.5f, -0.5f,  0.5f,
-	-0.5f,  0.5f,  0.5f,
-	 0.5f,  0.5f,  0.5f,
-	 0.5f, -0.5f,  0.5f
-	};
-	Vi::Ref<Vi::VertexBuffer> cubeVB;
-	cubeVB.reset(Vi::VertexBuffer::Create(cubeVertices, sizeof(cubeVertices)));
-	cubeVB->SetLayout({
-		{ Vi::ShaderDataType::Float3, "a_Position" }
-		});
-	m_CubeVA->AddVertexBuffer(cubeVB);
-
-	// Cube IndexBuffer 
-	uint32_t cubeIndices[6 * 6] = {
-		0,1,2,2,3,0,
-		0,4,7,7,3,0,
-		4,5,6,6,7,4,
-		5,1,2,2,6,5,
-		3,2,6,6,7,3,
-		0,1,5,5,4,0
-	};
-	Vi::Ref<Vi::IndexBuffer> cubeIB;
-	cubeIB.reset(Vi::IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(uint32_t)));
-	m_CubeVA->SetIndexBuffer(cubeIB);
-
-
-	// Create And Compile flat Shader 
-	m_FlatColorShader = Vi::Shader::Create("assets/shaders/FlatColor.glsl");
 
 }
 
@@ -68,20 +30,17 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 	Vi::RenderCommand::Clear();
 
-	Vi::Renderer::BeginScene(m_CameraController.GetCamera());
+	Vi::Renderer3D::BeginScene(m_CameraController.GetCamera());
 
+	Vi::Renderer3D::DrawCube({ 0.0f,0.0f,0.0f }, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f },m_CubeColor );
 
-	//Bind FlatColor Shader And Set Uniform Color 
-	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_ShaderColor);
-
-
-
-	// Draw Cube With RGBA Color 
-	Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA);
-
-	Vi::Renderer::EndScene();
+	Vi::Renderer3D::EndScene();
 	fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
+
+
+	////Bind FlatColor Shader And Set Uniform Color 
+	//std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
+	//std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_CubeColor);
 
 }
 
@@ -89,7 +48,7 @@ void Sandbox3D::OnImGuiRender() {
 
 	auto& window = Vi::Application::Get().GetWindow();
 	ImGui::Begin("Settings");														 // temp
-	ImGui::ColorEdit4("ColorShader", (float*)&m_ShaderColor);
+	ImGui::ColorEdit4("ColorShader", (float*)&m_CubeColor);
 	ImGui::ColorEdit4("GroundShader", (float*)&m_GroundColor);
 	ImGui::End();																   // temp
 

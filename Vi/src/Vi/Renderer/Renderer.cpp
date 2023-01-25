@@ -1,6 +1,9 @@
 #include "Vipch.h"
 #include "Renderer.h"
 
+#include "Renderer3D.h"
+
+
 #include "Platform/OpenGL/OpenGLShader.h"
 
 namespace Vi {
@@ -17,6 +20,7 @@ namespace Vi {
 
 	void Renderer::Init() {
 		RenderCommand::Init();
+		Renderer3D::Init();
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height) {
