@@ -18,7 +18,7 @@ namespace Vi {
 
 		case RendererAPI::API::OpenGL:
 
-			return std::make_shared<OpenGLShader>(filepath);
+			return CreateRef<OpenGLShader>(filepath);
 
 		case RendererAPI::API::Vulcan:
 			VI_CORE_ASSERT(false, "(Shader) Vulcan is currently not supported!");
@@ -44,7 +44,7 @@ namespace Vi {
 
 			case RendererAPI::API::OpenGL:
 
-				return std::make_shared<OpenGLShader>(name ,vertexSrc, fragmentSrc);
+				return CreateRef<OpenGLShader>(name ,vertexSrc, fragmentSrc);
 
 			case RendererAPI::API::Vulcan:
 				VI_CORE_ASSERT(false, "(Shader) Vulcan is currently not supported!");
