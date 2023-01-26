@@ -16,15 +16,16 @@ namespace Vi {
 
 	void CameraController::OnUpdate(Timestep ts) {
 
-		glm::vec3 locationOffset(0.0f);
-		glm::vec3 rotationOffset(0.0f);
+		glm::vec3 locationOffsetWorld(0.0f);
+		glm::vec3 locationOffsetLocal(0.0f);
+		glm::vec3 rotationOffsetLocal(0.0f);
 
 		if (m_MouseMiddleButtonPressed) {
 
 			float XOffset = Vi::Input::GetMouseX() - LastMiddleMouseXPos;
 			float YOffset = LastMiddleMouseYPos - Vi::Input::GetMouseY();
-
-			locationOffset += glm::vec3(0.0f, XOffset * m_MouseXSensitivity * m_CameraTranslationSpeed, YOffset *  m_MouseYSensitivity * m_CameraTranslationSpeed);
+			locationOffsetWorld += glm::vec3(0.0f, 0.0f, YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity);
+			locationOffsetLocal += glm::vec3(0.0f, XOffset * m_MouseXSensitivity * m_CameraTranslationSpeed, 0.0f);
 
 			LastMiddleMouseXPos = Vi::Input::GetMouseX();
 			LastMiddleMouseYPos = Vi::Input::GetMouseY();
@@ -35,7 +36,7 @@ namespace Vi {
 			float XOffset = Vi::Input::GetMouseX() - LastRightMouseXPos;
 			float YOffset = LastRightMouseYPos - Vi::Input::GetMouseY();
 
-			rotationOffset += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, -YOffset * m_MouseYSensitivity * m_CameraRotationSpeed, 0.0f);
+			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, -YOffset * m_MouseYSensitivity * m_CameraRotationSpeed, 0.0f);
 
 			LastRightMouseXPos = Vi::Input::GetMouseX();
 			LastRightMouseYPos = Vi::Input::GetMouseY();
@@ -46,39 +47,39 @@ namespace Vi {
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
 			float YOffset = LastLeftMouseYPos - Vi::Input::GetMouseY();
 			
-			m_Camera.AddWorldLocationOffset(ts, glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f));
-			
-			rotationOffset += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f, 0.0f);
+			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f);					
+			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f, 0.0f);
 
 			LastLeftMouseXPos  = Vi::Input::GetMouseX();
 			LastLeftMouseYPos  = Vi::Input::GetMouseY();
 		}
 
 		if (Input::IsKeyPressed(VI_KEY_W) || Input::IsKeyPressed(VI_KEY_UP)) {
-			locationOffset += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}          
 
 		if (Input::IsKeyPressed(VI_KEY_S) || Input::IsKeyPressed(VI_KEY_DOWN)) {
-			locationOffset += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}           
 
 		if (Input::IsKeyPressed(VI_KEY_D) || Input::IsKeyPressed(VI_KEY_RIGHT)) {
-			locationOffset += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}          
 
 		if (Input::IsKeyPressed(VI_KEY_A) || Input::IsKeyPressed(VI_KEY_LEFT)) {
-			locationOffset += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}          	
 				
 		if (Input::IsKeyPressed(VI_KEY_E)) {
-			locationOffset += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}
 		if (Input::IsKeyPressed(VI_KEY_Q)) {
-			locationOffset += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}
 
-		m_Camera.AddLocalOffset(ts , locationOffset);
-		m_Camera.AddLocalRotation(ts, rotationOffset);
+		m_Camera.AddLocalOffset(ts , locationOffsetLocal);
+		m_Camera.AddLocalRotation(ts, rotationOffsetLocal);
+		m_Camera.AddWorldLocationOffset(ts, locationOffsetWorld);
 	}
 
 	void CameraController::OnEvent(Event& e) {
