@@ -13,7 +13,7 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Vi/Core/Log.h"
+#include "Vi/Core/Log.h"	// #include "Core.h"  is inside log 
 
 
 
@@ -35,5 +35,6 @@
 // for srand() and rand()
 #include <stdlib.h>
 #include <time.h>
+#include <chrono>
 
 ////////////////////////////				// temp 
