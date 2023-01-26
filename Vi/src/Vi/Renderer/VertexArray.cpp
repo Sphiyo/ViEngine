@@ -14,7 +14,7 @@ namespace Vi {
 				return nullptr;
 
 			case RendererAPI::API::OpenGL:
-				return std::make_shared<OpenGLVertexArray>();
+				return CreateRef<OpenGLVertexArray>();
 
 			case RendererAPI::API::Vulcan:
 				VI_CORE_ASSERT(false, "(VertexArray) Vulcan is currently not supported!");			
