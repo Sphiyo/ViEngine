@@ -11,7 +11,9 @@ class ExampleLayer : public Vi::Layer {
 
 public:
 	ExampleLayer()
-		: Layer("Example") , m_CameraController() {
+		: Layer("Example") , m_CameraControllerEX() {
+
+
 
 	
 		// VertexArray 
@@ -156,12 +158,12 @@ public:
 		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
 		
 		//Construct And Buffer Texture To Memory
-		m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
-		m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
+		m_TextureEX = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
+		m_TransparentTextureEX = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
 
 		// bind texture Shader And Set Uniform
-		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->Bind();
-		std::dynamic_pointer_cast<Vi::OpenGLShader>(textureShader)->UploadUniformInt("u_Texture", 0);
+		textureShader->Bind();
+		textureShader->SetInt("u_Texture", 0);
 	//	Vi::Application::Get().GetWindow().SetResolution(1600, 900);
 
 		
@@ -169,14 +171,19 @@ public:
 
 	virtual void OnUpdate(Vi::Timestep ts) override	{
 		
+	
+
+		
+		
+
 		ExampleLayer::deltaTime = ts;										//temp
-		m_CameraController.OnUpdate(ts);
+		m_CameraControllerEX.OnUpdate(ts);
 
 		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
 			
-		Vi::Renderer::BeginScene(m_CameraController.GetCamera());
+		Vi::Renderer::BeginScene(m_CameraControllerEX.GetCamera());
 
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
 		//Vi::MaterialInstanceRef mi = new Vi::MaterialInstance(material);						// todo 
@@ -186,8 +193,8 @@ public:
 		//mesh->SetMaterial(material);															// todo 
 
 		//Bind FlatColor Shader And Set Uniform Color 
-		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-		std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_CubeColor);
+		m_FlatColorShader->Bind();
+		m_FlatColorShader->SetFloat4("u_Color", m_CubeColorEX);
 
 
 		const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 0.5f, 1.5f));
@@ -196,7 +203,7 @@ public:
 				
 				const glm::vec3 pos( 1.5f, 1.0f /2.0f + x,- x * 1.5f);
 				const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-			//	m_Texture->Bind();
+				m_TextureEX->Bind();
 				Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 			
 		}
@@ -206,11 +213,11 @@ public:
 		auto textureShader = m_ShaderLibrary.Get("Texture");
 	
 		// Draw Cube With Texture 
-		m_Texture->Bind();
+		m_TextureEX->Bind();
 		Vi::Renderer::Submit(textureShader, m_CubeVA);
 		
 		// Draw Cube With Alpha Blend Texture 
-		m_TransparentTexture->Bind();
+		m_TransparentTextureEX->Bind();
 		Vi::Renderer::Submit(textureShader, m_CubeVA);
 	
 		{
@@ -220,37 +227,45 @@ public:
 
 			const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
-			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-			std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColor);
+			m_FlatColorShader->Bind();
+			m_FlatColorShader->SetFloat4("u_Color", m_GroundColorEX);
+			
+		//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
+		//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColorEX);
 			Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 		}
 		
 		
 		Vi::Renderer::EndScene();
 		fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
+
+		
 	}
 
 	virtual void OnImGuiRender() override {
 
+
+
+		
 		auto& window = Vi::Application::Get().GetWindow();
-		ImGui::Begin("Settings");														 // temp
-		ImGui::ColorEdit4("ColorShader", (float*)&m_CubeColor);
-		ImGui::ColorEdit4("GroundShader", (float*)&m_GroundColor);
+		ImGui::Begin("SettingsEX");														 // temp
+		ImGui::ColorEdit4("ColorShaderEX", (float*)&m_CubeColorEX);
+		ImGui::ColorEdit4("GroundShaderEX", (float*)&m_GroundColorEX);
 		ImGui::End();																   // temp
 		
 		
 
 
-		ImGui::Begin("Stats");														   // temp 
+		ImGui::Begin("StatsEX");														   // temp 
 		ImGui::Text("Fps  %.0fFps", 1/ ExampleLayer::deltaTime);
 		ImGui::Text("ts  %.3fms" , ExampleLayer::deltaTime);
 		ImGui::End();
 
-		ImGui::Begin("GraphicsSetting");		
-		ImGui::Checkbox("Vsync", &vSync);
+		ImGui::Begin("GraphicsSettingEX");		
+		ImGui::Checkbox("VsyncEX", &vSync);
 		window.SetVSync(vSync);
 		bool fullscreen = window.IsFullScreen();
-		ImGui::Checkbox("FullScreen", &fullScreen);
+		ImGui::Checkbox("FullScreenEX", &fullScreen);
 		if (fullScreen != fullscreen) {
 			if (fullScreen) {
 				window.SetFullScreen(true);
@@ -266,7 +281,7 @@ public:
 			"1760x990","1920x1080","1920x1200", "2560x1440"};
 		static const char* current_item = NULL;
 		int temporary = -1;
-		if (ImGui::BeginCombo("##Resolution", current_item))
+		if (ImGui::BeginCombo("##ResolutionEX", current_item))
 		{			
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 			{
@@ -349,12 +364,13 @@ public:
 		}
 
 		
-		ImGui::End();
+		ImGui::End(); 
+		
 	}
 
 	void OnEvent(Vi::Event& e) override {
 
-		m_CameraController.OnEvent(e);
+		m_CameraControllerEX.OnEvent(e);
 
 	
 	}
@@ -370,13 +386,13 @@ private:
 	Vi::Ref<Vi::Shader> m_FlatColorShader;
 	Vi::Ref<Vi::VertexArray> m_CubeVA;
 
-	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
+	Vi::Ref<Vi::Texture2D> m_TextureEX, m_TransparentTextureEX;
 
-	Vi::CameraController m_CameraController;
+	Vi::CameraController m_CameraControllerEX;
 
 
-	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
-	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
+	glm::vec4 m_CubeColorEX = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 m_GroundColorEX = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
 
 	float LastMouseXPos;				// temp
 	float LastMouseYPos;				// temp
@@ -391,6 +407,7 @@ private:
 	static float deltaTime;				// temp
 	bool vSync;                          // temp
 	bool fullScreen;                          // temp
+
 };
 float ExampleLayer::deltaTime = 0.016f;
 
