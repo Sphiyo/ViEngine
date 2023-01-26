@@ -1,7 +1,7 @@
 #pragma once
 
 //For Use By Vi Applications
-//#include "Vipch.h"
+#include "Vipch.h"
 
 #include "Vi/Core/Application.h"
 #include "Vi/Core/Layer.h"
