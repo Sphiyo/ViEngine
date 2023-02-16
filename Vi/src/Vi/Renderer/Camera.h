@@ -22,25 +22,25 @@ namespace Vi {
 		const glm::vec3& GetWorldRotation() const { return m_WorldRotation; }
 
 
-		void SetWorldLocation(const glm::vec3& worldLocation) { SetWorldLocation(worldLocation.x, worldLocation.y, worldLocation.z); }
-		void SetWorldLocation(float pitch, float yaw, float roll);
+		void SetWorldLocation(float x = 0.0f, float y = 0.0f, float z = 0.0f) { SetWorldLocation({ x , y ,z }); }
+		void SetWorldLocation(const glm::vec3& worldLocation);
 
 
-		void AddLocalOffset(const float& ts, const glm::vec3& locationToAdd) { AddLocalOffset(ts, locationToAdd.x, locationToAdd.y, locationToAdd.z); }
-		void AddLocalOffset(const float& ts, float x, float y, float z);
+		void AddLocalOffset(float x = 0.0f, float y = 0.0f, float z = 0.0f) { AddLocalOffset({ x, y, z }); }
+		void AddLocalOffset(const glm::vec3& locationToAdd);
 		
 
 		// Offset Location Ignoring Rotation
-		void AddWorldLocationOffset(const float& ts, const glm::vec3& locationToAdd) { AddWorldLocationOffset(ts, locationToAdd.x, locationToAdd.y, locationToAdd.z); }
-		void AddWorldLocationOffset(const float& ts, float x, float y, float z);
+		void AddWorldLocationOffset(float x = 0.0f, float y = 0.0f, float z = 0.0f) { AddWorldLocationOffset({ x, y, z }); }
+		void AddWorldLocationOffset(const glm::vec3& locationToAdd);
 
 
-		void SetWorldRotation(const glm::vec3& worldRotation) { SetWorldRotation(worldRotation.x, worldRotation.y, worldRotation.z); }
-		void SetWorldRotation(float pitch, float yaw, float roll);
+		void SetWorldRotation(float pitch = 0.0f, float yaw = 0.0f, float roll = 0.0f) { SetWorldRotation({ pitch, yaw, roll }); }
+		void SetWorldRotation(const glm::vec3& worldRotation);
 
 
-		void AddLocalRotation(const float& ts = 0.0f, const glm::vec3& offsetRotation = glm::vec3(0.0f)) { AddLocalRotation(ts, offsetRotation.x, offsetRotation.y, offsetRotation.z); }
-		void AddLocalRotation(const float& ts = 0.0f, const float& offsetYaw = 0.0f, const float& offsetPitch = 0.0f, const float& offsetRoll = 0.0f);
+		void AddLocalRotation(float offsetPitch = 0.0f, float offsetYaw = 0.0f, float offsetRoll = 0.0f) { AddLocalRotation({ offsetPitch, offsetYaw ,offsetRoll }); }
+		void AddLocalRotation(const glm::vec3& offsetRotation);
 		
 
 		// World Directions

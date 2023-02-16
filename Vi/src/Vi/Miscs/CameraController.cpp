@@ -34,9 +34,9 @@ namespace Vi {
 		if (m_MouseRightButtonPressed) {
 
 			float XOffset = Vi::Input::GetMouseX() - LastRightMouseXPos;
-			float YOffset = LastRightMouseYPos - Vi::Input::GetMouseY();
+			float YOffset = Vi::Input::GetMouseY() - LastRightMouseYPos;
 
-			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, -YOffset * m_MouseYSensitivity * m_CameraRotationSpeed, 0.0f);
+			rotationOffsetLocal += glm::vec3(YOffset * m_MouseYSensitivity * m_CameraRotationSpeed, XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f);
 
 			LastRightMouseXPos = Vi::Input::GetMouseX();
 			LastRightMouseYPos = Vi::Input::GetMouseY();
@@ -45,41 +45,41 @@ namespace Vi {
 		if (m_MouseLeftButtonPressed) {
 
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
-			float YOffset = LastLeftMouseYPos - Vi::Input::GetMouseY();
+			float YOffset = Vi::Input::GetMouseY() - LastLeftMouseYPos;
 			
-			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f);					
-			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f, 0.0f);
+			locationOffsetWorld += glm::vec3(-YOffset * m_CameraTranslationSpeed * m_MouseYSensitivity, 0.0f, 0.0f);					
+			rotationOffsetLocal += glm::vec3(0.0f, XOffset * m_MouseXSensitivity * m_CameraRotationSpeed, 0.0f);
 
 			LastLeftMouseXPos  = Vi::Input::GetMouseX();
 			LastLeftMouseYPos  = Vi::Input::GetMouseY();
 		}
 
 		if (Input::IsKeyPressed(VI_KEY_W) || Input::IsKeyPressed(VI_KEY_UP)) {
-			locationOffsetLocal += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
 		}          
 
 		if (Input::IsKeyPressed(VI_KEY_S) || Input::IsKeyPressed(VI_KEY_DOWN)) {
-			locationOffsetLocal += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
-		}           
+			locationOffsetLocal += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+		}
 
 		if (Input::IsKeyPressed(VI_KEY_D) || Input::IsKeyPressed(VI_KEY_RIGHT)) {
-			locationOffsetLocal += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
-		}          
+			locationOffsetLocal += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+		}
 
 		if (Input::IsKeyPressed(VI_KEY_A) || Input::IsKeyPressed(VI_KEY_LEFT)) {
-			locationOffsetLocal += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
-		}          	
-				
-		if (Input::IsKeyPressed(VI_KEY_E)) {
-			locationOffsetLocal += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
-		}
-		if (Input::IsKeyPressed(VI_KEY_Q)) {
-			locationOffsetLocal += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
+			locationOffsetLocal += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
 		}
 
-		m_Camera.AddLocalOffset(ts , locationOffsetLocal);
-		m_Camera.AddLocalRotation(ts, rotationOffsetLocal);
-		m_Camera.AddWorldLocationOffset(ts, locationOffsetWorld);
+		if (Input::IsKeyPressed(VI_KEY_E)) {
+			locationOffsetLocal += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+		}
+		if (Input::IsKeyPressed(VI_KEY_Q)) {
+			locationOffsetLocal += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+		}
+
+		m_Camera.AddLocalOffset(locationOffsetLocal);
+		m_Camera.AddLocalRotation(rotationOffsetLocal);
+		m_Camera.AddWorldLocationOffset(locationOffsetWorld);
 	}
 
 	void CameraController::OnEvent(Event& e) {
@@ -113,7 +113,7 @@ namespace Vi {
 	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e) {
 
 		if (!m_MouseRightButtonPressed) {
-			m_Camera.AddLocalOffset(1.0f, glm::vec3(e.GetYOffset(), 0.0, 0.0));
+			m_Camera.AddLocalOffset(glm::vec3(e.GetYOffset(), 0.0, 0.0));
 		}
 		else {			
 			float fovOffset = - e.GetYOffset() * 5.0f;			

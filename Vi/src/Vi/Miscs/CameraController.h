@@ -31,7 +31,7 @@ namespace Vi {
 
 		Camera m_Camera;
 
-		float m_CameraTranslationSpeed = 5.0f, m_CameraRotationSpeed = 45.0f, m_MouseXSensitivity = 5.0f, m_MouseYSensitivity = 5.0f;
+		float m_CameraTranslationSpeed = 0.005f, m_CameraRotationSpeed = 0.1f, m_MouseXSensitivity = 1.0f, m_MouseYSensitivity = 1.0f;
 		int m_BoostFactor = 1;
 
 		float m_FOVCache = 90.0;
