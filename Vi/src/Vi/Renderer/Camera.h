@@ -26,21 +26,21 @@ namespace Vi {
 		void SetWorldLocation(float pitch, float yaw, float roll);
 
 
-		void AddLocalOffset(const float& ts, const glm::vec3& locationToAdd) { AddLocalOffset(ts, locationToAdd.x, locationToAdd.y, locationToAdd.z); }
-		void AddLocalOffset(const float& ts, float x, float y, float z);
+		void AddLocalOffset(float x = 0.0f, float y = 0.0f, float z = 0.0f) { AddLocalOffset({ x, y, z }); }
+		void AddLocalOffset(const glm::vec3& locationToAdd);
 		
 
 		// Offset Location Ignoring Rotation
-		void AddWorldLocationOffset(const float& ts, const glm::vec3& locationToAdd) { AddWorldLocationOffset(ts, locationToAdd.x, locationToAdd.y, locationToAdd.z); }
-		void AddWorldLocationOffset(const float& ts, float x, float y, float z);
+		void AddWorldLocationOffset(const glm::vec3& locationToAdd) { AddWorldLocationOffset(locationToAdd.x, locationToAdd.y, locationToAdd.z); }
+		void AddWorldLocationOffset(float x, float y, float z);
 
 
 		void SetWorldRotation(const glm::vec3& worldRotation) { SetWorldRotation(worldRotation.x, worldRotation.y, worldRotation.z); }
 		void SetWorldRotation(float pitch, float yaw, float roll);
 
 
-		void AddLocalRotation(const float& ts = 0.0f, const glm::vec3& offsetRotation = glm::vec3(0.0f)) { AddLocalRotation(ts, offsetRotation.x, offsetRotation.y, offsetRotation.z); }
-		void AddLocalRotation(const float& ts = 0.0f, const float& offsetYaw = 0.0f, const float& offsetPitch = 0.0f, const float& offsetRoll = 0.0f);
+		void AddLocalRotation( const glm::vec3& offsetRotation = glm::vec3(0.0f)) { AddLocalRotation(offsetRotation.x, offsetRotation.y, offsetRotation.z); }
+		void AddLocalRotation( const float& offsetYaw = 0.0f, const float& offsetPitch = 0.0f, const float& offsetRoll = 0.0f);
 		
 
 		// World Directions

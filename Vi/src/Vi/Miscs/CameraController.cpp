@@ -16,6 +16,7 @@ namespace Vi {
 
 	void CameraController::OnUpdate(Timestep ts) {
 
+		VI_CORE_INFO("(CameraControllerCpp) TimeStep = {}", ts);
 		glm::vec3 locationOffsetWorld(0.0f);
 		glm::vec3 locationOffsetLocal(0.0f);
 		glm::vec3 rotationOffsetLocal(0.0f);
@@ -77,9 +78,9 @@ namespace Vi {
 			locationOffsetLocal += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor);
 		}
 
-		m_Camera.AddLocalOffset(ts , locationOffsetLocal);
-		m_Camera.AddLocalRotation(ts, rotationOffsetLocal);
-		m_Camera.AddWorldLocationOffset(ts, locationOffsetWorld);
+		m_Camera.AddLocalOffset(locationOffsetLocal / 1000.0f);
+		m_Camera.AddLocalRotation(rotationOffsetLocal / 1000.0f);
+		m_Camera.AddWorldLocationOffset(locationOffsetWorld / 1000.0f);
 	}
 
 	void CameraController::OnEvent(Event& e) {
@@ -113,7 +114,7 @@ namespace Vi {
 	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e) {
 
 		if (!m_MouseRightButtonPressed) {
-			m_Camera.AddLocalOffset(1.0f, glm::vec3(e.GetYOffset(), 0.0, 0.0));
+			m_Camera.AddLocalOffset(e.GetYOffset());
 		}
 		else {			
 			float fovOffset = - e.GetYOffset() * 5.0f;			

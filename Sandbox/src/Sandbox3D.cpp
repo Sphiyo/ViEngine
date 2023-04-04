@@ -83,9 +83,9 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		PROFILE_SCOPE("Renderer Draw");
 		Vi::Renderer3D::BeginScene(m_CameraController.GetCamera());
 		Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor );
-		Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture );
+		Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
 		Vi::Renderer3D::DrawPlane(m_Cube2Position, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f }, m_GroundColor);
-		Vi::Renderer3D::DrawPlane(m_Cube4Position, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f }, m_TransparentTexture);
+		Vi::Renderer3D::DrawPlane(m_Cube4Position, { 0.0f,0.0f,0.0f }, { 1.0f,1.0f,1.0f }, m_TransparentTexture, { 0.0f,1.0f,0.0f,1.0f });
 	}
 	
 	

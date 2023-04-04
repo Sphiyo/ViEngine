@@ -45,15 +45,15 @@ namespace Vi {
 		RecalculateViewMatrix();
 	}
 
-	void Camera::AddLocalOffset(const float& ts, float x, float y, float z) {
+	void Camera::AddLocalOffset(const glm::vec3& locationToAdd) {
 
-		m_WorldLocation += m_ForwardVector * x * ts + m_RightVector * y * ts + m_UpVector * z * ts;
+		m_WorldLocation += m_ForwardVector * locationToAdd.x + m_RightVector * locationToAdd.y + m_UpVector * locationToAdd.z;
 		RecalculateViewMatrix();
 	}
 
-	void Camera::AddWorldLocationOffset(const float& ts, float x, float y, float z) {
+	void Camera::AddWorldLocationOffset(float x, float y, float z) {
 
-		m_WorldLocation += m_WorldForwardVector * x * ts + m_WorldRightVector * y * ts + m_WorldUpVector * z * ts;
+		m_WorldLocation += m_WorldForwardVector * x + m_WorldRightVector * y + m_WorldUpVector * z;
 		RecalculateViewMatrix();
 	}
 
@@ -63,9 +63,9 @@ namespace Vi {
 		m_WorldRotation = { pitch,yaw - 90.0f, roll }; RecalculateViewMatrix();
 	}
 
-	void Camera::AddLocalRotation(const float& ts, const float& offsetYaw, const float& offsetPitch, const float& offsetRoll) {
+	void Camera::AddLocalRotation(const float& offsetYaw, const float& offsetPitch, const float& offsetRoll) {
 
-		m_WorldRotation = { m_WorldRotation.x - offsetPitch * ts, m_WorldRotation.y + offsetYaw * ts, m_WorldRotation.z + offsetRoll * ts};
+		m_WorldRotation = { m_WorldRotation.x - offsetPitch, m_WorldRotation.y + offsetYaw , m_WorldRotation.z + offsetRoll };
 		m_WorldRotation.x = glm::clamp<float>(m_WorldRotation.x, -89.0f, 89.0f);
 
 		if (m_WorldRotation.y >  360.0f) { m_WorldRotation.y = 0.0f; }

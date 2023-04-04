@@ -156,6 +156,9 @@
     <ClInclude Include="src\Vi\Renderer\Buffer.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Camera.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
@@ -163,6 +166,9 @@
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Renderer.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Renderer3D.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\RendererAPI.h">
@@ -1431,12 +1437,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\Renderer3D.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\Camera.h">
-      <Filter>src\Vi\Renderer</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1511,6 +1511,9 @@
     <ClCompile Include="src\Vi\Renderer\Renderer.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Renderer3D.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
@@ -1528,9 +1531,6 @@
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
-    </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\Renderer3D.cpp">
-      <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
   </ItemGroup>
 </Project>
