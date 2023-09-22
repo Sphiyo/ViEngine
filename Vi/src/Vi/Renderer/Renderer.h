@@ -9,6 +9,7 @@ namespace Vi {
 
 	public:
 		static void Init();
+		static void Shutdown();
 		static void OnWindowResize(uint32_t width, uint32_t height);
 	//	static void BeginScene2D(OrthographicCamera& camera);
 		static void BeginScene(Camera& camera);
@@ -22,7 +23,7 @@ namespace Vi {
 			glm::mat4 ViewProjectionMatrix;
 		};
 
-		static SceneData* m_SceneData;
+		static Scope<SceneData> s_SceneData;
 	};
 
 }

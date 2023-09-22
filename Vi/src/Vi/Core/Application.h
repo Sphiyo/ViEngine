@@ -7,6 +7,8 @@
 #include "Vi/Core/Timestep.h"
 #include "Vi/ImGui/ImGuiLayer.h"
 
+int main(int argc, char** argv);
+
 namespace Vi {
 
 	class Application {
@@ -15,22 +17,25 @@ namespace Vi {
 
 		Application();
 		virtual ~Application();
-		void Run();
 		void OnEvent(Event& e);
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 		inline Window& GetWindow() { return *m_Window; }
 		inline static Application& Get() { return *s_Instance; }
 		inline void CloseWindow() { m_Running = false; }
-	
+		inline ImGuiLayer* GetImGuiLayer()const { return m_ImGuiLayer; }
 	private:
 
+		void Run();
 		bool OnWindowClosed(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
 		bool OnKeyPressed(KeyPressedEvent& e);
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
+		bool OnMouseMoved(MouseMovedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
+
+		
 		
 	private:
 
@@ -43,7 +48,7 @@ namespace Vi {
 	private:
 
 		static Application* s_Instance;
-
+		friend int ::main(int argc, char** argv);
 	};
 
 	// To Be Defined In Client

@@ -9,7 +9,8 @@ namespace Vi {
 	public:
 
 		inline static void Init() {
-		
+			
+
 			s_RendererAPI->Init();
 		}
 
@@ -36,7 +37,7 @@ namespace Vi {
 		}
 
 	private:
-		static RendererAPI* s_RendererAPI;
+		static Scope<RendererAPI> s_RendererAPI;
 	
 	};
 

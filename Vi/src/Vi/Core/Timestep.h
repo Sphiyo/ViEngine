@@ -5,7 +5,7 @@ namespace Vi {
 	class Timestep {
 
 	public:
-		Timestep(float time) : m_Time(time) {
+		Timestep(float time = 0.0f) : m_Time(time) {
 
 		}
 		

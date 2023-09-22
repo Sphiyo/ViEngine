@@ -1,4 +1,5 @@
 #pragma once
+#include "Vi/Core/Core.h"
 
 #ifdef VI_PLATFORM_WINDOWS
 
@@ -7,13 +8,18 @@
 	int main(int argc, char** argv) {
 
 		Vi::Log::Init();
-		VI_CORE_WARN("(EntryPoint) Initialized log!");
-		VI_CORE_INFO("(EntryPoint) Welcome To Me Vi!");
+		
+		VI_PROFILE_BEGIN_SESSION("Startup","ViProfile-Startup.json");
 		auto app = Vi::CreateApplication();
-		
+		VI_PROFILE_END_SESSION();
+
+		VI_PROFILE_BEGIN_SESSION("Runtime", "ViProfile-Runtime.json");
 		app->Run();
-		
+		VI_PROFILE_END_SESSION();
+
+		VI_PROFILE_BEGIN_SESSION("Shutdown", "ViProfile-Shutdown.json");
 		delete app;
-	
+		VI_PROFILE_END_SESSION();
+
 	}
 #endif

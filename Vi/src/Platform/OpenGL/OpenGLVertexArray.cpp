@@ -6,7 +6,7 @@
 namespace Vi {
 
 
-	static GLenum ShaderDataToOpenGLType(ShaderDataType type)
+	static GLenum ShaderDataTypeToOpenGLBaseType(ShaderDataType type)
 	{
 		switch (type)
 		{
@@ -41,6 +41,8 @@ namespace Vi {
 
 	OpenGLVertexArray::OpenGLVertexArray()
 	{
+		VI_PROFILE_FUNCTION();
+
 		//glCreateVertexArrays(1, &m_RendererID);
 		glGenVertexArrays(1, &m_RendererID);
 	}
@@ -48,48 +50,58 @@ namespace Vi {
 
 	OpenGLVertexArray::~OpenGLVertexArray()
 	{
+		VI_PROFILE_FUNCTION();
+
 		glDeleteVertexArrays(1, &m_RendererID);
 	}
 
 
 	void OpenGLVertexArray::Bind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 	}
 
 
 	void OpenGLVertexArray::Unbind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindVertexArray(0);
 	}
 
 
 	void OpenGLVertexArray::AddVertexBuffer(const Ref<VertexBuffer>& vertexBuffer)
 	{
+		VI_PROFILE_FUNCTION();
+
 		VI_CORE_ASSERT(vertexBuffer->GetLayout().GetElements().size(), "(OpenGLVertexArray) Vertex Buffer has no layout!");
 		
+
 		glBindVertexArray(m_RendererID);
 		vertexBuffer->Bind();
 
-
-		uint32_t index = 0;
 		const auto& layout = vertexBuffer->GetLayout();
 		for (const auto& element : layout)
 		{
-			glEnableVertexAttribArray(index);
-			glVertexAttribPointer(index,
+			glEnableVertexAttribArray(m_VertexBufferIndex);
+			glVertexAttribPointer(m_VertexBufferIndex,
 				element.GetComponentCount(),
-				ShaderDataToOpenGLType(element.Type),
+				ShaderDataTypeToOpenGLBaseType(element.Type),
 				element.Normalized ? GL_TRUE : GL_FALSE,
 				layout.GetStride(),
 				(const void*)element.Offset);
-			index++;
+			m_VertexBufferIndex++;
 		}
-		m_VertexBuffer.push_back(vertexBuffer);
+
+		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindVertexArray(m_RendererID);
 		indexBuffer->Bind();
 		m_IndexBuffer = indexBuffer;

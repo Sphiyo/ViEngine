@@ -9,6 +9,8 @@ namespace Vi {
 
 	OpenGLVertexBuffer::OpenGLVertexBuffer(float* vertices, uint32_t size)
 	{
+		VI_PROFILE_FUNCTION();
+
 		//glCreateBuffers(1, &m_RendererID);  // Update
 
 		glGenBuffers(1, &m_RendererID);
@@ -19,16 +21,22 @@ namespace Vi {
 
 	OpenGLVertexBuffer::~OpenGLVertexBuffer()
 	{
+		VI_PROFILE_FUNCTION();
+
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Bind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLVertexBuffer::Unbind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ARRAY_BUFFER, 0);
 	}
 
@@ -39,6 +47,8 @@ namespace Vi {
 	OpenGLIndexBuffer::OpenGLIndexBuffer(uint32_t* indices, uint32_t count)
 		: m_Count(count)
 	{
+		VI_PROFILE_FUNCTION();
+
 		//glCreateBuffers(1, &m_RendererID);  // Update
 
 
@@ -50,16 +60,22 @@ namespace Vi {
 
 	OpenGLIndexBuffer::~OpenGLIndexBuffer()
 	{
+		VI_PROFILE_FUNCTION();
+
 		glDeleteBuffers(1, &m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Bind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, m_RendererID);
 	}
 
 	void OpenGLIndexBuffer::Unbind() const
 	{
+		VI_PROFILE_FUNCTION();
+
 		glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 	}
 

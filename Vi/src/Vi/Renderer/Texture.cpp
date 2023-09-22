@@ -28,7 +28,6 @@ namespace Vi {
 
 		VI_CORE_ASSERT(false, "(Texture) Unknown Renderer API Selected !");
 		return nullptr;
-		return Ref<Texture2D>();
 	}
 	
 
@@ -57,7 +56,6 @@ namespace Vi {
 
 		VI_CORE_ASSERT(false, "(Texture) Unknown Renderer API Selected !");
 		return nullptr;
-		return Ref<Texture2D>();
 	}
 
 }

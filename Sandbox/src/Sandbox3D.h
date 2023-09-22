@@ -29,22 +29,17 @@ private:
 	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
 
 	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
-	glm::vec4 m_GroundColor = glm::vec4(0.2f, 0.2f, 0.5f, 1.0f);
+	glm::vec4 m_GroundColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
+	glm::ivec2 m_GridCount = { 5, 5 };
+	glm::vec2 m_GridOffset = { 2.0f,2.0f };
 
-	struct ProfileResult {
-
-		const char* Name;
-		float Time;
-	};
-
-
-	std::vector<ProfileResult> m_ProfileResults;
+	
 
 
 	glm::vec3 m_Cube1Position = glm::vec3(0.0f);
-	glm::vec3 m_Cube2Position = glm::vec3(0.0f);
-	glm::vec3 m_Cube3Position = glm::vec3(0.0f);
+	glm::vec3 m_GroundLocation = glm::vec3(0.0f);
+	glm::vec3 m_CubeGridLocation = glm::vec3(0.0f);
 	glm::vec3 m_Cube4Position = glm::vec3(0.0f);
 
 	float LastMouseXPos = 0.f;				// temp

@@ -26,13 +26,18 @@ namespace Vi {
 		bool OnMouseButtonPressed(MouseButtonPressedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 		bool OnWindowResized(WindowResizeEvent& e);
+		bool OnMouseMoved(MouseMovedEvent& e);
 
 	private:
 
 		Camera m_Camera;
 
-		float m_CameraTranslationSpeed = 1.0f, m_CameraRotationSpeed = 180.0f, m_MouseXSensitivity = 0.1f, m_MouseYSensitivity = 0.1f;
-		int m_BoostFactor = 100;
+		float m_CameraTranslationSpeed = 100.0f, m_CameraRotationSpeed = 180.0f;
+		float m_MouseXSensitivityLook = 1.0f, m_MouseYSensitivityLook = 1.0f;
+		float m_MouseXSensitivityMove = 0.01f, m_MouseYSensitivityMove = 0.01f;
+		float m_MouseScrollSensitivityMove = 0.05f, m_MouseScrollSensitivityFov = 5.0f;
+		
+		int m_BoostFactor = 1;
 
 		float m_FOVCache = 90.0;
 

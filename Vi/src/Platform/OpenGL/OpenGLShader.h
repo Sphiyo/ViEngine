@@ -17,7 +17,6 @@ namespace Vi {
 		virtual void Bind() const override;
 		virtual void Unbind() const override;
 
-		virtual const std::string& GetName() const override;
 
 		void SetInt(const std::string& name, const int& value) override;
 		void SetFloat(const std::string& name, const float& value) override;
@@ -26,6 +25,8 @@ namespace Vi {
 		void SetFloat4(const std::string& name, const glm::vec4& value) override;
 		void SetMat3(const std::string& name, const glm::mat3& value) override;
 		void SetMat4(const std::string& name, const glm::mat4& value) override;
+
+		virtual const std::string& OpenGLShader::GetName() const { return m_Name; }
 
 		void UploadUniformInt(const std::string& name, int value);
 

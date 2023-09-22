@@ -26,8 +26,7 @@ public:
 			 0.5f,  0.5f, 0.0f,    1.0f, 1.0f,
 			 0.5f, -0.5f, 0.0f,    1.0f, 0.0f
 		};
-		Vi::Ref<Vi::VertexBuffer> vertexBuffer;
-		vertexBuffer.reset(Vi::VertexBuffer::Create(vertices, sizeof(vertices)));
+		Vi::Ref<Vi::VertexBuffer> vertexBuffer = Vi::VertexBuffer::Create(vertices, sizeof(vertices));
 		Vi::BufferLayout layout = {
 			{ Vi::ShaderDataType::Float3, "a_Position" },
 			{ Vi::ShaderDataType::Float2, "a_TexCoord" },
@@ -36,9 +35,9 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		// IndexBuffer 
-		Vi::Ref<Vi::IndexBuffer> indexBuffer;
+		
 		uint32_t indices[6] = { 0,1,2,2,3,0 };
-		indexBuffer.reset(Vi::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t)));
+		Vi::Ref<Vi::IndexBuffer> indexBuffer = Vi::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
 		
 		// Square VertexArray 
@@ -56,8 +55,7 @@ public:
 		 0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
 		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f					  
 		};
-		Vi::Ref<Vi::VertexBuffer> squareVB;
-		squareVB.reset(Vi::VertexBuffer::Create(squareVertices, sizeof(squareVertices)));
+		Vi::Ref<Vi::VertexBuffer> squareVB = Vi::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout({
 			{ Vi::ShaderDataType::Float3, "a_Position" },
 			{ Vi::ShaderDataType::Float2, "a_TexCoord" }
@@ -65,7 +63,7 @@ public:
 		m_CubeVA->AddVertexBuffer(squareVB);
 		
 		// Square IndexBuffer 
-		Vi::Ref<Vi::IndexBuffer> squareIB;
+		
 		uint32_t squareIndices[6*6] = {
 			0,1,2,2,3,0,
 			0,4,7,7,3,0,
@@ -74,7 +72,7 @@ public:
 			3,2,6,6,7,3,
 			0,1,5,5,4,0
 		};
-		squareIB.reset(Vi::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t)));
+		Vi::Ref<Vi::IndexBuffer> squareIB = Vi::IndexBuffer::Create(squareIndices, sizeof(squareIndices) / sizeof(uint32_t));
 		m_CubeVA->SetIndexBuffer(squareIB);
 
 		// ShaderSource Vertex 
@@ -427,6 +425,6 @@ public:
 
 
 Vi::Application* Vi::CreateApplication() {
-
+	
 	return new Sandbox();
 }

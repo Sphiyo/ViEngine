@@ -2,7 +2,7 @@
 #include "Application.h"
 
 #include "Vi/Renderer/Renderer.h"
-#include "Input.h"
+
 
 
 namespace Vi {
@@ -10,9 +10,12 @@ namespace Vi {
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()	{
+
+		VI_PROFILE_FUNCTION();
+
 		VI_CORE_ASSERT(!s_Instance, "(Application) Application Already Exists!");
 		s_Instance = this;
-		m_Window = std::unique_ptr<Window>(Window::Create());
+		m_Window = Window::Create();
 		m_Window->SetEventCallback(VI_BINDEVENT(Application::OnEvent));
 		Renderer::Init();
 		m_ImGuiLayer = new ImGuiLayer();
@@ -20,55 +23,78 @@ namespace Vi {
 	}
 
 	Application::~Application() {
+		VI_PROFILE_FUNCTION();
+
+		Renderer::Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer) {
+		VI_PROFILE_FUNCTION();
+
 		m_LayerStack.PushLayer(layer);
 		layer->OnAttach();
 	}
 
 	void Application::PushOverlay(Layer* overlay) {
+		VI_PROFILE_FUNCTION();
+
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
 	}
 
-	void Application::Run() {	
-
-		while (m_Running) {
-			Timestep timestep = Time::GetTime() - m_LastFrameTime;
-			m_LastFrameTime = Time::GetTime();
-			
-			if(!m_Minimized) {
-				for (Layer* layer : m_LayerStack) { layer->OnUpdate(timestep); }
-			}
-
-			//ImGui Loop
-			m_ImGuiLayer->Begin();			
-			for (Layer* layer : m_LayerStack) {
-				layer->OnImGuiRender();
-			}
-			m_ImGuiLayer->End();
-
-			// Window Poll Event And Swap Buffers
-			m_Window->OnUpdate();
-		};
-	}
 
 	void Application::OnEvent(Event& e) {
+		VI_PROFILE_FUNCTION();
 
 		EventDispatcher dispatcher(e);
 		dispatcher.Dispatch<WindowCloseEvent>(VI_BINDEVENT(Application::OnWindowClosed));
 		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(Application::OnWindowResize));
-		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(Application::OnKeyPressed));
-		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(Application::OnMouseButtonPressed));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(Application::OnMouseButtonReleased));
+		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(Application::OnKeyPressed));							 // temp (move to editor)
+		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(Application::OnMouseButtonPressed));			 // temp (move to editor)
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(Application::OnMouseButtonReleased));		 // temp (move to editor)
+		dispatcher.Dispatch<MouseMovedEvent>(VI_BINDEVENT(Application::OnMouseMoved));							 // temp (move to editor)
 		
 		// LookForTheLastPossibleLayerThatCanRecieveEventAndIfItGetsHandledThenBreak
-		for (auto it = m_LayerStack.end(); it != m_LayerStack.begin();) {
+		for (auto it = m_LayerStack.rbegin(); it != m_LayerStack.rend(); ++it)
+		{
+			(*it)->OnEvent(e);
+			if (e.Handled)
+				break;
+		}
+	}
+	void Application::Run() {	
+		VI_PROFILE_FUNCTION();
 
-			(*--it)->OnEvent(e);
-			if (e.Handled) { break; }
-		}	
+		while (m_Running) {
+			
+			VI_PROFILE_SCOPE("RunLoop");
+
+			Timestep timestep = Time::GetTime() - m_LastFrameTime;
+			m_LastFrameTime = Time::GetTime();
+			
+			if(!m_Minimized) {
+
+				VI_PROFILE_SCOPE("LayerStack OnUpdate");
+
+				for (Layer* layer : m_LayerStack) 
+					layer->OnUpdate(timestep); 
+				
+			}
+
+			
+			m_ImGuiLayer->Begin();	
+			{
+				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+				for (Layer* layer : m_LayerStack) 
+					layer->OnImGuiRender();
+				
+			}
+			m_ImGuiLayer->End();
+
+		
+			m_Window->OnUpdate();
+		};
 	}
 
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
@@ -78,6 +104,8 @@ namespace Vi {
 	}
 
 	bool Application::OnWindowResize(WindowResizeEvent& e) {
+		VI_PROFILE_FUNCTION();
+
 		if (e.GetHeight() == 0 || e.GetWidth() == 0) {
 
 			m_Minimized = true;
@@ -85,6 +113,7 @@ namespace Vi {
 		}
 		m_Minimized = false;
 		Renderer::OnWindowResize(e.GetWidth(), e.GetHeight());
+		Application::Get().GetWindow().SetWindowAspectRatio(16, 9);
 
 		return false;
 	}
@@ -116,11 +145,29 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		m_Window->SetCursor(CursorState::DISABLED);
+		if (!m_ImGuiLayer->m_CapturingMouse) {
+
+			m_Window->SetCursor(CursorState::DISABLED);
+		}
+		return false;
+	}
+	bool Application::OnMouseMoved(MouseMovedEvent& e)
+	{
+		if (!m_ImGuiLayer->m_CapturingMouse) {
+
+			
+		}
 		return false;
 	}
 	bool Application::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 	{
+		if (!m_ImGuiLayer->m_CapturingMouse) { 
+
+			if (Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_LEFT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_MIDDLE)) {
+				//	m_Window->SetCursor(CursorState::DISABLED); 
+				return false;
+			}
+		}
 		m_Window->SetCursor(CursorState::NORMAL);
 		return false;
 	}

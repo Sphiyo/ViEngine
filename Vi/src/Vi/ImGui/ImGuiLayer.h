@@ -5,6 +5,7 @@
 #include "Vi/Events/MouseEvent.h"
 
 
+
 namespace Vi {
 
 
@@ -14,18 +15,33 @@ namespace Vi {
 	public:
 
 		ImGuiLayer();
-		~ImGuiLayer();
+		~ImGuiLayer() = default;
 
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
+		
+		virtual void OnImGuiRender() override;
 
 		void Begin();
 		void End();
+
+		// Dark or Light
+		virtual void SetImGuiTheme(bool bStyleDark);
+
+	public:
+
+		bool m_CapturingKeyboard = false;
+		bool m_CapturingMouse = false;
+
 	private:
 	
 		float m_Time = 0.0f;
 	
+		bool m_DarkImgui = true;
 	};
+
+	
+
 
 
 }

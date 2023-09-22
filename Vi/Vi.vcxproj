@@ -169,6 +169,7 @@
     <ClInclude Include="src\Vi\Core\MouseButtonCodes.h" />
     <ClInclude Include="src\Vi\Core\Timestep.h" />
     <ClInclude Include="src\Vi\Core\Window.h" />
+    <ClInclude Include="src\Vi\Debug\Instrumentor.h" />
     <ClInclude Include="src\Vi\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Vi\Events\Event.h" />
     <ClInclude Include="src\Vi\Events\KeyEvent.h" />
@@ -618,15 +619,18 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Vi\Core\Application.cpp" />
+    <ClCompile Include="src\Vi\Core\Input.cpp" />
     <ClCompile Include="src\Vi\Core\Layer.cpp" />
     <ClCompile Include="src\Vi\Core\LayerStack.cpp" />
     <ClCompile Include="src\Vi\Core\Log.cpp" />
     <ClCompile Include="src\Vi\Core\Time.cpp" />
+    <ClCompile Include="src\Vi\Core\Window.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Vi\Miscs\CameraController.cpp" />
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
     <ClCompile Include="src\Vi\Renderer\Camera.cpp" />
+    <ClCompile Include="src\Vi\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
     <ClCompile Include="src\Vi\Renderer\Renderer3D.cpp" />

@@ -21,6 +21,7 @@ namespace Vi {
 	static Renderer3DStorage* s_Data;
 
 	void Renderer3D::Init() {
+		VI_PROFILE_FUNCTION();
 
 		s_Data = new Renderer3DStorage();
 		s_Data->CubeVertexArray = VertexArray::Create();
@@ -77,8 +78,7 @@ namespace Vi {
 		-0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
 
 		};
-		Ref<VertexBuffer> cubeVB;
-		cubeVB.reset(VertexBuffer::Create(cubeVertices, sizeof(cubeVertices)));
+		Ref<VertexBuffer> cubeVB = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		cubeVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
@@ -96,8 +96,7 @@ namespace Vi {
 			20 , 21  , 22  ,  22  , 23  , 20
 
 		};
-		Ref<IndexBuffer> cubeIB;
-		cubeIB.reset(IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(uint32_t)));
+		Ref<IndexBuffer> cubeIB = IndexBuffer::Create(cubeIndices, sizeof(cubeIndices) / sizeof(uint32_t));
 		s_Data->CubeVertexArray->SetIndexBuffer(cubeIB);
 
 
@@ -113,8 +112,7 @@ namespace Vi {
 			 0.5f, 0.0f, -0.5f,	1.0f, 0.0f
 		};
 
-		Ref<VertexBuffer> planeVB;
-		planeVB.reset(VertexBuffer::Create(planeVertices, sizeof(planeVertices)));
+		Ref<VertexBuffer> planeVB = VertexBuffer::Create(planeVertices, sizeof(planeVertices));
 		planeVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
@@ -124,8 +122,7 @@ namespace Vi {
 		// Plane IndexBuffer 
 		uint32_t planeIndices[6] = { 0,1,2,2,3,0 };
 
-		Ref<IndexBuffer> planeIB;
-		planeIB.reset(IndexBuffer::Create(planeIndices, sizeof(planeIndices) / sizeof(uint32_t)));
+		Ref<IndexBuffer> planeIB = IndexBuffer::Create(planeIndices, sizeof(planeIndices) / sizeof(uint32_t));
 		s_Data->PlaneVertexArray->SetIndexBuffer(planeIB);
 
 		s_Data->WhiteTexture = Texture2D::Create(1, 1);
@@ -140,11 +137,13 @@ namespace Vi {
 				
 	}
 	void Renderer3D::Shutdown() {
-		
+		VI_PROFILE_FUNCTION();
+
 		delete s_Data;
 	}
 
 	void Renderer3D::BeginScene(const Camera& camera) {
+		VI_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
@@ -152,19 +151,22 @@ namespace Vi {
 	}
 
 	void Renderer3D::EndScene() {
+		VI_PROFILE_FUNCTION();
 
 	}
-	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color) {
+	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
+		VI_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		s_Data->WhiteTexture->Bind();
 
-		glm::mat4 transform =	glm::translate(glm::mat4(1.0f), position) *
-								glm::rotate(glm::mat4(1.0f), rotation.x, { 1.0f,0.0f,0.0f }) *
-								glm::rotate(glm::mat4(1.0f), rotation.y, { 0.0f,1.0f,0.0f }) *
-								glm::rotate(glm::mat4(1.0f), rotation.z, { 0.0f,0.0f,1.0f }) *
-								glm::scale(glm::mat4(1.0f), scale);
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
+							  glm::scale(glm::mat4(1.0f), scale);
 
 
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
@@ -173,19 +175,21 @@ namespace Vi {
 		RenderCommand::DrawIndexed(s_Data->CubeVertexArray);
 	}
 
-	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color) {
+	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color, float tilingFactor) {
+		VI_PROFILE_FUNCTION();
 
+		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		texture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), rotation.x, { 1.0f,0.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.y, { 0.0f,1.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.z, { 0.0f,0.0f,1.0f }) *
-			glm::scale(glm::mat4(1.0f), scale);
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
+							  glm::scale(glm::mat4(1.0f), scale);
 
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
-		s_Data->TextureShader->SetFloat4("u_Color", color);
 
 
 		s_Data->CubeVertexArray->Bind();
@@ -193,17 +197,19 @@ namespace Vi {
 	}
 
 
-	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color) {
+	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
+		VI_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		s_Data->WhiteTexture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), rotation.x, { 1.0f,0.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.y, { 0.0f,1.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.z, { 0.0f,0.0f,1.0f }) *
-			glm::scale(glm::mat4(1.0f), scale);
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
+							  glm::scale(glm::mat4(1.0f), scale);
 
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
 
@@ -212,18 +218,20 @@ namespace Vi {
 		RenderCommand::DrawIndexed(s_Data->PlaneVertexArray);
 	}
 
-	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color) {
+	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& tint, float tilingFactor) {
+		VI_PROFILE_FUNCTION();
 
+		s_Data->TextureShader->SetFloat4("u_Color", tint);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 		texture->Bind();
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::rotate(glm::mat4(1.0f), rotation.x, { 1.0f,0.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.y, { 0.0f,1.0f,0.0f }) *
-			glm::rotate(glm::mat4(1.0f), rotation.z, { 0.0f,0.0f,1.0f }) *
-			glm::scale(glm::mat4(1.0f), scale);
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
+							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
+							  glm::scale(glm::mat4(1.0f), scale);
 
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
-		s_Data->TextureShader->SetFloat4("u_Color", color);
 
 
 		s_Data->PlaneVertexArray->Bind();

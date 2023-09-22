@@ -1,42 +1,49 @@
 #include "Vipch.h"
 #include "WindowsWindow.h"
 
+#include "Vi/Core/Input.h"
+
 #include "Vi/Events/ApplicationEvent.h"
 #include "Vi/Events/KeyEvent.h"
 #include "Vi/Events/MouseEvent.h"
 
+#include "Vi/Renderer/Renderer.h"
+
 #include "Platform/OpenGL/OpenGLContext.h"		
 
-// test
-#include "Vi/Core/Input.h"
-#include "Vi/Core/KeyCodes.h"										// temp 
-#include "Vi/Core/Application.h"
+
 
 
 namespace Vi {
 
-	static bool s_GLFWInitialized = false;
+	static uint8_t s_GLFWWindowCount = 0;
 
 	static void GLFWErroeCallback(int error_code, const char* description) {
 
 		VI_CORE_ERROR("(WindowsWindow) GLFW Error ({0}):({1})", error_code, description);
 	}
 
-	Window* Window::Create(const WindowProps& props) {
+	/*Window* Window::Create(const WindowProps& props) {
 
 		return new WindowsWindow(props);
-	}
+	}*/
 
 	WindowsWindow::WindowsWindow(const WindowProps& props) {
+
+		VI_PROFILE_FUNCTION();
 
 		Init(props);
 	}
 
 	WindowsWindow::~WindowsWindow() {
+		VI_PROFILE_FUNCTION();
+
 		Shutdown();
 	}
 	
 	void WindowsWindow::Init(const WindowProps& props) {
+
+		VI_PROFILE_FUNCTION();
 
 		m_Data.Title = props.Title;
 		m_Data.Width = props.Width;
@@ -44,8 +51,9 @@ namespace Vi {
 
 		VI_CORE_INFO("(WindowsWindow) Creating window {0} ({1}, {2})", props.Title, props.Width, props.Height);
 
-		if (!s_GLFWInitialized) {
-			//todo glfwterminate on system shutdown
+		if (s_GLFWWindowCount == 0) {
+			
+			VI_PROFILE_SCOPE("glfwInit");
 			int success = glfwInit();
 			//glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 			//glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
@@ -56,130 +64,137 @@ namespace Vi {
 		//	glfwWindowHint(GLFW_VISIBLE, GLFW_FALSE);
 			VI_CORE_ASSERT(success, "(WindowsWindow) Could not initialize GLFW!");
 			glfwSetErrorCallback(GLFWErroeCallback);
-			s_GLFWInitialized = true;
+			
+		}
+		{
+			VI_PROFILE_SCOPE("glfwCreateWindow");
+	#if defined(VI_DEBUG)
+			if(Renderer::GetAPI() == RendererAPI::API::OpenGL)
+				glfwWindowHint(GLFW_OPENGL_DEBUG_CONTEXT, GLFW_TRUE);
+	#endif 
+
+			m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr/*glfwGetPrimaryMonitor() // ForFullScreen*/, nullptr);
+			++s_GLFWWindowCount;
 		}
 
-		m_Window = glfwCreateWindow((int)props.Width, (int)props.Height, m_Data.Title.c_str(), nullptr/*glfwGetPrimaryMonitor() // ForFullScreen*/, nullptr);
 	//	glfwDefaultWindowHints();
-		m_Context = new OpenGLContext(m_Window);
+		m_Context = GraphicsContext::Create(m_Window);
 		m_Context->Init();
 
 		////////
-		glfwSetWindowPos(m_Window, (int)props.Width / 4, (int)props.Height/4 );
+		glfwSetWindowPos(m_Window, (int)props.Width / 4, (int)props.Height/4 ); // test
 	//	glfwShowWindow(m_Window);
 		glfwSetWindowUserPointer(m_Window, &m_Data);
+		SetWindowAspectRatio(m_Data.m_AspectRatio[0], m_Data.m_AspectRatio[1]); // temp
 		SetVSync(true);
 		CheckMonitors();
-//		{
-//			int monitorCount = 0;
-//			GLFWmonitor** monitors = glfwGetMonitors(&monitorCount);
-//			
-//			for (int i = 0; i < monitorCount; i++) {
-//
-//				m_Data.m_Monitors.push_back(monitors[i]);
-//			}
-//			VI_CORE_INFO("(WindowsWindow) {} : Monitors Connected", monitorCount);
-//			
-//		}
+
+
+
 		SetCursor(CursorState::NORMAL);
-
+		
 		//Set GLFW Callbacks
-		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height) {
-			
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			
-			data.Width = width;
-			data.Height = height;
-			
-			WindowResizeEvent event(width, height);
-			data.EventCallback(event);
-		});	
-		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window) {  
-			
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			WindowCloseEvent event;
-			data.EventCallback(event);
-
-		});		
-		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods) {
-
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-			switch (action)
+		glfwSetWindowSizeCallback(m_Window, [](GLFWwindow* window, int width, int height)
 			{
-				case GLFW_PRESS: {
-					KeyPressedEvent event(key, 0);
-					data.EventCallback(event);
-					break;
-				}
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				data.Width = width;
+				data.Height = height;
 
-				case GLFW_RELEASE: {
-					KeyReleasedEvent event(key);
-					data.EventCallback(event);
-					break;
-				}
+				WindowResizeEvent event(width, height);
+				data.EventCallback(event);
+			});
 
-				case GLFW_REPEAT: {
-					KeyPressedEvent event(key, 1);
-					data.EventCallback(event);
-					break;
-				}
-
-			}
-	
-		});
-		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int key) {
-
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-	
-			KeyTypedEvent event(key);
-			data.EventCallback(event);
-		
-		});				
-		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods) {
-
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
-		
-			switch (action)
+		glfwSetWindowCloseCallback(m_Window, [](GLFWwindow* window)
 			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				WindowCloseEvent event;
+				data.EventCallback(event);
+			});
 
-				case GLFW_PRESS: {
-					MouseButtonPressedEvent event(button);
+		glfwSetKeyCallback(m_Window, [](GLFWwindow* window, int key, int scancode, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					KeyPressedEvent event(static_cast<KeyCode>(key), 0);
 					data.EventCallback(event);
 					break;
 				}
-
-				case GLFW_RELEASE: {
-					MouseButtonReleasedEvent event(button);
+				case GLFW_RELEASE:
+				{
+					KeyReleasedEvent event(static_cast<KeyCode>(key));
 					data.EventCallback(event);
 					break;
 				}
+				case GLFW_REPEAT:
+				{
+					KeyPressedEvent event(static_cast<KeyCode>(key), 1);
+					data.EventCallback(event);
+					break;
+				}
+				}
+			});
 
-			}
-			
-		});		
-		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xoffset, double yoffset) {
+		glfwSetCharCallback(m_Window, [](GLFWwindow* window, unsigned int keycode)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+				KeyTypedEvent event(static_cast<KeyCode>(keycode));
+				data.EventCallback(event);
+			});
 
-			MouseScrolledEvent event((float)xoffset, (float)yoffset);
-			data.EventCallback(event);
-		
+		glfwSetMouseButtonCallback(m_Window, [](GLFWwindow* window, int button, int action, int mods)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-		});		
-		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xpos, double ypos) {
+				switch (action)
+				{
+				case GLFW_PRESS:
+				{
+					MouseButtonPressedEvent event(static_cast<MouseCode>(button));
+					data.EventCallback(event);
+					break;
+				}
+				case GLFW_RELEASE:
+				{
+					MouseButtonReleasedEvent event(static_cast<MouseCode>(button));
+					data.EventCallback(event);
+					break;
+				}
+				}
+			});
 
-			WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+		glfwSetScrollCallback(m_Window, [](GLFWwindow* window, double xOffset, double yOffset)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
 
-			MouseMovedEvent event((float)xpos, (float)ypos);
-			data.EventCallback(event);
+				MouseScrolledEvent event((float)xOffset, (float)yOffset);
+				data.EventCallback(event);
+			});
 
-		});		
+		glfwSetCursorPosCallback(m_Window, [](GLFWwindow* window, double xPos, double yPos)
+			{
+				WindowData& data = *(WindowData*)glfwGetWindowUserPointer(window);
+
+				MouseMovedEvent event((float)xPos, (float)yPos);
+				data.EventCallback(event);
+			});
 
 	}
 
 	void WindowsWindow::Shutdown() {
+		VI_PROFILE_FUNCTION();
 
 		glfwDestroyWindow(m_Window);
+		--s_GLFWWindowCount;
+
+		if (s_GLFWWindowCount == 0)
+		{
+			glfwTerminate();
+		}
 	}
 
 	void* WindowsWindow::GetNativeWindow() const {
@@ -188,6 +203,7 @@ namespace Vi {
 	}
 
 	void WindowsWindow::OnUpdate() {
+		VI_PROFILE_FUNCTION();
 
 		glfwPollEvents();
 		m_Context->SwapBuffers();
@@ -258,6 +274,11 @@ namespace Vi {
 		m_Data.Height = height;
 	}
 
+	void WindowsWindow::SetWindowAspectRatio(int number, int denominator) {
+
+		glfwSetWindowAspectRatio(m_Window, number, denominator);
+	}
+
 	void WindowsWindow::CheckMonitors()
 	{
 		/////////// Check For Monitors Count ///////////////////
@@ -288,6 +309,8 @@ namespace Vi {
 
 
 	void WindowsWindow::SetVSync(bool enabled) {
+		VI_PROFILE_FUNCTION();
+
 		if (enabled)
 			glfwSwapInterval(1);
 		else
@@ -346,6 +369,29 @@ namespace Vi {
 			VI_CORE_ASSERT(false, "(WindowsWindow) Cursor State Unknown! ");
 			break;
 		}		
+	}
+
+	void WindowsWindow::SetCursorPosition(double x, double y)	{
+		
+	//	int width, height;
+	//	glfwGetWindowSize(m_Window, &width, &height);
+	//	VI_CORE_INFO("width {0} height {1}", width, height);
+	//	
+	//	glfwGetWindowPos(m_Window, &width, &height);
+	//	VI_CORE_INFO("xpos {0} ypos {1}", width, height);
+	//	
+	//	double xpos, ypos;
+	//	glfwGetCursorPos(m_Window, &xpos, &ypos);
+	//	VI_CORE_INFO("xpos {0} ypos {1}", xpos, ypos);
+	//	
+	//	GLFWmonitor* monitor = glfwGetWindowMonitor(m_Window);
+	//	if (monitor) {
+	//		glfwGetMonitorPos(monitor, &width, &height);
+	//		VI_CORE_INFO("xpos {0} ypos {1}", width, height);
+	//	}
+	//
+	//	
+	//	//	glfwSetCursorPos(m_Window, x, y);
 	}
 	
 }

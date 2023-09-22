@@ -13,15 +13,16 @@
 #include <unordered_map>
 #include <unordered_set>
 
-#include "Vi/Core/Log.h"	// #include "Core.h"  is inside log 
-
+#include "Vi/Core/Log.h"	
+#include "Vi/Debug/Instrumentor.h"	
+#include "Vi/Core/Input.h"              // test 
 
 
 #ifdef VI_PLATFORM_WINDOWS
 	#include <Windows.h>
 #endif
 
-
+/*
 ////////////////////////////				// temp 
 
 #include <thread>
@@ -38,3 +39,4 @@
 #include <chrono>
 
 ////////////////////////////				// temp 
+*/

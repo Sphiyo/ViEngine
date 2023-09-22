@@ -3,7 +3,6 @@
 #include "Vipch.h"
 #include "Core.h"
 #include "Vi/Events/Event.h"
-#include "Vi/Renderer/GraphicsContext.h"
 
 namespace Vi {
 
@@ -15,15 +14,14 @@ namespace Vi {
 	struct WindowProps {
 
 		std::string Title;
-		uint32_t Width;
-		uint32_t Height;
+		unsigned int Width;
+		unsigned int Height;
 
-		WindowProps(const std::string& title = "VI Engine", uint32_t width = 1920, uint32_t height = 1080) {
-			
-			Title = title;
-			Width = width;
-			Height = height;
+		WindowProps(const std::string& title = "VI Engine", unsigned int width = 1920, unsigned int height = 1080) : Title(title), Width(width), Height(height)
+		{
 		}
+
+										
 	};
 
 	// Interface representing a desktop system based Window
@@ -33,21 +31,21 @@ namespace Vi {
 		using EventCallbackFn = std::function<void(Event&)>;
 		virtual ~Window() = default;
 		virtual void OnUpdate() = 0;
-		virtual uint32_t GetWidth() const = 0;
-		virtual uint32_t GetHeight() const = 0;
+		virtual unsigned int GetWidth() const = 0;
+		virtual unsigned int GetHeight() const = 0;
 
-		virtual GraphicsContext* GetContext() const = 0;
 
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
 		virtual bool IsVSync() const = 0;
 		virtual void* GetNativeWindow() const = 0;
-		static Window* Create(const WindowProps& props = WindowProps());
+		static Scope<Window> Create(const WindowProps& props = WindowProps());
 
 		virtual const CursorState& GetCursor() const = 0;
 		virtual void SetCursor(CursorState cursorState, bool center = false) = 0;
 		virtual void ToggleCursor() = 0;
+		virtual void SetCursorPosition(double x, double y) = 0;
 		
 
 		// Ignoring monitorIndex Sets Index To The Last Active Monitor
@@ -58,7 +56,10 @@ namespace Vi {
 
 
 		virtual void SetResolution(int width, int height) = 0;
+		// Example 16:9 is number = 16 && denominator = 9
+		virtual void SetWindowAspectRatio(int number, int denominator) = 0;
 		virtual void CheckMonitors() = 0;
+
 	};
 
 }

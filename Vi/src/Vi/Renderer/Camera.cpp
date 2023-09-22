@@ -6,7 +6,8 @@
 namespace Vi {
 
 	Camera::Camera(const glm::vec3& worldLocation, const glm::vec3& rotation) {
-		
+		VI_PROFILE_FUNCTION();
+
 		m_ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.7778f, 0.01f, 4000.f);
 		m_ViewMatrix = glm::mat4(1.0f);
 
@@ -29,6 +30,8 @@ namespace Vi {
 	}
 
 	void Camera::SetProjection(float fovy, float aspectratio, float nearPlane, float farPlane) {
+		
+		VI_PROFILE_FUNCTION();
 
 		m_FOV = fovy;
 		CheckFOV();
@@ -128,6 +131,7 @@ namespace Vi {
 	}
 
 	void Camera::RecalculateViewMatrix() {
+		VI_PROFILE_FUNCTION();
 
 		// local vecs
 		m_ForwardVector.x = cos(glm::radians(m_WorldRotation.y)) * cos(glm::radians(m_WorldRotation.x));

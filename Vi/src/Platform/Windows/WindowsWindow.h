@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Vi/Core/Window.h"
-
+#include "Vi/Renderer/GraphicsContext.h"
 
 #include <GLFW/glfw3.h>
 
@@ -13,13 +13,13 @@ namespace Vi {
 		public:
 				WindowsWindow(const WindowProps& props);
 				virtual ~WindowsWindow();
-
+				// Window Poll Event And Swap Buffers
 				void OnUpdate() override;
 
 				inline unsigned int GetWidth() const override { return m_Data.Width; }
 				inline unsigned int GetHeight() const override { return m_Data.Height; }
 
-				GraphicsContext* GetContext() const override { return m_Context; }
+				
 
 					// Window attributes
 				inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
@@ -29,8 +29,9 @@ namespace Vi {
 
 				const CursorState& GetCursor() const override { return m_CursorState; }
 				void SetCursor(CursorState cursorState, bool center = false) override;
-
 				void ToggleCursor() override;
+				void SetCursorPosition(double x, double y) override;
+
 				// Ignoring monitorIndex Sets Index To The Last Active Monitor
 				void SetFullScreen(bool enable, int16_t monitorIndex = 0) override;
 				bool IsFullScreen() const override;
@@ -38,6 +39,7 @@ namespace Vi {
 				void ToggleFullScreen() override;
 
 				void SetResolution(int width, int height) override;
+				void SetWindowAspectRatio(int number, int denominator) override;
 				void CheckMonitors() override;
 			
 		private:			
@@ -45,7 +47,7 @@ namespace Vi {
 				virtual void Shutdown();
 		private:
 				GLFWwindow* m_Window;
-				GraphicsContext* m_Context;
+				Scope<GraphicsContext> m_Context;
 	
 				struct WindowData {
 					std::string Title;
@@ -56,6 +58,7 @@ namespace Vi {
 					std::vector<GLFWmonitor*>m_Monitors;
 					int m_MonitorsCount =0;
 					int m_ActiveMonitor =0;
+					int m_AspectRatio[2] = { 16 ,9 };
 				};
 
 				WindowData m_Data;

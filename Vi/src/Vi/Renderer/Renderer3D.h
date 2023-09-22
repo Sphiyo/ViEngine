@@ -16,11 +16,11 @@ namespace Vi {
 
 
 		// Primitives 
-		static void DrawCube (const glm::vec3& position = { 0.0f,0.0f,0.0f }, const glm::vec3& rotation = { 0.0f,0.0f,0.0f }, const glm::vec3& scale = { 1.0f,1.0f,1.0f }, const glm::vec4& color = { 1.0f,1.0f,1.0f,1.0f });
-		static void DrawCube (const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color = { 1.0f,1.0f,1.0f,1.0f });
+		static void DrawCube (const glm::vec3& position = glm::vec3(0), const glm::vec3& rotation = glm::vec3(0), const glm::vec3& scale = glm::vec3(1), const glm::vec4& color = glm::vec4(1), float tilingFactor = 1.0f);
+		static void DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& tint = glm::vec4(1), float tilingFactor = 1.0f);
 
-		static void DrawPlane(const glm::vec3& position = { 0.0f,0.0f,0.0f }, const glm::vec3& rotation = { 0.0f,0.0f,0.0f }, const glm::vec3& scale = { 1.0f,1.0f,1.0f }, const glm::vec4& color = { 1.0f,1.0f,1.0f,1.0f });
-		static void DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color = { 1.0f,1.0f,1.0f,1.0f });
+		static void DrawPlane(const glm::vec3& position = glm::vec3(0), const glm::vec3& rotation = glm::vec3(0), const glm::vec3& scale = glm::vec3(1), const glm::vec4& color = glm::vec4(1), float tilingFactor = 1.0f);
+		static void DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& tint = glm::vec4(1), float tilingFactor = 1.0f);
 	};
 
 
