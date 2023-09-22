@@ -7,3 +7,5 @@ bin-int/
 *.user
 *.ini
 Sandbox/ViProfile-Runtime.json
+Sandbox/ViProfile-Shutdown.json
+Sandbox/ViProfile-Startup.json
