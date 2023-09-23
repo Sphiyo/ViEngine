@@ -37,7 +37,7 @@ namespace Vi {
 		glGetIntegerv(GL_MAJOR_VERSION, &versionMajor);
 		glGetIntegerv(GL_MINOR_VERSION, &versionMinor);
 
-		VI_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 4), "Vi requires at least OpenGL version 4.4!");
+		VI_CORE_ASSERT(versionMajor > 4 || (versionMajor == 4 && versionMinor >= 3), "Vi requires at least OpenGL version 4.3!");
 #endif
 	}
 
