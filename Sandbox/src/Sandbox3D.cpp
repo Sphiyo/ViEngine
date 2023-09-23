@@ -58,7 +58,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		for (int x = 0; x < rows ; x++) {
 			for (int y = 0; y < columns ; y++) {
 
-				Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 45.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
+				Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
 			}
 		}
 
