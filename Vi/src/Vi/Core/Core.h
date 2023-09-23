@@ -8,8 +8,8 @@
 	/* Windows x64/x86 */
 	#ifdef _WIN64
 		/* Windows x64  */
-		#ifndef VI_PLATFORM_WINDOWS 1
-			#define VI_PLATFORM_WINDOWS 1
+		#ifndef VI_PLATFORM_WINDOWS 
+			#define VI_PLATFORM_WINDOWS 
 		#endif
 	#else
 	/* Windows x86 */
