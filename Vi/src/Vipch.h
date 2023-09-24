@@ -15,6 +15,7 @@
 
 #include "Vi/Core/Log.h"	
 #include "Vi/Debug/Instrumentor.h"	
+#include "Vi/Debug/Timer.h"
 #include "Vi/Core/Input.h"              // test 
 
 

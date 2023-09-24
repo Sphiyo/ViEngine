@@ -3,6 +3,8 @@
 
 #include "Vi/Renderer/Renderer.h"
 
+#include "Vi/Debug/Timer.h"
+
 
 
 namespace Vi {
@@ -64,6 +66,8 @@ namespace Vi {
 	}
 	void Application::Run() {	
 		VI_PROFILE_FUNCTION();
+
+	//	PROFILE_SCOPE("Application::OnUpdate");
 
 		while (m_Running) {
 			

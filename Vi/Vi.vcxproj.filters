@@ -1441,6 +1441,7 @@
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Debug\Instrumentor.h" />
+    <ClInclude Include="src\Vi\Debug\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1539,5 +1540,6 @@
     <ClCompile Include="src\Vi\Core\Window.cpp" />
     <ClCompile Include="src\Vi\Core\Input.cpp" />
     <ClCompile Include="src\Vi\Renderer\GraphicsContext.cpp" />
+    <ClCompile Include="src\Vi\Debug\Timer.cpp" />
   </ItemGroup>
 </Project>

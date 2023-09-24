@@ -170,6 +170,7 @@
     <ClInclude Include="src\Vi\Core\Timestep.h" />
     <ClInclude Include="src\Vi\Core\Window.h" />
     <ClInclude Include="src\Vi\Debug\Instrumentor.h" />
+    <ClInclude Include="src\Vi\Debug\Timer.h" />
     <ClInclude Include="src\Vi\Events\ApplicationEvent.h" />
     <ClInclude Include="src\Vi\Events\Event.h" />
     <ClInclude Include="src\Vi\Events\KeyEvent.h" />
@@ -625,6 +626,7 @@
     <ClCompile Include="src\Vi\Core\Log.cpp" />
     <ClCompile Include="src\Vi\Core\Time.cpp" />
     <ClCompile Include="src\Vi\Core\Window.cpp" />
+    <ClCompile Include="src\Vi\Debug\Timer.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp" />
     <ClCompile Include="src\Vi\Miscs\CameraController.cpp" />

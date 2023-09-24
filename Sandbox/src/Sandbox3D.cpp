@@ -1,5 +1,5 @@
 #include "Sandbox3D.h"
-
+#include "Vi/Debug/Timer.h"
 
 float Sandbox3D::deltaTime = 0.016f;
 
@@ -26,7 +26,7 @@ void Sandbox3D::OnDetach() {
 void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 
 	VI_PROFILE_FUNCTION();
-
+	PROFILE_SCOPE("Sandbox3D::OnUpdate");
 	// Update 
 	Sandbox3D::deltaTime = ts;										//temp
 	{
@@ -56,6 +56,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		float offsetY = m_GridOffset[1];
 		
 		for (int x = 0; x < rows ; x++) {
+			
 			for (int y = 0; y < columns ; y++) {
 
 				Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
@@ -139,14 +140,15 @@ void Sandbox3D::OnImGuiRender() {
 	ImGui::Begin("Profiler");
 
 		// remove delete to do to fix
-	//for (auto& result : m_ProfileResults) {
+	for (auto& result : ProfileResults::m_ProfileResults) {
 
-	//	char label[50];
-	//	strcpy_s(label, "%.3fms  ");
-	//	strcat_s(label, result.Name);
-	//	ImGui::Text(label, result.Time);
-	//}
-	//m_ProfileResults.clear();
+		char label[50];
+		strcpy_s(label, "%.3fms  ");
+		strcat_s(label, result.Name);
+		ImGui::Text(label, result.Time);
+	}
+	ProfileResults::Get().clear();
+
 	ImGui::End();
 
 	ImGui::Begin("GraphicsSetting");
