@@ -124,7 +124,7 @@ namespace Vi {
     };
 }
 
-#define VI_PROFILE 0
+#define VI_PROFILE 1
 #if VI_PROFILE
     #define VI_PROFILE_BEGIN_SESSION(name, filepath) ::Vi::Instrumentor::Get().BeginSession(name, filepath)
     #define VI_PROFILE_END_SESSION() ::Vi::Instrumentor::Get().EndSession()

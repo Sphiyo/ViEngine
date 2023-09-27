@@ -20,8 +20,11 @@ namespace Vi {
 		void OnEvent(Event& e);
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
+		void PopOverlay(Layer* overlay);
 		inline Window& GetWindow() { return *m_Window; }
+		inline LayerStack& GetLayerStack() { return m_LayerStack; }
 		inline static Application& Get() { return *s_Instance; }
+		inline bool IsApplicationRunning() { return m_Running; }
 		inline void CloseWindow() { m_Running = false; }
 		inline ImGuiLayer* GetImGuiLayer()const { return m_ImGuiLayer; }
 	private:
@@ -49,6 +52,10 @@ namespace Vi {
 
 		static Application* s_Instance;
 		friend int ::main(int argc, char** argv);
+
+
+		// experimental // test // alpha
+		std::thread ImGuiThread;
 	};
 
 	// To Be Defined In Client
