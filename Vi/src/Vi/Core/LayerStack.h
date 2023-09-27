@@ -12,6 +12,7 @@ namespace Vi {
 		LayerStack() = default;
 		~LayerStack();
 
+		inline std::vector<Layer*> GetLayers()const { return m_Layers; }
 		void PushLayer(Layer* layer);
 		void PushOverlay(Layer* overlay);
 		void PopLayer(Layer* layer);

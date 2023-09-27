@@ -4,11 +4,13 @@
 #include "Vi/Events/KeyEvent.h"
 #include "Vi/Events/MouseEvent.h"
 
+struct GLFWwindow;
 
 
 namespace Vi {
 
-
+#define Threading 0
+#if Threading == 1
 
 	class VI_API ImGuiLayer : public Layer
 	{
@@ -20,6 +22,48 @@ namespace Vi {
 		virtual void OnAttach() override;
 		virtual void OnDetach() override;
 		
+		//virtual void OnUpdate(Timestep ts) override;
+		virtual void OnImGuiRender() override;
+
+		void Begin();
+		void End();
+
+		// Dark or Light
+		virtual void SetImGuiTheme(bool bStyleDark);
+
+		void JoinThread();
+
+	public:
+
+		bool m_CapturingKeyboard = false;
+		bool m_CapturingMouse = false;
+
+
+		bool m_ShouldAttach = false;
+		bool m_ShouldRun = false;
+		bool m_ShouldDetach = false;
+		bool m_AttachedSuccess = false;
+		bool m_DettachedSuccess = false;
+		std::thread m_LayerThread;
+		GLFWwindow* m_ImGuiWindow;
+	private:
+	
+		float m_Time = 0.0f;
+	
+		bool m_DarkImgui = true;
+	};
+#else
+	
+	class VI_API ImGuiLayer : public Layer
+	{
+	public:
+
+		ImGuiLayer();
+		~ImGuiLayer() = default;
+
+		virtual void OnAttach() override;
+		virtual void OnDetach() override;
+		void JoinThread();
 		virtual void OnImGuiRender() override;
 
 		void Begin();
@@ -32,7 +76,7 @@ namespace Vi {
 
 		bool m_CapturingKeyboard = false;
 		bool m_CapturingMouse = false;
-
+		GLFWwindow* m_ImGuiWindow;
 	private:
 	
 		float m_Time = 0.0f;
@@ -41,7 +85,7 @@ namespace Vi {
 	};
 
 	
-
+#endif
 
 
 }

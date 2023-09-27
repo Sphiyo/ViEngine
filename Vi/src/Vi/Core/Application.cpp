@@ -2,45 +2,68 @@
 #include "Application.h"
 
 #include "Vi/Renderer/Renderer.h"
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <GLFW/glfw3.h>
 
+#include "Vi/Debug/Timer.h"
 
-#include "Vi/Physics/VPhysicsLayer.h"
-
-//#define PX_GENERATE_STATIC_LIBRARIES
- 
-//#include "PxPhysics.h" 
-//#include "PxPhysicsAPI.h"
-//#include "../snippets/snippetcommon/SnippetPVD.h"
-
-
-
-
-//static physx::PxReal stackZ = 10.0f;
 
 
 namespace Vi {
-
 
 	Application* Application::s_Instance = nullptr;
 
 	Application::Application()	{
 
 		VI_PROFILE_FUNCTION();
-		
+
 		VI_CORE_ASSERT(!s_Instance, "(Application) Application Already Exists!");
 		s_Instance = this;
 		m_Window = Window::Create();
 		m_Window->SetEventCallback(VI_BINDEVENT(Application::OnEvent));
 		Renderer::Init();
+		
+	//	Application* imGuiApp = new Application();
+
 	//	m_ImGuiLayer = new ImGuiLayer();
 	//	PushOverlay(m_ImGuiLayer);
-		m_PhysicsLayer = new Physics::VPhysicsLayer();
-		PushOverlay(m_PhysicsLayer);
+	
+		
+		std::thread ImGuiThread = std::thread([&] {
+
+			m_ImGuiLayer = new ImGuiLayer();
+
+			m_LayerStack.PushOverlay(m_ImGuiLayer);
+
+			m_ImGuiLayer->OnAttach();
+
+			while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
+	
+				VI_CORE_WARN("ImGuiLayer Start loop");
+				m_ImGuiLayer->Begin();
+				{
+					VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+					
+					for (Layer* layer : m_LayerStack)
+						layer->OnImGuiRender();
+	
+				}
+				VI_CORE_WARN("ImGuiLayer End loop");
+				m_ImGuiLayer->End();
+			}
+			m_ImGuiLayer->OnDetach();
+
+		});
+		ImGuiThread.detach();
+		
 	}
 
 	Application::~Application() {
 		VI_PROFILE_FUNCTION();
-		m_PhysicsLayer->OnDetach();
+	//	m_ImGuiLayer->m_ShouldDetach = true;
+	//	m_ImGuiLayer->JoinThread();
+	//	m_ImGuiLayer->OnDetach();
 		Renderer::Shutdown();
 	}
 
@@ -56,6 +79,13 @@ namespace Vi {
 
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
+	}
+
+	void Application::PopOverlay(Layer* overlay) {
+		VI_PROFILE_FUNCTION();
+
+		m_LayerStack.PopOverlay(overlay);
+		
 	}
 
 
@@ -81,59 +111,54 @@ namespace Vi {
 	void Application::Run() {	
 		VI_PROFILE_FUNCTION();
 
-
-		const float fixedTimeStep = 1.0f / 250.0f;
-		float accumulator = 0.0f;
+	//	PROFILE_SCOPE("Application::OnUpdate");
 
 		while (m_Running) {
-			
+
 			VI_PROFILE_SCOPE("RunLoop");
 
 			Timestep timestep = Time::GetTime() - m_LastFrameTime;
 			m_LastFrameTime = Time::GetTime();
-			
-			if(!m_Minimized) {
+
+			if (!m_Minimized) {
 
 				VI_PROFILE_SCOPE("LayerStack OnUpdate");
+				m_Window->OnUpdate();
 
-				for (Layer* layer : m_LayerStack) {
-
-					layer->OnUpdate(timestep);
-#define FixedTick 1
-#if FixedTick == 1
-					accumulator += timestep;
-
-					while (accumulator >= fixedTimeStep) {
-						m_PhysicsLayer->BeginPhysics(fixedTimeStep);
-						layer->OnFixedUpdate(fixedTimeStep);
-
-						accumulator -= fixedTimeStep;
-					}
-#elif FixedTick == 0
-					m_PhysicsLayer->BeginPhysics(timestep);
-					layer->OnFixedUpdate(timestep);
-#endif // FixedTick 
+				
+				for (Layer* layer : m_LayerStack)
+				{
+					//if (layer == m_ImGuiLayer) continue;
+				//	if(layer)		
+						layer->OnUpdate(timestep);
 				}
 
-
 			}
-			
-			
-			
-		//	m_ImGuiLayer->Begin();	
+
+
+		//	m_ImGuiLayer->m_ShouldRun = true;
 		//	{
 		//		VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-		//
-		//		for (Layer* layer : m_LayerStack) 
-		//			layer->OnImGuiRender();
+		//		
+		//			for (Layer* layer : m_LayerStack)
+		//				layer->OnImGuiRender();
 		//		
 		//	}
-		//	m_ImGuiLayer->End();
-
 		
-			m_Window->OnUpdate();
+			
+					
+		////	m_ImGuiLayer->Begin();
+		////	{
+		////		VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+		////		
+		////			for (Layer* layer : m_LayerStack)
+		////				layer->OnImGuiRender();
+		////		
+		////	} 
+		////	m_ImGuiLayer->End();
 
-			m_PhysicsLayer->EndPhysics();
+
+
 		};
 	}
 
@@ -185,7 +210,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (true) {
+		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
 
 			m_Window->SetCursor(CursorState::DISABLED);
 		}
@@ -193,7 +218,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseMoved(MouseMovedEvent& e)
 	{
-		if (true) {
+		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
 
 			
 		}
@@ -201,7 +226,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 	{
-		if (true) { 
+		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
 
 			if (Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_LEFT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_MIDDLE)) {
 				//	m_Window->SetCursor(CursorState::DISABLED); 

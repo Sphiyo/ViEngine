@@ -150,6 +150,7 @@ void Sandbox3D::OnImGuiRender() {
 
 	VI_PROFILE_FUNCTION();
 
+	
 	auto& window = Vi::Application::Get().GetWindow();
 	ImGui::Begin("Settings");														 // temp
 	ImGui::ColorEdit4("ColorShader", (float*)&m_CubeColor);
