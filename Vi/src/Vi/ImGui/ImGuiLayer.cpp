@@ -80,7 +80,7 @@ void Vi::ImGuiLayer::OnAttach()
         VI_CORE_ASSERT(m_ImGuiWindow, "ImGui couldn't create window")
 
     glfwMakeContextCurrent(m_ImGuiWindow);
-    glfwSwapInterval(0); // Enable vsync
+   // glfwSwapInterval(0); // Enable vsync
 
 
     // Setup Dear ImGui context
@@ -141,7 +141,7 @@ void Vi::ImGuiLayer::Begin()
 void Vi::ImGuiLayer::OnImGuiRender() 
 
 {
-    VI_CORE_WARN("ImGui OnImGuiRender() ThreadID : {0}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+  //  VI_CORE_WARN("ImGui OnImGuiRender() ThreadID : {0}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
  //   const auto& io = ImGui::GetIO();
  //   m_CapturingMouse = io.WantCaptureMouse;
  //   m_CapturingKeyboard = io.WantCaptureKeyboard;

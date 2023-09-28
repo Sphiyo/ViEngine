@@ -161,6 +161,7 @@
     <ClInclude Include="src\Vi\Core\Application.h" />
     <ClInclude Include="src\Vi\Core\Core.h" />
     <ClInclude Include="src\Vi\Core\EntryPoint.h" />
+    <ClInclude Include="src\Vi\Core\Experimental\VThread.h" />
     <ClInclude Include="src\Vi\Core\Input.h" />
     <ClInclude Include="src\Vi\Core\KeyCodes.h" />
     <ClInclude Include="src\Vi\Core\Layer.h" />
@@ -605,7 +606,6 @@
     <ClInclude Include="vendor\glm\glm\vec4.hpp" />
     <ClInclude Include="vendor\glm\glm\vector_relational.hpp" />
     <ClInclude Include="vendor\stb_image\stb_image.h" />
-    <ClInclude Include="src\Vi\Core\Experimental\VThread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp" />
@@ -621,6 +621,7 @@
     <ClCompile Include="src\Platform\Windows\WindowsInput.cpp" />
     <ClCompile Include="src\Platform\Windows\WindowsWindow.cpp" />
     <ClCompile Include="src\Vi\Core\Application.cpp" />
+    <ClCompile Include="src\Vi\Core\Experimental\VThread.cpp" />
     <ClCompile Include="src\Vi\Core\Input.cpp" />
     <ClCompile Include="src\Vi\Core\Layer.cpp" />
     <ClCompile Include="src\Vi\Core\LayerStack.cpp" />
@@ -645,7 +646,6 @@
       <PrecompiledHeader>Create</PrecompiledHeader>
     </ClCompile>
     <ClCompile Include="vendor\stb_image\stb_image.cpp" />
-    <ClCompile Include="src\Vi\Core\Experimental\VThread.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="vendor\GLFW\GLFW.vcxproj">

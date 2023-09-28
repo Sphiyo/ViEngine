@@ -1,6 +1,6 @@
 #pragma once
+/*
 #include "Vi.h"
-
 struct ProfileResult {
 
 	const char* Name;
@@ -14,7 +14,7 @@ public:
 	static std::vector<ProfileResult> m_ProfileResults;
 
 };
-
+std::vector<ProfileResult> m_ProfileResults;
 
 
 template<typename Fn>
@@ -55,4 +55,5 @@ private:
 	Fn m_Func;
 };
 
-#define PROFILE_SCOPE(name) Timer timer##__LINE__(name, [&](ProfileResult profileResult) { ProfileResults::Get().push_back(profileResult); })
+#define PROFILE_SCOPE(name) Timer customTimer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
+*/

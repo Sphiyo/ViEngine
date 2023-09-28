@@ -25,6 +25,12 @@
     <Filter Include="src\Vi\Core">
       <UniqueIdentifier>{B3D470E1-1F8A-E9D6-A87E-E3AD1433E0DA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Vi\Core\Experimental">
+      <UniqueIdentifier>{908EE123-7CB3-30A4-A5FE-153491822FC2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Vi\Debug">
+      <UniqueIdentifier>{31C6970F-1D29-27B4-C6AE-5F6AB2F0F236}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Vi\Events">
       <UniqueIdentifier>{FFDE1A06-6B9F-963C-34DA-DFB9A059DB18}</UniqueIdentifier>
     </Filter>
@@ -60,9 +66,6 @@
     </Filter>
     <Filter Include="vendor\stb_image">
       <UniqueIdentifier>{0DA0BA59-F998-D9AB-22CB-BE300E23B9B7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="src\Vi\Debug">
-      <UniqueIdentifier>{14bea585-c04d-4ed8-87e6-c589707de746}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -114,6 +117,9 @@
     <ClInclude Include="src\Vi\Core\EntryPoint.h">
       <Filter>src\Vi\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Core\Experimental\VThread.h">
+      <Filter>src\Vi\Core\Experimental</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Core\Input.h">
       <Filter>src\Vi\Core</Filter>
     </ClInclude>
@@ -137,6 +143,12 @@
     </ClInclude>
     <ClInclude Include="src\Vi\Core\Window.h">
       <Filter>src\Vi\Core</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Debug\Instrumentor.h">
+      <Filter>src\Vi\Debug</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Debug\Timer.h">
+      <Filter>src\Vi\Debug</Filter>
     </ClInclude>
     <ClInclude Include="src\Vi\Events\ApplicationEvent.h">
       <Filter>src\Vi\Events</Filter>
@@ -1440,8 +1452,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Debug\Instrumentor.h" />
-    <ClInclude Include="src\Vi\Debug\Timer.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -1483,6 +1493,12 @@
     <ClCompile Include="src\Vi\Core\Application.cpp">
       <Filter>src\Vi\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Core\Experimental\VThread.cpp">
+      <Filter>src\Vi\Core\Experimental</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\Input.cpp">
+      <Filter>src\Vi\Core</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vi\Core\Layer.cpp">
       <Filter>src\Vi\Core</Filter>
     </ClCompile>
@@ -1494,6 +1510,12 @@
     </ClCompile>
     <ClCompile Include="src\Vi\Core\Time.cpp">
       <Filter>src\Vi\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Core\Window.cpp">
+      <Filter>src\Vi\Core</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Debug\Timer.cpp">
+      <Filter>src\Vi\Debug</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp">
       <Filter>src\Vi\ImGui</Filter>
@@ -1508,6 +1530,9 @@
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Camera.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\GraphicsContext.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp">
@@ -1537,9 +1562,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Core\Window.cpp" />
-    <ClCompile Include="src\Vi\Core\Input.cpp" />
-    <ClCompile Include="src\Vi\Renderer\GraphicsContext.cpp" />
-    <ClCompile Include="src\Vi\Debug\Timer.cpp" />
   </ItemGroup>
 </Project>

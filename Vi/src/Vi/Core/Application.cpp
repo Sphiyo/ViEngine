@@ -8,7 +8,44 @@
 
 #include "Vi/Debug/Timer.h"
 
+template<typename Fn>
+class Timer {
 
+public:
+	Timer(const char* name, Fn&& func) : m_Name(name), m_Func(func), m_Stopped(false) {
+
+		m_StartTimepoint = std::chrono::high_resolution_clock::now();
+
+	}
+
+	~Timer() {
+
+		if (!m_Stopped)
+			Stop();
+	}
+
+	void Stop() {
+
+		auto endTimepoint = std::chrono::high_resolution_clock::now();
+
+		long long start = std::chrono::time_point_cast<std::chrono::microseconds>(m_StartTimepoint).time_since_epoch().count();
+
+		long long end = std::chrono::time_point_cast<std::chrono::microseconds>(endTimepoint).time_since_epoch().count();
+
+		m_Stopped = true;
+
+		float duration = (end - start) / 1000.0f;
+		m_Func({ m_Name, duration });
+	}
+
+private:
+	const char* m_Name;
+	std::chrono::time_point<std::chrono::steady_clock> m_StartTimepoint;
+	bool m_Stopped;
+	Fn m_Func;
+};
+
+#define PROFILE_SCOPE(name) Timer vTimer##__LINE__(name, [&](ProfileResult profileResult) { m_ProfileResults.push_back(profileResult); })
 
 namespace Vi {
 
@@ -30,32 +67,46 @@ namespace Vi {
 	//	PushOverlay(m_ImGuiLayer);
 	
 		
-		std::thread ImGuiThread = std::thread([&] {
+		//std::thread ImGuiThread = std::thread([&] {
 
-			m_ImGuiLayer = new ImGuiLayer();
+		//	m_ImGuiLayer = new ImGuiLayer();
 
-			m_LayerStack.PushOverlay(m_ImGuiLayer);
+		//	m_LayerStack.PushOverlay(m_ImGuiLayer);
 
-			m_ImGuiLayer->OnAttach();
+		//	m_ImGuiLayer->OnAttach();
 
-			while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
+		//	while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
 	
-				VI_CORE_WARN("ImGuiLayer Start loop");
-				m_ImGuiLayer->Begin();
-				{
-					VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-					
-					for (Layer* layer : m_LayerStack)
-						layer->OnImGuiRender();
-	
-				}
-				VI_CORE_WARN("ImGuiLayer End loop");
-				m_ImGuiLayer->End();
-			}
-			m_ImGuiLayer->OnDetach();
+		//	//	VI_CORE_WARN("ImGuiLayer Start loop");
+		//		m_ImGuiLayer->Begin();
+		//		{
+		//			VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+		//			
+		//			for (Layer* layer : m_LayerStack)
+		//				layer->OnImGuiRender();
+		//			{
+		//				ImGui::Begin("Profiler");
 
-		});
-		ImGuiThread.detach();
+		//				// remove delete to do to fix
+		//				for (auto& result : m_ProfileResults) {
+
+		//					char label[50];
+		//					strcpy_s(label, "%.3fms  ");
+		//					strcat_s(label, result.Name);
+		//					ImGui::Text(label, result.Time);
+		//				}
+		//				m_ProfileResults.clear();
+		//			ImGui::End();
+		//			}
+	
+		//		}
+		//	//	VI_CORE_WARN("ImGuiLayer End loop");
+		//		m_ImGuiLayer->End();
+		//	}
+		//	m_ImGuiLayer->OnDetach();
+
+		//});
+		//ImGuiThread.detach();
 		
 	}
 
@@ -111,10 +162,10 @@ namespace Vi {
 	void Application::Run() {	
 		VI_PROFILE_FUNCTION();
 
-	//	PROFILE_SCOPE("Application::OnUpdate");
 
 		while (m_Running) {
 
+			PROFILE_SCOPE("Application::Run");
 			VI_PROFILE_SCOPE("RunLoop");
 
 			Timestep timestep = Time::GetTime() - m_LastFrameTime;
@@ -162,6 +213,91 @@ namespace Vi {
 		};
 	}
 
+	void Application::RunGUIAsync()
+	{
+		std::thread ImGuiThread = std::thread([&] {
+
+			m_ImGuiLayer = new ImGuiLayer();
+
+		m_LayerStack.PushOverlay(m_ImGuiLayer);
+
+		m_ImGuiLayer->OnAttach();
+
+		while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
+
+			//	VI_CORE_WARN("ImGuiLayer Start loop");
+			m_ImGuiLayer->Begin();
+			{
+				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+				{
+					ImGui::Begin("Profiler");
+
+					// remove delete to do to fix
+					for (auto& result : m_ProfileResults) {
+
+						char label[50];
+						strcpy_s(label, "%.3fms  ");
+						strcat_s(label, result.Name);
+						ImGui::Text(label, result.Time);
+					}
+					m_ProfileResults.clear();
+					ImGui::End();
+				}
+
+			}
+			//	VI_CORE_WARN("ImGuiLayer End loop");
+			m_ImGuiLayer->End();
+		}
+		m_ImGuiLayer->OnDetach();
+
+			});
+		ImGuiThread.detach();
+	}
+
+	void Application::RunGUISync()
+	{
+		m_ImGuiLayer = new ImGuiLayer();
+
+		m_LayerStack.PushOverlay(m_ImGuiLayer);
+
+		m_ImGuiLayer->OnAttach();
+
+		while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
+
+			//	VI_CORE_WARN("ImGuiLayer Start loop");
+			m_ImGuiLayer->Begin();
+			{
+				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+				for (Layer* layer : m_LayerStack)
+					layer->OnImGuiRender();
+				{
+					ImGui::Begin("Profiler");
+
+					// remove delete to do to fix
+					for (auto& result : m_ProfileResults) {
+
+						char label[50];
+						strcpy_s(label, "%.3fms  ");
+						strcat_s(label, result.Name);
+						ImGui::Text(label, result.Time);
+					}
+					m_ProfileResults.clear();
+					ImGui::End();
+				}
+
+			}
+			//	VI_CORE_WARN("ImGuiLayer End loop");
+			m_ImGuiLayer->End();
+		}
+		m_ImGuiLayer->OnDetach();
+
+		
+	}
+
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
 
 		m_Running = false;
@@ -202,6 +338,10 @@ namespace Vi {
 		if (e.GetKeyCode() == VI_KEY_1) {
 
 			m_Window->SetFullScreen(true, 1);
+		};
+		if (e.GetKeyCode() == VI_KEY_V) {
+
+			m_Window->ToggleVSync();
 		};
 		////////////////////////////////////////
 	

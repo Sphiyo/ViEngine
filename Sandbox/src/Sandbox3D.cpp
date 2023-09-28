@@ -26,7 +26,7 @@ void Sandbox3D::OnDetach() {
 void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 
 	VI_PROFILE_FUNCTION();
-	PROFILE_SCOPE("Sandbox3D::OnUpdate");
+	//PROFILE_SCOPE("Sandbox3D::OnUpdate");
 	// Update 
 	Sandbox3D::deltaTime = ts;										//temp
 	{
@@ -138,19 +138,19 @@ void Sandbox3D::OnImGuiRender() {
 	ImGui::Text("ts  %.3fms", Sandbox3D::deltaTime);
 	ImGui::End();
 
-	ImGui::Begin("Profiler");
+	//ImGui::Begin("Profiler");
 
-		// remove delete to do to fix
-	for (auto& result : ProfileResults::m_ProfileResults) {
+	//	// remove delete to do to fix
+	//for (auto& result : ProfileResults::m_ProfileResults) {
 
-		char label[50];
-		strcpy_s(label, "%.3fms  ");
-		strcat_s(label, result.Name);
-		ImGui::Text(label, result.Time);
-	}
-	ProfileResults::Get().clear();
+	//	char label[50];
+	//	strcpy_s(label, "%.3fms  ");
+	//	strcat_s(label, result.Name);
+	//	ImGui::Text(label, result.Time);
+	//}
+	//ProfileResults::Get().clear();
 
-	ImGui::End();
+	//ImGui::End();
 
 	ImGui::Begin("GraphicsSetting");
 	ImGui::Checkbox("Vsync", &vSync);
