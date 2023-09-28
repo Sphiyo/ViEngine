@@ -29,33 +29,41 @@ namespace Vi {
 	//	m_ImGuiLayer = new ImGuiLayer();
 	//	PushOverlay(m_ImGuiLayer);
 	
-		
-		std::thread ImGuiThread = std::thread([&] {
-
+		m_ImGuiThread.AddFunction([&] {
 			m_ImGuiLayer = new ImGuiLayer();
-
-			m_LayerStack.PushOverlay(m_ImGuiLayer);
-
-			m_ImGuiLayer->OnAttach();
-
-			while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
-	
-				VI_CORE_WARN("ImGuiLayer Start loop");
-				m_ImGuiLayer->Begin();
-				{
-					VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-					
-					for (Layer* layer : m_LayerStack)
-						layer->OnImGuiRender();
-	
-				}
-				VI_CORE_WARN("ImGuiLayer End loop");
-				m_ImGuiLayer->End();
-			}
-			m_ImGuiLayer->OnDetach();
-
+			PushOverlay(m_ImGuiLayer);
 		});
-		ImGuiThread.detach();
+		m_ImGuiThread.Run();
+
+		
+
+		
+	//	std::thread ImGuiThread = std::thread([&] {
+	//
+	//		m_ImGuiLayer = new ImGuiLayer();
+	//
+	//		m_LayerStack.PushOverlay(m_ImGuiLayer);
+	//
+	//		m_ImGuiLayer->OnAttach();
+	//
+	//		while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
+	//
+	//			VI_CORE_WARN("ImGuiLayer Start loop");
+	//			m_ImGuiLayer->Begin();
+	//			{
+	//				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+	//				
+	//				for (Layer* layer : m_LayerStack)
+	//					layer->OnImGuiRender();
+	//
+	//			}
+	//			VI_CORE_WARN("ImGuiLayer End loop");
+	//			m_ImGuiLayer->End();
+	//		}
+	//		m_ImGuiLayer->OnDetach();
+	//
+	//	});
+	//	ImGuiThread.detach();
 		
 	}
 
@@ -65,6 +73,10 @@ namespace Vi {
 	//	m_ImGuiLayer->JoinThread();
 	//	m_ImGuiLayer->OnDetach();
 		Renderer::Shutdown();
+		m_ImGuiThread.AddFunction([&] {
+			m_ImGuiLayer->OnDetach();
+		});
+		m_ImGuiThread.Shutdown();
 	}
 
 	void Application::PushLayer(Layer* layer) {
@@ -135,16 +147,21 @@ namespace Vi {
 
 			}
 
+			m_ImGuiThread.AddFunction([&] {
 
-		//	m_ImGuiLayer->m_ShouldRun = true;
-		//	{
-		//		VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-		//		
-		//			for (Layer* layer : m_LayerStack)
-		//				layer->OnImGuiRender();
-		//		
-		//	}
-		
+				
+					
+					m_ImGuiLayer->Begin();
+					{
+						
+
+						for (Layer* layer : m_LayerStack)
+							layer->OnImGuiRender();
+
+					}
+					
+					m_ImGuiLayer->End();
+			});
 			
 					
 		////	m_ImGuiLayer->Begin();
@@ -160,6 +177,7 @@ namespace Vi {
 
 
 		};
+
 	}
 
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {

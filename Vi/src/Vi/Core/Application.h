@@ -8,6 +8,9 @@
 #include "Vi/ImGui/ImGuiLayer.h"
 #include "Vi/Physics/VPhysicsLayer.h"
 
+#include "Vi/Core/Experimental/VThread.h"
+
+
 int main(int argc, char** argv);
 
 namespace Vi {
@@ -59,6 +62,9 @@ namespace Vi {
 
 		// experimental // test // alpha
 		std::thread ImGuiThread;
+
+		VThread m_ImGuiThread;
+		///////////////////////////////
 	};
 
 	// To Be Defined In Client
