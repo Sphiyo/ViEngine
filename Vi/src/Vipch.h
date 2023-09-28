@@ -17,6 +17,7 @@
 #include "Vi/Debug/Instrumentor.h"	
 #include "Vi/Debug/Timer.h"
 #include "Vi/Core/Input.h"              // test 
+#include "Vi/Core/Experimental/VThread.h"              // test 
 
 
 #ifdef VI_PLATFORM_WINDOWS
