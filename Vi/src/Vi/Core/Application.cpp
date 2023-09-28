@@ -180,6 +180,14 @@ namespace Vi {
 
 	}
 
+	void Application::RunGUIAsync()
+	{
+	}
+
+	void Application::RunGUISync()
+	{
+	}
+
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
 
 		m_Running = false;

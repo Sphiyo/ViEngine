@@ -35,6 +35,8 @@ namespace Vi {
 	private:
 
 		void Run();
+		void RunGUIAsync();
+		void RunGUISync();
 		bool OnWindowClosed(WindowCloseEvent& e);
 		bool OnWindowResize(WindowResizeEvent& e);
 
