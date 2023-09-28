@@ -67,13 +67,13 @@ namespace Vi {
 
 	//	m_ImGuiLayer = new ImGuiLayer();
 	//	PushOverlay(m_ImGuiLayer);
-	
+#if IMGUI == 1
 		m_ImGuiThread.AddFunction([&] {
 			m_ImGuiLayer = new ImGuiLayer();
 			PushOverlay(m_ImGuiLayer);
 		});
 		m_ImGuiThread.Run();
-
+#endif
 		
 
 		
@@ -112,10 +112,12 @@ namespace Vi {
 	//	m_ImGuiLayer->JoinThread();
 	//	m_ImGuiLayer->OnDetach();
 		Renderer::Shutdown();
+#if IMGUI == 1
 		m_ImGuiThread.AddFunction([&] {
 			m_ImGuiLayer->OnDetach();
 		});
 		m_ImGuiThread.Shutdown();
+#endif
 	}
 
 	void Application::PushLayer(Layer* layer) {
@@ -185,7 +187,7 @@ namespace Vi {
 				}
 
 			}
-
+#if IMGUI == 1
 			m_ImGuiThread.AddFunction([&] {
 
 				m_ImGuiLayer->Begin();
@@ -212,6 +214,7 @@ namespace Vi {
 				m_ImGuiLayer->End();
 									
 			});
+#endif
 			
 					
 		////	m_ImGuiLayer->Begin();
@@ -233,7 +236,9 @@ namespace Vi {
 //////////////////////////////////////////////////////////////////////////////////////////////////// revise /////////////////////////////////////////////////////////////////////////
 																																												   //
 	void Application::RunGUIAsync()																																				   //
-	{																																											   //
+	{		
+#if IMGUI == 1
+		//
 		std::thread ImGuiThread = std::thread([&] {																																   //
 																																												   //
 			m_ImGuiLayer = new ImGuiLayer();																																	   //
@@ -274,10 +279,12 @@ namespace Vi {
 																																												   //
 			});																																									   //
 		ImGuiThread.detach();																																					   //
+#endif
 	}																																											   //
 																																												   //
 	void Application::RunGUISync()																																				   //
 	{																																											   //
+#if IMGUI == 1
 		m_ImGuiLayer = new ImGuiLayer();																																		   //
 																																												   //
 		m_LayerStack.PushOverlay(m_ImGuiLayer);																																	   //
@@ -313,7 +320,7 @@ namespace Vi {
 			m_ImGuiLayer->End();																																				   //
 		}																																										   //
 		m_ImGuiLayer->OnDetach();																																				   //
-																																												   //
+#endif																																								   //
 	}																																											   //
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
