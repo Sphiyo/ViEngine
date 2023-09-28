@@ -110,7 +110,7 @@ namespace Vi {
 		if (true /*!Application::Get().GetImGuiLayer()->m_CapturingKeyboard*/) {
 
 			if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-				m_BoostFactor = 3;
+				m_BoostFactor = 10;
 			}
 		}
 		return false;

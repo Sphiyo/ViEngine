@@ -25,6 +25,7 @@ namespace Vi {
 				inline void SetEventCallback(const EventCallbackFn& callback) override { m_Data.EventCallback = callback; }
 
 				void SetVSync(bool enabled) override;
+				bool ToggleVSync() override;
 				bool IsVSync() const override;
 
 				const CursorState& GetCursor() const override { return m_CursorState; }

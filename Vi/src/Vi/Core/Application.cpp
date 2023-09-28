@@ -221,6 +221,11 @@ namespace Vi {
 
 			m_Window->SetFullScreen(true, 1);
 		};
+
+		if (e.GetKeyCode() == VI_KEY_V) {
+
+			m_Window->ToggleVSync();
+		};
 		////////////////////////////////////////
 	
 

@@ -318,6 +318,21 @@ namespace Vi {
 		m_Data.VSync = enabled;
 	}
 
+	bool WindowsWindow::ToggleVSync()
+	{
+		VI_PROFILE_FUNCTION();
+
+		if (m_Data.VSync) {
+			glfwSwapInterval(0);
+			m_Data.VSync = false;
+		}
+		else {
+			glfwSwapInterval(1);
+			m_Data.VSync = true;
+		}
+		return m_Data.VSync;
+	}
+
 	bool WindowsWindow::IsVSync() const {
 		return m_Data.VSync;	
 	}
