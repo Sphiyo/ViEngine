@@ -14,7 +14,7 @@
 #include <glad/glad.h>
 #include <imgui_internal.h>
 
-#define Threading 1
+
 #if Threading == 1
 
 static void glfw_error_callback(int error, const char* description)

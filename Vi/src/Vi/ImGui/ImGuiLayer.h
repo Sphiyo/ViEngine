@@ -9,7 +9,7 @@ struct GLFWwindow;
 
 namespace Vi {
 
-#define Threading 0
+#define Threading 1
 #if Threading == 1
 
 	class VI_API ImGuiLayer : public Layer

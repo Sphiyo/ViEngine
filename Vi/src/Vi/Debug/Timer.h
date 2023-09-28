@@ -55,4 +55,4 @@ private:
 	Fn m_Func;
 };
 
-#define PROFILE_SCOPE(name) Timer timer##__LINE__(name, [&](ProfileResult profileResult) { ProfileResults::Get().push_back(profileResult); })
+#define PROFILE_SCOPE(name) Timer Customtimer##__LINE__(name, [&](ProfileResult profileResult) { ProfileResults::Get().push_back(profileResult); })
