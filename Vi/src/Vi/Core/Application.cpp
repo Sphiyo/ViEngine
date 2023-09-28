@@ -6,7 +6,7 @@
 #include <imgui_internal.h>
 #include <GLFW/glfw3.h>
 
-#include "Vi/Debug/Timer.h"
+//#include "Vi/Debug/Timer.h"
 
 
 
@@ -188,18 +188,29 @@ namespace Vi {
 
 			m_ImGuiThread.AddFunction([&] {
 
-				
+				m_ImGuiLayer->Begin();
+				{
 					
-					m_ImGuiLayer->Begin();
-					{
-						
 
-						for (Layer* layer : m_LayerStack)
-							layer->OnImGuiRender();
-
+					for (Layer* layer : m_LayerStack)																															   //
+						layer->OnImGuiRender();																																	   //
+					{																																							   //
+						ImGui::Begin("Profiler");																																   //
+						//
+						// remove delete to do to fix																															   //
+						for (auto& result : m_ProfileResults) {																													   //
+							//
+							char label[50];																																		   //
+							strcpy_s(label, "%.3fms  ");																														   //
+							strcat_s(label, result.Name);																														   //
+							ImGui::Text(label, result.Time);																													   //
+						}																																						   //
+						m_ProfileResults.clear();																																   //
+						ImGui::End();																																			   //
 					}
-					
-					m_ImGuiLayer->End();
+				}				
+				m_ImGuiLayer->End();
+									
 			});
 			
 					

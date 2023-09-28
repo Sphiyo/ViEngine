@@ -15,7 +15,7 @@
 		VI_PROFILE_END_SESSION();
 
 		VI_PROFILE_BEGIN_SESSION("Runtime", "ViProfile-Runtime.json");
-		app->RunGUIAsync();
+	//	app->RunGUIAsync();
 		app->Run();
 		VI_PROFILE_END_SESSION();
 
