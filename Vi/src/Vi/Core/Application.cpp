@@ -179,91 +179,93 @@ namespace Vi {
 		};
 
 	}
-
-	void Application::RunGUIAsync()
-	{
-		std::thread ImGuiThread = std::thread([&] {
-
-			m_ImGuiLayer = new ImGuiLayer();
-
-			m_LayerStack.PushOverlay(m_ImGuiLayer);
-
-			m_ImGuiLayer->OnAttach();
-
-			while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
-
-				//	VI_CORE_WARN("ImGuiLayer Start loop");
-				m_ImGuiLayer->Begin();
-				{
-					VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
-					for (Layer* layer : m_LayerStack)
-						layer->OnImGuiRender();
-					{
-						ImGui::Begin("Profiler");
-
-						// remove delete to do to fix
-						for (auto& result : m_ProfileResults) {
-
-							char label[50];
-							strcpy_s(label, "%.3fms  ");
-							strcat_s(label, result.Name);
-							ImGui::Text(label, result.Time);
-						}
-						m_ProfileResults.clear();
-						ImGui::End();
-					}
-
-				}
-				//	VI_CORE_WARN("ImGuiLayer End loop");
-				m_ImGuiLayer->End();
-			}
-			m_ImGuiLayer->OnDetach();
-
-			});
-		ImGuiThread.detach();
-	}
-
-	void Application::RunGUISync()
-	{
-		m_ImGuiLayer = new ImGuiLayer();
-
-		m_LayerStack.PushOverlay(m_ImGuiLayer);
-
-		m_ImGuiLayer->OnAttach();
-
-		while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {
-
-			//	VI_CORE_WARN("ImGuiLayer Start loop");
-			m_ImGuiLayer->Begin();
-			{
-				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-
-				for (Layer* layer : m_LayerStack)
-					layer->OnImGuiRender();
-				{
-					ImGui::Begin("Profiler");
-
-					// remove delete to do to fix
-					for (auto& result : m_ProfileResults) {
-
-						char label[50];
-						strcpy_s(label, "%.3fms  ");
-						strcat_s(label, result.Name);
-						ImGui::Text(label, result.Time);
-					}
-					m_ProfileResults.clear();
-					ImGui::End();
-				}
-
-			}
-			//	VI_CORE_WARN("ImGuiLayer End loop");
-			m_ImGuiLayer->End();
-		}
-		m_ImGuiLayer->OnDetach();
-
-
-	}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////// revise /////////////////////////////////////////////////////////////////////////
+																																												   //
+	void Application::RunGUIAsync()																																				   //
+	{																																											   //
+		std::thread ImGuiThread = std::thread([&] {																																   //
+																																												   //
+			m_ImGuiLayer = new ImGuiLayer();																																	   //
+																																												   //
+			m_LayerStack.PushOverlay(m_ImGuiLayer);																																   //
+																																												   //
+			m_ImGuiLayer->OnAttach();																																			   //
+																																												   //
+			while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {																										   //
+																																												   //
+				//	VI_CORE_WARN("ImGuiLayer Start loop");																														   //
+				m_ImGuiLayer->Begin();																																			   //
+				{																																								   //
+					VI_PROFILE_SCOPE("LayerStack OnImGuiRender");																												   //
+																																												   //
+					for (Layer* layer : m_LayerStack)																															   //
+						layer->OnImGuiRender();																																	   //
+					{																																							   //
+						ImGui::Begin("Profiler");																																   //
+																																												   //
+						// remove delete to do to fix																															   //
+						for (auto& result : m_ProfileResults) {																													   //
+																																												   //
+							char label[50];																																		   //
+							strcpy_s(label, "%.3fms  ");																														   //
+							strcat_s(label, result.Name);																														   //
+							ImGui::Text(label, result.Time);																													   //
+						}																																						   //
+						m_ProfileResults.clear();																																   //
+						ImGui::End();																																			   //
+					}																																							   //
+																																												   //
+				}																																								   //
+				//	VI_CORE_WARN("ImGuiLayer End loop");																														   //
+				m_ImGuiLayer->End();																																			   //
+			}																																									   //
+			m_ImGuiLayer->OnDetach();																																			   //
+																																												   //
+			});																																									   //
+		ImGuiThread.detach();																																					   //
+	}																																											   //
+																																												   //
+	void Application::RunGUISync()																																				   //
+	{																																											   //
+		m_ImGuiLayer = new ImGuiLayer();																																		   //
+																																												   //
+		m_LayerStack.PushOverlay(m_ImGuiLayer);																																	   //
+																																												   //
+		m_ImGuiLayer->OnAttach();																																				   //
+																																												   //
+		while (!glfwWindowShouldClose(m_ImGuiLayer->m_ImGuiWindow)) {																											   //
+																																												   //
+			//	VI_CORE_WARN("ImGuiLayer Start loop");																															   //
+			m_ImGuiLayer->Begin();																																				   //
+			{																																									   //
+				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");																													   //
+																																												   //
+				for (Layer* layer : m_LayerStack)																																   //
+					layer->OnImGuiRender();																																		   //
+				{																																								   //
+					ImGui::Begin("Profiler");																																	   //
+																																												   //
+					// remove delete to do to fix																																   //
+					for (auto& result : m_ProfileResults) {																														   //
+																																												   //
+						char label[50];																																			   //
+						strcpy_s(label, "%.3fms  ");																															   //
+						strcat_s(label, result.Name);																															   //
+						ImGui::Text(label, result.Time);																														   //
+					}																																							   //
+					m_ProfileResults.clear();																																	   //
+					ImGui::End();																																				   //
+				}																																								   //
+																																												   //
+			}																																									   //
+			//	VI_CORE_WARN("ImGuiLayer End loop");																															   //
+			m_ImGuiLayer->End();																																				   //
+		}																																										   //
+		m_ImGuiLayer->OnDetach();																																				   //
+																																												   //
+	}																																											   //
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
 

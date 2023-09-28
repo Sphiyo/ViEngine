@@ -61,6 +61,14 @@ namespace Vi {
 		static Application* s_Instance;
 		friend int ::main(int argc, char** argv);
 
+		struct ProfileResult {
+
+			const char* Name;
+			float Time;
+		};
+
+
+		std::vector<ProfileResult> m_ProfileResults;
 
 		// experimental // test // alpha
 		std::thread ImGuiThread;
