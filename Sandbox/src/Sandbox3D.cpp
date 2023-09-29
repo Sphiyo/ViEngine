@@ -34,6 +34,7 @@ void Sandbox3D::OnAttach() {
 	//Construct And Buffer Texture To Memory
 	m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
 	m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
+	m_CheckerTexture = Vi::Texture2D::Create("assets/textures/Checkerboard.png", 0);
 
 }
 
@@ -65,7 +66,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	{
 		VI_PROFILE_SCOPE("Renderer Draw");
 		
-		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_GroundColor);
+		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
 		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
 	
 		int rows = m_GridCount[0];

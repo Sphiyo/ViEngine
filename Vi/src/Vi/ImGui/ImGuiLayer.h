@@ -6,11 +6,15 @@
 
 struct GLFWwindow;
 
+#define IMGUITHREADED 0
+#define IMGUI 1
+
+
 
 namespace Vi {
 
-#define Threading 1
-#if Threading == 1
+
+#if IMGUI == 1 && IMGUITHREADED == 1
 
 	class VI_API ImGuiLayer : public Layer
 	{
@@ -52,7 +56,7 @@ namespace Vi {
 	
 		bool m_DarkImgui = true;
 	};
-#else
+#elif IMGUI == 1 && IMGUITHREADED == 0
 	
 	class VI_API ImGuiLayer : public Layer
 	{

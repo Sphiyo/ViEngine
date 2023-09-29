@@ -8,7 +8,8 @@
 
 //#include "Vi/Debug/Timer.h"
 
-
+//#define IMGUITHREADED 0
+//#define IMGUI 1
 
 template<typename Fn>
 class Timer {
@@ -65,9 +66,14 @@ namespace Vi {
 		
 	//	Application* imGuiApp = new Application();
 
-	//	m_ImGuiLayer = new ImGuiLayer();
-	//	PushOverlay(m_ImGuiLayer);
-#if IMGUI == 1
+
+#if IMGUI == 1 && IMGUITHREADED == 0
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
+#endif
+
+
+#if IMGUI == 1 && IMGUITHREADED == 1
 		m_ImGuiThread.AddFunction([&] {
 			m_ImGuiLayer = new ImGuiLayer();
 			PushOverlay(m_ImGuiLayer);
@@ -108,11 +114,14 @@ namespace Vi {
 
 	Application::~Application() {
 		VI_PROFILE_FUNCTION();
-	//	m_ImGuiLayer->m_ShouldDetach = true;
-	//	m_ImGuiLayer->JoinThread();
-	//	m_ImGuiLayer->OnDetach();
+	
+
+
+
 		Renderer::Shutdown();
-#if IMGUI == 1
+
+
+#if IMGUI == 1 && IMGUITHREADED == 1
 		m_ImGuiThread.AddFunction([&] {
 			m_ImGuiLayer->OnDetach();
 		});
@@ -187,7 +196,7 @@ namespace Vi {
 				}
 
 			}
-#if IMGUI == 1
+#if IMGUI == 1 && IMGUITHREADED == 1
 			m_ImGuiThread.AddFunction([&] {
 
 				m_ImGuiLayer->Begin();
@@ -216,20 +225,24 @@ namespace Vi {
 			});
 #endif
 			
-					
-		////	m_ImGuiLayer->Begin();
-		////	{
-		////		VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-		////		
-		////			for (Layer* layer : m_LayerStack)
-		////				layer->OnImGuiRender();
-		////		
-		////	} 
-		////	m_ImGuiLayer->End();
+#if IMGUI == 1 && IMGUITHREADED == 0
+			m_ImGuiLayer->Begin();
+			{
+				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+				
+					for (Layer* layer : m_LayerStack)
+						layer->OnImGuiRender();
+				
+			} 
+			m_ImGuiLayer->End();
 
-
+#endif
 
 		};
+
+#if IMGUI == 1 && IMGUITHREADED == 0
+		PopOverlay(m_ImGuiLayer);
+#endif
 
 	}
 	
@@ -237,7 +250,7 @@ namespace Vi {
 																																												   //
 	void Application::RunGUIAsync()																																				   //
 	{		
-#if IMGUI == 1
+#if IMGUI == 1 && IMGUITHREADED == 1
 		//
 		std::thread ImGuiThread = std::thread([&] {																																   //
 																																												   //
@@ -284,7 +297,7 @@ namespace Vi {
 																																												   //
 	void Application::RunGUISync()																																				   //
 	{																																											   //
-#if IMGUI == 1
+#if IMGUI == 1 && IMGUITHREADED == 0
 		m_ImGuiLayer = new ImGuiLayer();																																		   //
 																																												   //
 		m_LayerStack.PushOverlay(m_ImGuiLayer);																																	   //
@@ -377,7 +390,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
 	{
-		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
+		if (!m_ImGuiLayer->m_CapturingMouse) {
 
 			m_Window->SetCursor(CursorState::DISABLED);
 		}
@@ -385,7 +398,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseMoved(MouseMovedEvent& e)
 	{
-		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
+		if (!m_ImGuiLayer->m_CapturingMouse) {
 
 			
 		}
@@ -393,7 +406,7 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 	{
-		if (true /*!m_ImGuiLayer->m_CapturingMouse*/) {
+		if (!m_ImGuiLayer->m_CapturingMouse) {
 
 			if (Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_LEFT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_MIDDLE)) {
 				//	m_Window->SetCursor(CursorState::DISABLED); 

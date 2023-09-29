@@ -15,7 +15,8 @@
 #include <imgui_internal.h>
 
 
-#if Threading == 1
+
+#if IMGUI == 1 && IMGUITHREADED == 1
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -75,6 +76,7 @@ void Vi::ImGuiLayer::OnAttach()
 
 
     // Create window with graphics context
+
     m_ImGuiWindow = glfwCreateWindow(640, 480, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
     if (m_ImGuiWindow == NULL)
         VI_CORE_ASSERT(m_ImGuiWindow, "ImGui couldn't create window")
@@ -429,7 +431,7 @@ void Vi::ImGuiLayer::JoinThread()
     //m_LayerThread.join();
 }
 
-#else
+#elif IMGUI == 1 && IMGUITHREADED == 0
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -456,12 +458,12 @@ void Vi::ImGuiLayer::OnAttach()
 
 
     // Create window with graphics context
-    GLFWwindow* window = glfwCreateWindow(640, 480, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
-    if (window == NULL)
-        VI_CORE_ASSERT(window, "ImGui couldn't create window")
+   // GLFWwindow* window = (GLFWwindow*)Application::Get().GetWindow().GetNativeWindow();
+   // if (window == NULL)
+    //    VI_CORE_ASSERT(window, "ImGui couldn't create window")
 
-        glfwMakeContextCurrent(window);
-    glfwSwapInterval(1); // Enable vsync
+      //  glfwMakeContextCurrent(window);
+  //  glfwSwapInterval(1); // Enable vsync
 
 
     // Setup Dear ImGui context
@@ -489,11 +491,11 @@ void Vi::ImGuiLayer::OnAttach()
         //  style.Colors[ImGuiCol_WindowBg].w = 1.0f;
     }
 
-    //Application& app = Application::Get();
- // //  GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
+    Application& app = Application::Get();
+    GLFWwindow* window = static_cast<GLFWwindow*>(app.GetWindow().GetNativeWindow());
     //GLFWwindow* window = glfwCreateWindow(640, 480, "Dear ImGui GLFW+OpenGL3 example", NULL, NULL);
 
-    glfwMakeContextCurrent(window);
+   // glfwMakeContextCurrent(window);
     // Setup Platform/Renderer bindings
     ImGui_ImplGlfw_InitForOpenGL(window, true);
     ImGui_ImplOpenGL3_Init("#version 410");
@@ -510,29 +512,15 @@ void Vi::ImGuiLayer::OnDetach()
 
 void Vi::ImGuiLayer::OnImGuiRender()
 {
-    VI_CORE_WARN("ImGui OnImGuiRender() ThreadID : {0}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
     const auto& io = ImGui::GetIO();
-
-
-
     m_CapturingMouse = io.WantCaptureMouse;
-
     m_CapturingKeyboard = io.WantCaptureKeyboard;
 }
-
 
 
 void Vi::ImGuiLayer::Begin()
 {
     VI_PROFILE_FUNCTION();
-
-
-    // Poll and handle events (inputs, window resize, etc.)
-    // You can read the io.WantCaptureMouse, io.WantCaptureKeyboard flags to tell if dear imgui wants to use your inputs.
-    // - When io.WantCaptureMouse is true, do not dispatch mouse input data to your main application, or clear/overwrite your copy of the mouse data.
-    // - When io.WantCaptureKeyboard is true, do not dispatch keyboard input data to your main application, or clear/overwrite your copy of the keyboard data.
-    // Generally you may always pass all inputs to dear imgui, and hide them from your application based on those two flags.
-    VI_CORE_WARN("ImGui Begin() ThreadID : {0}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
 
     ImGui_ImplOpenGL3_NewFrame();
     ImGui_ImplGlfw_NewFrame();
@@ -542,7 +530,7 @@ void Vi::ImGuiLayer::Begin()
 void Vi::ImGuiLayer::End()
 {
     VI_PROFILE_FUNCTION();
-    VI_CORE_WARN("ImGui End() ThreadID : {0}", std::hash<std::thread::id>{}(std::this_thread::get_id()));
+   
     ImGuiIO& io = ImGui::GetIO();
     // Application& app = Application::Get();
     io.DisplaySize = ImVec2((float)640, (float)480);

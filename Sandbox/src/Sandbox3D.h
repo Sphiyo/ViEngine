@@ -29,7 +29,7 @@ private:
 	Vi::Ref<Vi::VertexArray> m_CubeVA;
 	Vi::Ref<Vi::Shader> m_FlatColorShader;
 
-	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture;
+	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture, m_CheckerTexture;
 
 	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
 	glm::vec4 m_GroundColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
