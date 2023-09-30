@@ -1,6 +1,8 @@
 #include "Vipch.h"
 #include "ImGuiLayer.h"
 
+#if IMGUI == 1
+
 #include "imgui.h"
 
 //#define IMGUI_IMPL_API
@@ -16,7 +18,7 @@
 
 
 
-#if IMGUI == 1 && IMGUITHREADED == 1
+#if IMGUITHREADED == 1
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -431,7 +433,7 @@ void Vi::ImGuiLayer::JoinThread()
     //m_LayerThread.join();
 }
 
-#elif IMGUI == 1 && IMGUITHREADED == 0
+#elif IMGUITHREADED == 0
 
 static void glfw_error_callback(int error, const char* description)
 {
@@ -690,3 +692,6 @@ void Vi::ImGuiLayer::SetImGuiTheme(bool bStyleDark) {
 }
 
 #endif
+
+
+#endif // IMGUI == 1

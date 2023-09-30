@@ -1,20 +1,24 @@
 #pragma once
+
+#define IMGUI 0
+#define IMGUITHREADED 0
+
 #include "Vi/Core/Layer.h"
 #include "Vi/Events/ApplicationEvent.h"
 #include "Vi/Events/KeyEvent.h"
 #include "Vi/Events/MouseEvent.h"
+#if IMGUI == 1
+
 
 struct GLFWwindow;
 
-#define IMGUITHREADED 0
-#define IMGUI 1
 
 
 
 namespace Vi {
 
 
-#if IMGUI == 1 && IMGUITHREADED == 1
+#if IMGUITHREADED == 1
 
 	class VI_API ImGuiLayer : public Layer
 	{
@@ -56,7 +60,8 @@ namespace Vi {
 	
 		bool m_DarkImgui = true;
 	};
-#elif IMGUI == 1 && IMGUITHREADED == 0
+
+#elif IMGUITHREADED == 0
 	
 	class VI_API ImGuiLayer : public Layer
 	{
@@ -93,3 +98,5 @@ namespace Vi {
 
 
 }
+
+#endif

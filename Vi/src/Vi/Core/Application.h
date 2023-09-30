@@ -30,7 +30,9 @@ namespace Vi {
 		inline static Application& Get() { return *s_Instance; }
 		inline bool IsApplicationRunning() { return m_Running; }
 		inline void CloseWindow() { m_Running = false; }
+	#if IMGUI == 1
 		inline ImGuiLayer* GetImGuiLayer()const { return m_ImGuiLayer; }
+	#endif
 		inline Physics::VPhysicsLayer* GetPhysicsLayer()const { return m_PhysicsLayer; }
 	private:
 
@@ -50,7 +52,9 @@ namespace Vi {
 	private:
 
 		std::unique_ptr<Window> m_Window;
+	#if IMGUI == 1
 		ImGuiLayer* m_ImGuiLayer;
+	#endif
 		Physics::VPhysicsLayer* m_PhysicsLayer;
 		bool m_Running = true, m_Minimized = false;
 		LayerStack m_LayerStack;

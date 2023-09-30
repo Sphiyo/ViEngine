@@ -45,6 +45,7 @@ void Sandbox3D::OnDetach() {
 void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 
 	VI_PROFILE_FUNCTION();
+	VI_CORE_WARN( "Sandbox3D.cpp: OnUpdate(): Timestep is {}", ts.GetMilliSeconds() );
 	//PROFILE_SCOPE("Sandbox3D::OnUpdate");
 	// Update 
 	Sandbox3D::deltaTime = ts;										//temp
@@ -65,25 +66,38 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	
 	{
 		VI_PROFILE_SCOPE("Renderer Draw");
-		
-		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
-		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
+	#if 0
+	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
+	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
 	
 		int rows = m_GridCount[0];
 		int columns = m_GridCount[1];
 		float offsetX = m_GridOffset[0];
 		float offsetY = m_GridOffset[1];
 		
-		for (int x = 0; x < rows ; x++) {
-			
-			for (int y = 0; y < columns ; y++) {
+	
+	//	Vi::Renderer3D::DrawCube({ 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 0.0f }, { 9.0f,9.0f,9.0f }, m_CubeColor);
+		//Vi::Renderer3D::DrawCube({ 0.0f,0.0f,0.0f }, { 0.0f, 0.0f, 0.0f }, { 3.0f,1.0f,3.0f }, m_CubeColor);
 
 				//Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
 			}
 		}
 
+	//	for (int x = 0; x < rows ; x++) {
+	//		
+	//		for (int y = 0; y < columns ; y++) {
+	//
+	//			Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
+	//		}
+	//	}
+	#endif
 	//	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor);
 	//	Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
+
+		for ( int x = 0; x < 2; x++ ) {
+			Vi::Renderer3D::DrawCube( { x * 2.0f,0.0f,0.0f }, { 90.0f, 45.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor );
+		}
+
 	}
 	auto dir = m_CameraController.GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();
