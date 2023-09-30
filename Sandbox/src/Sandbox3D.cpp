@@ -93,9 +93,28 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	#endif
 	//	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor);
 	//	Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
+		const float cubeCount = 90;
+		float r = 0.0f;
+		float g = 0.0f;
+		float b = 0.0f;
+		for ( float x = 0; x < cubeCount; x++ ) {
+			if ( x >= 0 && x <= ( cubeCount / 3 ) ) {
+				r = x / ( cubeCount / 3 );
+				g = 0.0f;
+				b = 0.0f;
+			}
+			else if ( x > ( cubeCount / 3 ) && x <= ( cubeCount / 2 ) ) {
+				r = 0.0f;
+				g = x / ( cubeCount / 2 );
+				b = 0.0f;
+			}
+			else if ( x > ( cubeCount / 2 ) && x <= cubeCount ) {
+				r = 0.0f; 
+				g = 0.0f;
+				b = x / cubeCount;
+			}
 
-		for ( int x = 0; x < 2; x++ ) {
-			Vi::Renderer3D::DrawCube( { x * 2.0f,0.0f,0.0f }, { 90.0f, 45.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor );
+			Vi::Renderer3D::DrawCube( { x - (cubeCount/2) ,0.0f,0.0f }, { 90.0f, 45.0f, 0.0f }, { 1.0f,3.0f,1.0f }, { r,g,b,1.0f } );
 		}
 
 	}

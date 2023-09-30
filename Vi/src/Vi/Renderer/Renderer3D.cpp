@@ -16,8 +16,8 @@ namespace Vi {
 	struct CubeVertex {
 
 		glm::vec3 Position;
+		glm::vec4 Color;
 		glm::vec2 TexCoord; 
-	//	glm::vec3 Color;
 	//	float TexIndex;
 	//	float TilingFactor;
 	};
@@ -155,7 +155,7 @@ namespace Vi {
 
 		s_Data.CubeVertexBuffer->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
-		//	{ ShaderDataType::Float4, "a_Color" },    // TODO
+			{ ShaderDataType::Float4, "a_Color" },    // TODO
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		});
 		s_Data.CubeVertexArray->AddVertexBuffer(s_Data.CubeVertexBuffer);
@@ -183,13 +183,14 @@ namespace Vi {
 		};
 
 		uint32_t offset = 0;
-		// ci = cubes
+
 		// i = indices
+
 		for ( uint32_t i = 0; i < s_Data.MaxIndices; i ++) {
 			uint32_t DynamicIndices = i % s_Data.CubeIndices;
 				cubeIndices[i ] = offset + Indices[DynamicIndices];
-				if ( (DynamicIndices + 1) == s_Data.CubeIndices )
-					offset += 4 * 6;
+				if ( (DynamicIndices +1) == s_Data.CubeIndices )
+					offset += s_Data.CubeVertices;
 	
 		}
 	#if WORKING
@@ -318,6 +319,7 @@ namespace Vi {
 		s_Data->SppotlightShader->SetFloat3("cameraPos", camPosition);			// test
 		s_Data->SppotlightShader->SetFloat("maxDistance", 10.0f);			// test
 
+		s_Data.TextureShader->SetFloat4( "u_Color", color );
 		
 		constexpr glm::vec3 Positions[4 * 6] =
 		{
@@ -552,7 +554,7 @@ namespace Vi {
 			glm::vec4 pos = transform * glm::vec4{ Positions[i],0.0f };
 		//	s_Data.CubeVertexBufferPtr->Position =  position + Positions[i] ; // working
 			s_Data.CubeVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z}; // experimental
-		//	s_Data.CubeVertexBufferPtr->Color = glm::vec4(0);
+			s_Data.CubeVertexBufferPtr->Color = color;
 			s_Data.CubeVertexBufferPtr->TexCoord = textureCoords[i];
 		//	s_Data.CubeVertexBufferPtr->TexIndex = textureIndex;
 		//	s_Data.CubeVertexBufferPtr->TilingFactor = tilingFactor;
@@ -560,7 +562,7 @@ namespace Vi {
 	
 	
 		}
-		s_Data.CubeIndexCount += 6 * 6;
+		s_Data.CubeIndexCount += s_Data.CubeIndices;
 			
 
 		
