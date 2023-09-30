@@ -26,7 +26,7 @@ namespace Vi {
 		const uint32_t CubeVertices = 4 * 6;
 		const uint32_t CubeIndices = 6 * 6;
 
-		const uint32_t MaxCubes = 10000;
+		const uint32_t MaxCubes = 150'000;
 		const uint32_t MaxVertices = MaxCubes * CubeVertices;
 		const uint32_t MaxIndices = MaxCubes * CubeIndices;
 	//	static const uint32_t MaxTextureSlots = 32; // TODO: RenderCaps
@@ -42,6 +42,7 @@ namespace Vi {
 		CubeVertex* CubeVertexBufferBase = nullptr;
 		CubeVertex* CubeVertexBufferPtr = nullptr;
 
+		uint32_t DrawCount = 0;
 	//	std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
 	//	uint32_t TextureSlotIndex = 1; // 0 = white texture
 	};
@@ -283,8 +284,10 @@ namespace Vi {
 		s_Data->TextureShader->Unbind();
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-
+		VI_CORE_INFO( "Cube Instance Count : {}", s_Data.CubeIndexCount / s_Data.CubeIndices );
+		VI_CORE_INFO( "DrawCall : {}", s_Data.DrawCount );
 		s_Data.CubeIndexCount = 0;
+		s_Data.DrawCount = 0;
 		s_Data.CubeVertexBufferPtr = s_Data.CubeVertexBufferBase;
 
 		s_Data->SppotlightShader->Bind();
@@ -307,7 +310,7 @@ namespace Vi {
 		//VI_PROFILE_FUNCTION();
 		s_Data.TextureShader->Bind();
 		RenderCommand::DrawIndexed(s_Data.CubeVertexArray, s_Data.CubeIndexCount);
-
+		s_Data.DrawCount++;
 	}
 	void Renderer3D::DrawCube(const glm::vec3& camPosition, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
 		VI_PROFILE_FUNCTION();

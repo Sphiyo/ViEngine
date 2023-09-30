@@ -42,14 +42,14 @@ void Sandbox3D::OnAttach() {
 void Sandbox3D::OnDetach() {
 	VI_PROFILE_FUNCTION();
 }
-
+bool didrender = false;
 void Sandbox3D::OnUpdate(Vi::Timestep ts) {
-
+	deltaTime = ts.GetMilliSeconds( );										//temp
 	VI_PROFILE_FUNCTION();
-	VI_CORE_WARN( "Sandbox3D.cpp: OnUpdate(): Timestep is {}", ts.GetMilliSeconds() );
+	VI_CORE_WARN( "Sandbox3D.cpp: OnUpdate(): Timestep is {} : FPS = {}", deltaTime, 1000 / deltaTime );
 	//PROFILE_SCOPE("Sandbox3D::OnUpdate");
 	// Update 
-	Sandbox3D::deltaTime = ts;										//temp
+	
 	{
 		VI_PROFILE_SCOPE("CameraController::OnUpdate");
 		m_CameraController.OnUpdate(ts);
@@ -62,19 +62,25 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
 	}
+	
+	if ( !didrender ) {
+		Vi::Renderer3D::BeginScene( m_CameraController.GetCamera( ) );
 
-	Vi::Renderer3D::BeginScene(m_CameraController.GetCamera());
-	
-	{
-		VI_PROFILE_SCOPE("Renderer Draw");
-	#if 0
-	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
-	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
-	
-		int rows = m_GridCount[0];
-		int columns = m_GridCount[1];
-		float offsetX = m_GridOffset[0];
-		float offsetY = m_GridOffset[1];
+		{
+			VI_PROFILE_SCOPE( "Renderer Draw" );
+		#if 1
+		//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
+		//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
+
+			int rows = m_GridCount[0];
+			int columns = m_GridCount[1];
+			float offsetX = m_GridOffset[0];
+			float offsetY = m_GridOffset[1];
+
+
+			for (int x = 0; x < rows ; x++) {
+				
+				for (int y = 0; y < columns ; y++) {
 		
 	
 	//	Vi::Renderer3D::DrawCube({ 0.0f,1.0f,0.0f }, { 0.0f, 0.0f, 0.0f }, { 9.0f,9.0f,9.0f }, m_CubeColor);
@@ -114,21 +120,14 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 				r = x / ( cubeCount / 3 );
 				g = 0.0f;
 				b = 0.0f;
+					Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
+				}
 			}
-			else if ( x > ( cubeCount / 3 ) && x <= ( cubeCount / 2 ) ) {
-				r = 0.0f;
-				g = x / ( cubeCount / 2 );
-				b = 0.0f;
-			}
-			else if ( x > ( cubeCount / 2 ) && x <= cubeCount ) {
-				r = 0.0f; 
-				g = 0.0f;
-				b = x / cubeCount;
-			}
-			
-			Vi::Renderer3D::DrawCube( { ( x - ( cubeCount / 2 ) )/3 ,( x - ( cubeCount / 2 ) ) / 6 ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.5f,0.15f,2.0f }, { r,g,b,1.0f } );
+		#endif
+
 		}
 
+		Vi::Renderer3D::EndScene( );		
 	}
 	auto dir = m_CameraController.GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();

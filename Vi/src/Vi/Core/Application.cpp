@@ -158,9 +158,11 @@ namespace Vi {
 
 			if ( !m_Minimized ) {
 
+				static int count;
 				VI_PROFILE_SCOPE( "LayerStack OnUpdate" );
-				m_Window->OnUpdate( );
-
+				if( !IsRenderingPaused )
+					m_Window->OnUpdate( );
+				
 
 				for ( Layer* layer : m_LayerStack ) {
 					//if (layer == m_ImGuiLayer) continue;

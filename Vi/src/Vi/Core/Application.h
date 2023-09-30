@@ -47,8 +47,8 @@ namespace Vi {
 		bool OnMouseMoved(MouseMovedEvent& e);
 		bool OnMouseButtonReleased(MouseButtonReleasedEvent& e);
 
-		
-		
+	public:
+		bool IsRenderingPaused = false;
 	private:
 
 		std::unique_ptr<Window> m_Window;
