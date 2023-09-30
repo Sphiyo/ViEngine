@@ -24,6 +24,7 @@ glm::vec3 quaternionToEulerAngles(const glm::quat& quaternion) {
 
 Sandbox3D::Sandbox3D() 
 	: Layer("Sandbox3D"), m_CameraController({0.0f,4.0f,8.0f}) {
+	: Layer("Sandbox3D"), m_CameraController({0.0f,0.0f,0.0f}) {
 	VI_PROFILE_FUNCTION();
 }
 
@@ -94,9 +95,20 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	//	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor);
 	//	Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
 		const float cubeCount = 90;
+		bool inc = true;
+		
+		float y = 0;
+
 		float r = 0.0f;
 		float g = 0.0f;
 		float b = 0.0f;
+
+		if ( y > 5 ) { inc = false; }
+		else if ( y < -5 ) { inc = true; }
+
+		if ( inc ) y += deltaTime ;
+		else y -= deltaTime;
+
 		for ( float x = 0; x < cubeCount; x++ ) {
 			if ( x >= 0 && x <= ( cubeCount / 3 ) ) {
 				r = x / ( cubeCount / 3 );
@@ -113,8 +125,8 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 				g = 0.0f;
 				b = x / cubeCount;
 			}
-
-			Vi::Renderer3D::DrawCube( { x - (cubeCount/2) ,0.0f,0.0f }, { 90.0f, 45.0f, 0.0f }, { 1.0f,3.0f,1.0f }, { r,g,b,1.0f } );
+			
+			Vi::Renderer3D::DrawCube( { ( x - ( cubeCount / 2 ) )/3 ,( x - ( cubeCount / 2 ) ) / 6 ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 0.5f,0.15f,2.0f }, { r,g,b,1.0f } );
 		}
 
 	}
