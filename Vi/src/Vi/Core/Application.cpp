@@ -152,7 +152,7 @@ namespace Vi {
 		while ( m_Running ) {
 
 			VI_PROFILE_SCOPE( "RunLoop" );
-
+			RendererAPI::ClearDrawCallCounts( );
 			Timestep timestep = Time::GetTime( ) - m_LastFrameTime;
 			m_LastFrameTime = Time::GetTime( );
 
@@ -226,6 +226,10 @@ namespace Vi {
 	#endif
 
 	#endif // IMGUI == 1
+
+		
+
+
 	}
 
 //////////////////////////////////////////////////////////////////////////////////////////////////// revise /////////////////////////////////////////////////////////////////////////

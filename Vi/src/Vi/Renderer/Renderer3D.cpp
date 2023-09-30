@@ -42,7 +42,6 @@ namespace Vi {
 		CubeVertex* CubeVertexBufferBase = nullptr;
 		CubeVertex* CubeVertexBufferPtr = nullptr;
 
-		uint32_t DrawCount = 0;
 	//	std::array<Ref<Texture2D>, MaxTextureSlots> TextureSlots;
 	//	uint32_t TextureSlotIndex = 1; // 0 = white texture
 	};
@@ -263,6 +262,7 @@ namespace Vi {
 		s_Data->SppotlightShader->SetInt("u_Texture", 0);
 		s_Data->SppotlightShader->Unbind();
 		s_Data.TextureShader = Shader::Create("assets/shaders/Texture.glsl");
+
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetInt("u_Texture", 0);
 		 
@@ -285,9 +285,9 @@ namespace Vi {
 		s_Data.TextureShader->Bind();
 		s_Data.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 		VI_CORE_INFO( "Cube Instance Count : {}", s_Data.CubeIndexCount / s_Data.CubeIndices );
-		VI_CORE_INFO( "DrawCall : {}", s_Data.DrawCount );
+
 		s_Data.CubeIndexCount = 0;
-		s_Data.DrawCount = 0;
+	
 		s_Data.CubeVertexBufferPtr = s_Data.CubeVertexBufferBase;
 
 		s_Data->SppotlightShader->Bind();
@@ -310,7 +310,8 @@ namespace Vi {
 		//VI_PROFILE_FUNCTION();
 		s_Data.TextureShader->Bind();
 		RenderCommand::DrawIndexed(s_Data.CubeVertexArray, s_Data.CubeIndexCount);
-		s_Data.DrawCount++;
+	
+		VI_CORE_INFO( "RendererAPI::GetDrawCallsCount = {}", RendererAPI::GetDrawCallsCount( ) );
 	}
 	void Renderer3D::DrawCube(const glm::vec3& camPosition, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
 		VI_PROFILE_FUNCTION();
@@ -323,7 +324,7 @@ namespace Vi {
 		s_Data->SppotlightShader->SetFloat("maxDistance", 10.0f);			// test
 
 		s_Data.TextureShader->SetFloat4( "u_Color", color );
-		
+
 		constexpr glm::vec3 Positions[4 * 6] =
 		{
 
@@ -332,89 +333,87 @@ namespace Vi {
 			{  -0.5f,  0.5f, -0.5f   },
 			{   0.5f,  0.5f, -0.5f   },
 			{   0.5f, -0.5f, -0.5f   },
-			  					   
+
 			// face 2			   
 			{  -0.5f,  0.5f, -0.5f   },
 			{  -0.5f,  0.5f,  0.5f   },
 			{   0.5f,  0.5f,  0.5f   },
 			{   0.5f,  0.5f, -0.5f   },
-			  					   
-			  					   
+
+
 			// face 3			   
 			{  -0.5f, -0.5f,  0.5f   },
 			{  -0.5f,  0.5f,  0.5f   },
 			{   0.5f,  0.5f,  0.5f   },
 			{   0.5f, -0.5f,  0.5f   },
-			  					   
-			  					   
+
+
 			// face 4			   
 			{   0.5f, -0.5f, -0.5f   },
 			{   0.5f,  0.5f, -0.5f   },
 			{   0.5f,  0.5f,  0.5f   },
 			{   0.5f, -0.5f,  0.5f   },
-			  					   
-			  					   
+
+
 			// face 5			   
 			{  -0.5f, -0.5f, -0.5f   },
 			{  -0.5f, -0.5f,  0.5f   },
 			{   0.5f, -0.5f,  0.5f   },
 			{   0.5f, -0.5f, -0.5f   },
-			 					   
-			 					   
+
+
 			// face 6			   
 			{  -0.5f, -0.5f, -0.5f   },
 			{  -0.5f,  0.5f, -0.5f   },
 			{  -0.5f,  0.5f,  0.5f   },
 			{  -0.5f, -0.5f,  0.5f   }
-		
+
 		};
-		
-	/*	const glm::vec3 Positions[4 * 6] =
+		/*	const glm::vec3 Positions[4 * 6] =
 		{
 
-			// face 1	
+			// face 1
 			{  -scale.x, -scale.y, -scale.z   },
 			{  -scale.x,  scale.y, -scale.z   },
 			{   scale.x,  scale.y, -scale.z   },
 			{   scale.x, -scale.y, -scale.z   },
-			  					   
-			// face 2			   
+
+			// face 2
 			{  -scale.x,  scale.y, -scale.z   },
 			{  -scale.x,  scale.y,  scale.z   },
 			{   scale.x,  scale.y,  scale.z   },
 			{   scale.x,  scale.y, -scale.z   },
-			  					   
-			  					   
-			// face 3			   
+
+
+			// face 3
 			{  -scale.x, -scale.y,  scale.z   },
 			{  -scale.x,  scale.y,  scale.z   },
 			{   scale.x,  scale.y,  scale.z   },
 			{   scale.x, -scale.y,  scale.z   },
-			  					   
-			  					   
-			// face 4			   
+
+
+			// face 4
 			{   scale.x, -scale.y, -scale.z   },
 			{   scale.x,  scale.y, -scale.z   },
 			{   scale.x,  scale.y,  scale.z   },
 			{   scale.x, -scale.y,  scale.z   },
-			  					   
-			  					   
-			// face 5			   
+
+
+			// face 5
 			{  -scale.x, -scale.y, -scale.z   },
 			{  -scale.x, -scale.y,  scale.z   },
 			{   scale.x, -scale.y,  scale.z   },
 			{   scale.x, -scale.y, -scale.z   },
-			 					   
-			 					   
-			// face 6			   
+
+
+			// face 6
 			{  -scale.x, -scale.y, -scale.z   },
 			{  -scale.x,  scale.y, -scale.z   },
 			{  -scale.x,  scale.y,  scale.z   },
 			{  -scale.x, -scale.y,  scale.z   }
-		
+
 		};
 	*/
-
 		/*constexpr glm::vec2 textureCoords[4] =
 		{
 
@@ -424,38 +423,38 @@ namespace Vi {
 			{  0.0f, 1.0f  }
 
 		};*/
-		const glm::vec2 textureCoords[4 * 6] = 
-		{ 
+		const glm::vec2 textureCoords[4 * 6] =
+		{
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
 			{  1.0f, 1.0f  },
 			{  1.0f, 0.0f  },
-		
+
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
 			{  1.0f, 1.0f  },
 			{  1.0f, 0.0f  },
-		
+
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
 			{  1.0f, 1.0f  },
 			{  1.0f, 0.0f  },
-			
+
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
 			{  1.0f, 1.0f  },
 			{  1.0f, 0.0f  },
-		
+
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
 			{  1.0f, 1.0f  },
 			{  1.0f, 0.0f  },
-			
+
 
 			{  0.0f, 0.0f  },
 			{  0.0f, 1.0f  },
@@ -464,12 +463,14 @@ namespace Vi {
 
 
 		};
-		
-		const size_t cubeVertexCount = 4 * 6;
-			
-		const float texIndex = 0.0f; // White Texture
 
-	//	const float tilingFactor = 1.0f;
+		const size_t cubeVertexCount = 4 * 6;
+
+		glm::mat4 transform = glm::translate( glm::mat4( 1.0f ), position ) *
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( rotation.x ), { 1.0f,0.0f,0.0f } ) *
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( rotation.y ), { 0.0f,1.0f,0.0f } ) *
+			glm::rotate( glm::mat4( 1.0f ), glm::radians( rotation.z ), { 0.0f,0.0f,1.0f } ) *
+			glm::scale( glm::mat4( 1.0f ), scale );
 
 
 		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * 
@@ -555,20 +556,17 @@ namespace Vi {
 		for (size_t i = 0; i < cubeVertexCount; i++)  // test // return here // to do //experimental
 		{
 			glm::vec4 pos = transform * glm::vec4{ Positions[i],0.0f };
+		for ( size_t i = 0; i < s_Data.CubeVertices; i++ ) {
+			glm::vec4 pos = transform * glm::vec4{ Positions[i], 0.0f };
 		//	s_Data.CubeVertexBufferPtr->Position =  position + Positions[i] ; // working
-			s_Data.CubeVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z}; // experimental
+			s_Data.CubeVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z};
 			s_Data.CubeVertexBufferPtr->Color = color;
 			s_Data.CubeVertexBufferPtr->TexCoord = textureCoords[i];
 		//	s_Data.CubeVertexBufferPtr->TexIndex = textureIndex;
 		//	s_Data.CubeVertexBufferPtr->TilingFactor = tilingFactor;
 			s_Data.CubeVertexBufferPtr++;
-	
-	
 		}
 		s_Data.CubeIndexCount += s_Data.CubeIndices;
-			
-
-		
 
 	}
 

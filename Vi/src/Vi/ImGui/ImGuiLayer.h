@@ -1,6 +1,6 @@
 #pragma once
 
-#define IMGUI 0
+#define IMGUI 1
 #define IMGUITHREADED 0
 
 #include "Vi/Core/Layer.h"

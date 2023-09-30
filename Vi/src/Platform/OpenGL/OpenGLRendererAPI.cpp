@@ -36,8 +36,9 @@ namespace Vi {
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
+		int texture_units = 0;
+		glGetIntegerv( GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &texture_units );
+		VI_CORE_INFO("(OGLRendererAPI) MAX_COMBINED_TEXTURE_IMAGE_UNITS = {}", texture_units );
 #ifdef VI_DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -67,6 +68,7 @@ namespace Vi {
 	{
 		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
 		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+		RendererAPI::IncrementDrawCalls();
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 
