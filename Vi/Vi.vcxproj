@@ -145,7 +145,6 @@
     </Lib>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="src\Vi\Renderer\Renderer2D.h" />
     <ClInclude Include="src\Platform\D3D12\D3D12Buffer.h" />
     <ClInclude Include="src\Platform\D3D12\D3D12Context.h" />
     <ClInclude Include="src\Platform\OpenGL\OpenGLBuffer.h" />
@@ -609,7 +608,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="src\Vi\Renderer\Renderer2D.cpp" />
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp" />
     <ClCompile Include="src\Platform\D3D12\D3D12Context.cpp" />
     <ClCompile Include="src\Platform\OpenGL\OpenGLBuffer.cpp" />

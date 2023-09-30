@@ -212,7 +212,7 @@ void Sandbox3D::OnImGuiRender() {
 	}
 
 	ImGui::Begin("Stats");														   // temp 
-	ImGui::Text("Fps  %.0fFps", 1 / Sandbox3D::deltaTime);
+	ImGui::Text("Fps  %.0fFps", 1000 / Sandbox3D::deltaTime);
 	ImGui::Text("ts  %.3fms", Sandbox3D::deltaTime);
 	ImGui::End();
 
