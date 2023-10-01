@@ -2,6 +2,8 @@
 #include "Application.h"
 
 #include "Vi/Renderer/Renderer.h"
+#include "Vi/Miscs/CameraController.h"
+#include "Vi/Renderer/Renderer3D.h"
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <GLFW/glfw3.h>
@@ -152,25 +154,41 @@ namespace Vi {
 		while ( m_Running ) {
 
 			VI_PROFILE_SCOPE( "RunLoop" );
+
+			
+
 			RendererAPI::ClearDrawCallCounts( );
 			Timestep timestep = Time::GetTime( ) - m_LastFrameTime;
 			m_LastFrameTime = Time::GetTime( );
-
+		
 			if ( !m_Minimized ) {
 
 				static int count;
 				VI_PROFILE_SCOPE( "LayerStack OnUpdate" );
-				if( !IsRenderingPaused )
+			
+				if ( !IsRenderingPaused ) {
 					m_Window->OnUpdate( );
+					
+				}
 				
-
+				{
+					VI_PROFILE_SCOPE( "Renderer Prep" );
+					RenderCommand::SetClearColor( { 0.1f, 0.1f, 0.1f, 1 } );
+					RenderCommand::Clear( );
+				}
 				for ( Layer* layer : m_LayerStack ) {
 					//if (layer == m_ImGuiLayer) continue;
 				//	if(layer)		
+					
+					Renderer3D::BeginScene(  CameraController::Get( ).GetCamera( ) );
 					layer->OnUpdate( timestep );
+					Renderer3D::EndScene( );
 				}
-
+			
 			}
+
+		
+
 		#if IMGUI == 1
 
 		#if IMGUITHREADED == 1

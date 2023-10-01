@@ -7,9 +7,13 @@
 
 #include "Vi/Core/Application.h"
 
-namespace Vi {
 
+
+Vi::CameraController* Vi::CameraController::s_CameraController = new Vi::CameraController();
+
+namespace Vi {	
 	
+
 	CameraController::CameraController(const glm::vec3& worldLocation, const glm::vec3& worldRotation)		
 										: m_Camera(glm::vec3(worldLocation), glm::vec3(worldRotation))	{
 		
@@ -120,7 +124,7 @@ namespace Vi {
 		if ( IsLocallyControlled ) {
 
 			if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-				m_BoostFactor = 10;
+				m_BoostFactor = 12;
 			}
 		}
 		return false;

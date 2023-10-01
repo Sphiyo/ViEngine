@@ -36,7 +36,7 @@ namespace Vi {
 		m_FOV = fovy;
 		CheckFOV();
 		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), aspectratio, nearPlane, farPlane);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_ViewProjectionMatrix3D = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
 
@@ -126,8 +126,8 @@ namespace Vi {
 		return m_ProjectionMatrix;
 	}
 
-	const glm::mat4& Camera::GetViewProjectionMatrix() const {
-		return m_ViewProjectionMatrix;
+	const glm::mat4& Camera::GetViewProjectionMatrix3D() const {
+		return m_ViewProjectionMatrix3D;
 	}
 
 	const glm::mat4& Camera::GetViewMatrix() const
@@ -157,7 +157,7 @@ namespace Vi {
 		m_WorldUpVector = glm::normalize(glm::cross(m_WorldRightVector, m_WorldForwardVector));
 
 		m_ViewMatrix = glm::lookAt(m_WorldLocation, m_WorldLocation + m_ForwardVector, m_UpVector);
-		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
+		m_ViewProjectionMatrix3D = m_ProjectionMatrix * m_ViewMatrix;
 	}
 
 }

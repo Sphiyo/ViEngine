@@ -98,6 +98,7 @@ namespace Vi {
 		m_VertexBuffers.push_back(vertexBuffer);
 	}
 
+
 	void OpenGLVertexArray::SetIndexBuffer(const Ref<IndexBuffer>& indexBuffer)
 	{
 		VI_PROFILE_FUNCTION();

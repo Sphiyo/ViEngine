@@ -5,6 +5,8 @@
 #include "Vi/Events/KeyEvent.h"
 #include "Vi/Events/MouseEvent.h"
 
+
+
 namespace Vi {
 
 	class CameraController {
@@ -15,9 +17,13 @@ namespace Vi {
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
+		static CameraController& Get( ) {
+			return *s_CameraController;
+		}
+
 		Camera& GetCamera() { return m_Camera; }
 		const Camera& GetCamera() const { return m_Camera; }
-
+		static CameraController* s_CameraController;
 	private:
 
 		bool OnKeyPressed(KeyPressedEvent& e);
@@ -53,6 +59,8 @@ namespace Vi {
 		bool m_MouseRightButtonPressed = false;
 		bool m_MouseLeftButtonPressed = false;
 		bool m_MouseMiddleButtonPressed = false;
+
+
 	};
 
 

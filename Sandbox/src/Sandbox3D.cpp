@@ -22,15 +22,18 @@ glm::vec3 quaternionToEulerAngles(const glm::quat& quaternion) {
 
 ///////////////////////////////////
 
-Sandbox3D::Sandbox3D() 
-	: Layer("Sandbox3D"), m_CameraController({0.0f,4.0f,0.0f}) {
-	VI_PROFILE_FUNCTION();
+
+Sandbox3D::Sandbox3D( ) : 
+	Layer( "Sandbox3D" ) {
+
+	VI_PROFILE_FUNCTION( );
+	Vi::CameraController::Get( ).GetCamera( ).SetWorldLocation( 0.0f, 1.5f, 0.0f );
 }
 
 void Sandbox3D::OnAttach() {
 
 	VI_PROFILE_FUNCTION();
-
+	
 	//Construct And Buffer Texture To Memory
 	m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
 	m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
@@ -50,18 +53,20 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	
 	{
 		VI_PROFILE_SCOPE("CameraController::OnUpdate");
-		m_CameraController.OnUpdate(ts);
+		Vi::CameraController::Get().OnUpdate( ts );
+
 	}
 	// Render 
 
 	// Set Background Color And Clear It 
-	{
-		VI_PROFILE_SCOPE("Renderer Prep");
-		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-		Vi::RenderCommand::Clear();
-	}
+	///////////////////////////{
+	///////////////////////////	VI_PROFILE_SCOPE("Renderer Prep");
+	///////////////////////////	Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+	///////////////////////////	Vi::RenderCommand::Clear();
+	///////////////////////////}
 	
-	Vi::Renderer3D::BeginScene( m_CameraController.GetCamera( ) );
+	//Vi::Renderer3D::BeginScene( Vi::CameraController::Get( ).GetCamera( ) );
+	
 
 	{
 		VI_PROFILE_SCOPE( "Renderer Draw" );
@@ -69,21 +74,35 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
 	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
 
+		//Vi::Renderer3D::DrawCube( { 0.0f , 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor );
+
+		const float height = 7;
+		const float width = 7;
+
 		int rows = m_GridCount[0];
 		int columns = m_GridCount[1];
-		float offsetX = m_GridOffset[0];
-		float offsetZ = m_GridOffset[1];
+		float offsetX = m_GridOffset[0] + width;
+		float offsetZ = m_GridOffset[1] + width;
+
+		float offsetXBlock = width * 10;
+		float offsetZBlock = width * 5;
 
 
-		for ( int x = 0; x < rows; x++ ) {
 
-			for ( int z = 0; z < columns; z++ ) {
+		for ( int w = 0; w < 3; w++ ) {
+			for ( int t = 0; t < 3; t++ ) {
+				for ( int x = 0; x < rows; x++ ) {
 
-			//	( x - ( x / 2 ) ) / 3, 0.0f, ( x - ( z / 2 ) ) / 6
-				float xPOS = ( m_CubeGridLocation.x + ( x - ( rows / 2 ) ) * offsetX );
-				float yPOS = ( m_CubeGridLocation.y + 0.5f );
-				float zPOS = ( m_CubeGridLocation.z + ( z - ( columns / 2 ) ) * offsetZ );
-				Vi::Renderer3D::DrawCube( {  xPOS  , yPOS, zPOS }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor );
+					for ( int z = 0; z < columns; z++ ) {
+
+					//	( x - ( x / 2 ) ) / 3, 0.0f, ( x - ( z / 2 ) ) / 6
+						float xPOS = ( m_CubeGridLocation.x + ( x - ( rows / 2 ) ) * offsetX ) + ( w * offsetXBlock  );
+						float yPOS = ( m_CubeGridLocation.y + height / 2 );
+						float zPOS = ( m_CubeGridLocation.z + ( z - ( columns / 2 ) ) * offsetZ ) + ( t * offsetZBlock);
+
+						Vi::Renderer3D::DrawCube( { xPOS  , yPOS, zPOS }, { 0.0f, 0.0f, 0.0f }, { width,height,width }, m_CubeColor );
+					}
+				}
 			}
 		}
 	#endif
@@ -117,7 +136,10 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 
 	Vi::Renderer3D::EndScene();
 
-	Vi::Renderer3D::EndScene( );		
+	//Vi::Renderer2D::BeginScene( m_CameraController2D.GetCamera( ) );
+	//Vi::Renderer2D::DrawPlane( { 0.0f , 10.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor );
+
+	//Vi::Renderer2D::EndScene( );		
 	
 
 	fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
@@ -131,7 +153,7 @@ void Sandbox3D::OnFixedUpdate(Vi::Timestep ts)
 void Sandbox3D::OnEvent(Vi::Event& e) {
 
 	m_CameraController.OnEvent(e);
-
+//m_CameraController2D.OnEvent(e);
 	Vi::EventDispatcher Dispatcher(e);
 	Dispatcher.Dispatch<Vi::KeyPressedEvent>(VI_BINDEVENT(Sandbox3D::OnKeyPressed));
 }
@@ -334,3 +356,6 @@ void Sandbox3D::OnImGuiRender() {
 
 	ImGui::End();
 }
+}
+
+ 

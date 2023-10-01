@@ -22,7 +22,7 @@ public:
 	bool OnKeyPressed(Vi::KeyPressedEvent& e);
 
 private:
-	Vi::CameraController m_CameraController;
+	
 
 
 	// temp 
@@ -31,11 +31,11 @@ private:
 
 	Vi::Ref<Vi::Texture2D> m_Texture, m_TransparentTexture, m_CheckerTexture;
 
-	glm::vec4 m_CubeColor = glm::vec4(0.5f, 0.2f, 0.2f, 1.0f);
+	glm::vec4 m_CubeColor = glm::vec4(0.2f, 0.3f, 0.1f, 1.0f);
 	glm::vec4 m_GroundColor = glm::vec4(0.5f, 0.5f, 0.5f, 1.0f);
 
-	glm::ivec2 m_GridCount = { 50, 50 };
-	glm::vec2 m_GridOffset = { 2.0f,2.0f };
+	glm::ivec2 m_GridCount = { 5, 2 };
+	glm::vec2 m_GridOffset = { 3.5f,2.0f };
 
 	
 	uint32_t m_CubeCountPx = 1;

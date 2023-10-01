@@ -31,7 +31,10 @@ namespace Vi {
 
 		// Calls OpenGLCommands 
 		glEnable(GL_MULTISAMPLE);
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE); 
+		glFrontFace( GL_CW );
+		glCullFace( GL_BACK );
+
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
