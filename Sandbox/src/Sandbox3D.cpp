@@ -27,7 +27,7 @@ Sandbox3D::Sandbox3D( ) :
 	Layer( "Sandbox3D" ) {
 
 	VI_PROFILE_FUNCTION( );
-	Vi::CameraController::Get( ).GetCamera( ).SetWorldLocation( 0.0f, 1.5f, 0.0f );
+	Vi::CameraController3D::Get( ).GetCamera( ).SetWorldLocation( 0.0f, 1.5f, 0.0f );
 }
 
 void Sandbox3D::OnAttach() {
@@ -53,7 +53,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	
 	{
 		VI_PROFILE_SCOPE("CameraController::OnUpdate");
-		Vi::CameraController::Get().OnUpdate( ts );
+		Vi::CameraController3D::Get().OnUpdate( ts );
 
 	}
 	// Render 
@@ -65,12 +65,12 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	///////////////////////////	Vi::RenderCommand::Clear();
 	///////////////////////////}
 	
-	//Vi::Renderer3D::BeginScene( Vi::CameraController::Get( ).GetCamera( ) );
+	Vi::Renderer3D::BeginScene( Vi::CameraController3D::Get( ).GetCamera( ) );
 	
 
 	{
 		VI_PROFILE_SCOPE( "Renderer Draw" );
-	#if 1
+	#if 0
 	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_CheckerTexture, m_GroundColor);
 	//	Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
 
@@ -107,6 +107,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		}
 	#endif
 
+		Vi::Renderer3D::DrawCube({ 0.0f  , -0.1f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f}, m_CubeColor);
 	}
 	auto dir = m_CameraController.GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();

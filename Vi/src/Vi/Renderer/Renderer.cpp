@@ -2,6 +2,7 @@
 #include "Renderer.h"
 
 #include "Renderer3D.h" 
+#include "Renderer2D.h" 
 
 
 
@@ -17,6 +18,7 @@ namespace Vi {
 
 		RenderCommand::Init();
 		Renderer3D::Init();
+		Renderer2D::Init();
 		
 	}
 	
@@ -24,6 +26,7 @@ namespace Vi {
 	{
 		
 		Renderer3D::Shutdown();
+		Renderer2D::Shutdown();
 	}
 
 	void Renderer::OnWindowResize(uint32_t width, uint32_t height) {

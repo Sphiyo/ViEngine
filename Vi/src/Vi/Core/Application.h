@@ -79,6 +79,8 @@ namespace Vi {
 
 		VThread m_ImGuiThread;
 		///////////////////////////////
+
+		bool OnMouseFirstPressed = false;
 	};
 
 	// To Be Defined In Client

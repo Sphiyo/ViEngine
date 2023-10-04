@@ -89,6 +89,37 @@ namespace Vi {
 	///////////////////////////////////////////////////////////////////// IndexBuffer /////////////////////////////////////////////////////////////////////
 
 
+	Ref<IndexBuffer> IndexBuffer::Create(uint32_t count)
+	{
+		switch (Renderer::GetAPI())
+		{
+
+		case RendererAPI::API::None :
+
+			VI_CORE_ASSERT(false, "(Buffer) RendererAPI::None is currently not supported!");
+			return nullptr;
+
+		case RendererAPI::API::OpenGL :
+
+			return CreateRef<OpenGLIndexBuffer>(count);
+
+		case RendererAPI::API::Vulcan :
+
+			VI_CORE_ASSERT(false, "(Buffer) Vulcan is currently not supported!");
+		//	return new VulcanIndexBuffer(indices, count);
+			return nullptr;
+
+		case RendererAPI::API::D3D12 :
+
+			VI_CORE_ASSERT(false, "(Buffer) DX3D12 is currently not supported!");
+		//	return new D3D12IndexBuffer(indices, count);
+			return nullptr;
+		}
+
+		VI_CORE_ASSERT(false, "(Buffer) Unknown Renderer API Selected !");
+		return nullptr;
+	}
+	
 	Ref<IndexBuffer> IndexBuffer::Create(uint32_t* indices, uint32_t count)
 	{
 		switch (Renderer::GetAPI())

@@ -28,12 +28,15 @@ namespace Vi {
 		const uint32_t CubeIndices = 6 * 6;
 		const uint32_t PlaneIndices = 6 ;
 
-		const uint32_t MaxCubes = 950'000;
+		const uint32_t MaxCubes = 80'000;
 		const uint32_t MaxVertices = MaxCubes * CubeVertices;
 		const uint32_t MaxIndices = MaxCubes * CubeIndices;
+		static const uint32_t MaxTextureSlots = 32;
 		
 		Ref<VertexArray> CubeVertexArray;
 		Ref<VertexBuffer> CubeVertexBuffer;
+		Ref<IndexBuffer> CubeIndexBuffer;
+
 		Ref<VertexArray> PlaneVertexArray; 
 		Ref<Shader> TextureShader;
 		Ref<Shader> SppotlightShader;
@@ -43,6 +46,9 @@ namespace Vi {
 		uint32_t PlaneIndexCount = 0;
 		CubeVertex* CubeVertexBufferBase = nullptr;
 		CubeVertex* CubeVertexBufferPtr = nullptr;
+
+		std::array<uint32_t, MaxTextureSlots> TextureSlot;
+		uint32_t TextureSlotIndex = 1; // 0 for white texture
 	};
 
 	static Renderer3DData s_Data3D;
@@ -188,8 +194,9 @@ namespace Vi {
 					offset += s_Data3D.CubeVertices;	
 		}	
 		
-		Ref<IndexBuffer> cubeIB = IndexBuffer::Create(cubeIndices, s_Data3D.MaxIndices);
-		s_Data3D.CubeVertexArray->SetIndexBuffer(cubeIB);
+		s_Data3D.CubeIndexBuffer = IndexBuffer::Create(cubeIndices, s_Data3D.MaxIndices);
+//		Ref<IndexBuffer> cubeIB = IndexBuffer::Create(cubeIndices, s_Data3D.MaxIndices);
+		s_Data3D.CubeVertexArray->SetIndexBuffer(s_Data3D.CubeIndexBuffer);
 		
 		delete[] cubeIndices;
 		// Good From Above ////////////////////////////////////////////////////////////////////////////////////// batch render
@@ -238,8 +245,14 @@ namespace Vi {
 
 		s_Data3D.TextureShader->Bind();
 		s_Data3D.TextureShader->SetInt("u_Texture", 0);
-		 
-				
+
+
+		s_Data3D.CubeVertexArray->Unbind(); 
+		s_Data3D.CubeVertexBuffer->Unbind();
+		s_Data3D.CubeIndexBuffer->Unbind();
+
+		s_Data3D.TextureShader->Unbind();
+		
 	}
 	void Renderer3D::Shutdown() {
 		VI_PROFILE_FUNCTION();
@@ -247,7 +260,7 @@ namespace Vi {
 
 	}
 
-	void Renderer3D::BeginScene(const Camera& camera) {
+	void Renderer3D::BeginScene(const Camera3D& camera) {
 		VI_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->Bind();
@@ -260,11 +273,19 @@ namespace Vi {
 		VI_CORE_INFO( "Cube Instance Count : {}", s_Data.CubeIndexCount / s_Data.CubeIndices );
 
 		s_Data.CubeIndexCount = 0;
+		s_Data3D.CubeVertexArray->Bind();
+		s_Data3D.CubeVertexBuffer->Bind();
+		s_Data3D.CubeIndexBuffer->Bind();
 		s_Data3D.TextureShader->Bind();
-		s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix3D());
+
+		s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+
 		int CubeInstanceCount = s_Data3D.CubeIndexCount - s_Data3D.PlaneIndexCount;
 		CubeInstanceCount /= s_Data3D.CubeIndices;
+		int PlaneInstanceCount = s_Data3D.PlaneIndexCount / s_Data3D.PlaneIndices;
+
 		VI_CORE_INFO( "Cube Instance Count : {}", CubeInstanceCount );
+		VI_CORE_INFO( "Plane Instance Count : {}", PlaneInstanceCount );
 		VI_CORE_INFO( "Cube Face Count : {}", CubeInstanceCount * 6 );
 		VI_CORE_INFO( "Plane Face Count : {}", ( s_Data3D.PlaneIndexCount / s_Data3D.PlaneIndices ));
 		VI_CORE_INFO( "Total Indices Count : {}", ( s_Data3D.CubeIndexCount ));
@@ -283,7 +304,12 @@ namespace Vi {
 	}
 
 	void Renderer3D::EndScene() {
-		VI_PROFILE_FUNCTION();
+		VI_PROFILE_FUNCTION()	
+			
+	//	s_Data3D.CubeVertexArray->Bind();
+	//	s_Data3D.CubeVertexBuffer->Bind();
+	//	s_Data3D.CubeIndexBuffer->Bind();
+
 
 		uint32_t datasize = ( uint32_t )((uint8_t*)s_Data3D.CubeVertexBufferPtr - (uint8_t*)s_Data3D.CubeVertexBufferBase);
 		s_Data3D.CubeVertexBuffer->SetData(s_Data3D.CubeVertexBufferBase, datasize);
@@ -293,9 +319,14 @@ namespace Vi {
 
 	void Renderer3D::Flush() {
 		//VI_PROFILE_FUNCTION();
-		s_Data3D.TextureShader->Bind();
+	//	s_Data3D.TextureShader->Bind();
 		RenderCommand::DrawIndexed(s_Data3D.CubeVertexArray, s_Data3D.CubeIndexCount);
 	
+		s_Data3D.CubeVertexArray->Unbind();
+		s_Data3D.CubeVertexBuffer->Unbind();
+		s_Data3D.CubeIndexBuffer->Unbind();
+
+		s_Data3D.TextureShader->Unbind();
 		VI_CORE_INFO( "RendererAPI::GetDrawCallsCount = {}", RendererAPI::GetDrawCallsCount( ) );
 	}
 	void Renderer3D::DrawCube(const glm::vec3& camPosition, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
@@ -671,6 +702,117 @@ namespace Vi {
 		s_Data->SppotlightShader->SetFloat("u_TilingFactor", tilingFactor);
 		s_Data.TextureShader->SetFloat4("u_Color", color);
 		s_Data.TextureShader->SetFloat("u_TilingFactor", tilingFactor);
+
+
+		s_Data3D.TextureShader->SetFloat4("u_Color", color);
+
+		constexpr glm::vec3 Positions[4 * 6] =
+		{
+
+			// face 1	
+			{  -0.5f, -0.5f, -0.5f   },
+			{   0.5f, -0.5f, -0.5f   },
+			{   0.5f,  0.5f, -0.5f   },
+			{  -0.5f,  0.5f, -0.5f   },
+
+			// face 2			   //
+			{  -0.5f,  0.5f, -0.5f   },
+			{   0.5f,  0.5f, -0.5f   },
+			{   0.5f,  0.5f,  0.5f   },
+			{  -0.5f,  0.5f,  0.5f   },
+
+
+			// face 3			   //
+			{  -0.5f, -0.5f,  0.5f   },
+			{  -0.5f,  0.5f,  0.5f   },
+			{   0.5f,  0.5f,  0.5f   },
+			{   0.5f, -0.5f,  0.5f   },
+
+
+			// face 4			   //
+			{   0.5f, -0.5f, -0.5f   },
+			{   0.5f, -0.5f,  0.5f   },
+			{   0.5f,  0.5f,  0.5f   },
+			{   0.5f,  0.5f, -0.5f   },
+
+
+			// face 5			   //
+			{  -0.5f, -0.5f, -0.5f   },
+			{  -0.5f, -0.5f,  0.5f   },
+			{   0.5f, -0.5f,  0.5f   },
+			{   0.5f, -0.5f, -0.5f   },
+
+
+			// face 6			   //
+			{  -0.5f, -0.5f,  0.5f   },
+			{  -0.5f, -0.5f, -0.5f   },
+			{  -0.5f,  0.5f, -0.5f   },
+			{  -0.5f,  0.5f,  0.5f   }
+
+	};
+		const glm::vec2 textureCoords[4 * 6] =
+		{
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+			{  0.0f, 0.0f  },
+			{  0.0f, 1.0f  },
+			{  1.0f, 1.0f  },
+			{  1.0f, 0.0f  },
+
+
+		};
+
+		const size_t cubeVertexCount = 4 * 6;
+
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
+			glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
+			glm::scale(glm::mat4(1.0f), scale);
+		glm::vec4 pos;
+		for (size_t i = 0; i < s_Data3D.CubeVertices; i++) {
+			pos = transform * glm::vec4{ Positions[i], 0.0f };
+			//	s_Data3D.CubeVertexBufferPtr->Position =  position + Positions[i] ; // working
+			s_Data3D.CubeVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z};
+			s_Data3D.CubeVertexBufferPtr->Color = color;
+			s_Data3D.CubeVertexBufferPtr->TexCoord = textureCoords[i];
+			//	s_Data3D.CubeVertexBufferPtr->TexIndex = textureIndex;
+			//	s_Data3D.CubeVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data3D.CubeVertexBufferPtr++;
+		}
+		s_Data3D.CubeIndexCount += s_Data3D.CubeIndices;
+
+
+#if 0
 		s_Data3D.TextureShader->SetFloat4("u_Color", color);
 		s_Data3D.TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
@@ -690,6 +832,7 @@ namespace Vi {
 
 		s_Data3D.CubeVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data3D.CubeVertexArray);
+#endif
 	}
 
 

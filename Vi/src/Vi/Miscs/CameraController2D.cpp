@@ -1,5 +1,5 @@
 #include "Vipch.h"
-#include "CameraController.h"
+#include "CameraController2D.h"
 
 #include "Vi/Core/Input.h"
 #include "Vi/Core/KeyCodes.h"
@@ -9,21 +9,21 @@
 
 
 
-Vi::CameraController* Vi::CameraController::s_CameraController = new Vi::CameraController();
+Vi::CameraController2D* Vi::CameraController2D::s_CameraController2D = new Vi::CameraController2D();
 
-namespace Vi {	
-	
+namespace Vi {
 
-	CameraController::CameraController(const glm::vec3& worldLocation, const glm::vec3& worldRotation)		
-										: m_Camera(glm::vec3(worldLocation), glm::vec3(worldRotation))	{
-		
+
+	CameraController2D::CameraController2D(const glm::vec3& worldLocation, const glm::vec3& worldRotation)
+		: m_Camera(VTransform(worldLocation, worldRotation)) {
+
 	}
 
 
-	void CameraController::OnUpdate(Timestep ts) {
+	void CameraController2D::OnUpdate(Timestep ts) {
 		VI_PROFILE_FUNCTION();
-
-	//	VI_CORE_INFO("(CameraControllerCpp) TimeStep = {}", ts);
+		bool ShouldUpdate = false;
+		//	VI_CORE_INFO("(CameraController2DCpp) TimeStep = {}", ts);
 		glm::vec3 locationOffsetWorld(0.0f);
 		glm::vec3 locationOffsetLocal(0.0f);
 		glm::vec3 rotationOffsetLocal(0.0f);
@@ -34,6 +34,8 @@ namespace Vi {
 			float YOffset = LastMiddleMouseYPos - Vi::Input::GetMouseY();
 			locationOffsetWorld += glm::vec3(0.0f, 0.0f, YOffset * m_CameraTranslationSpeed * m_MouseYSensitivityMove);
 			locationOffsetLocal += glm::vec3(0.0f, XOffset * m_MouseXSensitivityMove * m_CameraTranslationSpeed, 0.0f);
+
+			ShouldUpdate = true;
 
 			LastMiddleMouseXPos = Vi::Input::GetMouseX();
 			LastMiddleMouseYPos = Vi::Input::GetMouseY();
@@ -46,6 +48,8 @@ namespace Vi {
 
 			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivityLook * m_CameraRotationSpeed, -YOffset * m_MouseYSensitivityLook * m_CameraRotationSpeed, 0.0f);
 
+			ShouldUpdate = true;
+
 			LastRightMouseXPos = Vi::Input::GetMouseX();
 			LastRightMouseYPos = Vi::Input::GetMouseY();
 		}
@@ -54,74 +58,83 @@ namespace Vi {
 
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
 			float YOffset = LastLeftMouseYPos - Vi::Input::GetMouseY();
-			
-			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivityMove, 0.0f, 0.0f);					
+
+			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivityMove, 0.0f, 0.0f);
 			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivityLook * m_CameraRotationSpeed, 0.0f, 0.0f);
 
-			LastLeftMouseXPos  = Vi::Input::GetMouseX();
-			LastLeftMouseYPos  = Vi::Input::GetMouseY();
+			ShouldUpdate = true;
+
+			LastLeftMouseXPos = Vi::Input::GetMouseX();
+			LastLeftMouseYPos = Vi::Input::GetMouseY();
 		}
 
 		bool IsLocallyControlled = true;
-	#if IMGUI == 1
-		IsLocallyControlled = !Application::Get( ).GetImGuiLayer( )->m_CapturingKeyboard;
-	#endif
+#if IMGUI == 1
+		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingKeyboard;
+#endif
 
-		if ( IsLocallyControlled ) {
+		if (IsLocallyControlled) {
 
 			if (Input::IsKeyPressed(VI_KEY_W) || Input::IsKeyPressed(VI_KEY_UP)) {
 				locationOffsetLocal += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 
 			if (Input::IsKeyPressed(VI_KEY_S) || Input::IsKeyPressed(VI_KEY_DOWN)) {
 				locationOffsetLocal += glm::vec3(-1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 
 			if (Input::IsKeyPressed(VI_KEY_D) || Input::IsKeyPressed(VI_KEY_RIGHT)) {
 				locationOffsetLocal += glm::vec3(0.0f, 1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 
 			if (Input::IsKeyPressed(VI_KEY_A) || Input::IsKeyPressed(VI_KEY_LEFT)) {
 				locationOffsetLocal += glm::vec3(0.0f, -1.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 
 			if (Input::IsKeyPressed(VI_KEY_E)) {
 				locationOffsetLocal += glm::vec3(0.0f, 0.0f, 1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 			if (Input::IsKeyPressed(VI_KEY_Q)) {
 				locationOffsetLocal += glm::vec3(0.0f, 0.0f, -1.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
+				ShouldUpdate = true;
 			}
 		}
-
-		m_Camera.AddLocalOffset(locationOffsetLocal / 1000.0f);
-		m_Camera.AddLocalRotation(rotationOffsetLocal / 1000.0f);
-		m_Camera.AddWorldLocationOffset(locationOffsetWorld / 1000.0f);
+		if (ShouldUpdate) {
+			m_Camera.AddLocalOffset(locationOffsetLocal / 1000.0f);
+			m_Camera.AddLocalRotation(rotationOffsetLocal / 1000.0f);
+			m_Camera.AddWorldLocationOffset(locationOffsetWorld / 1000.0f);
+		}
 	}
 
-	void CameraController::OnEvent(Event& e) {
+	void CameraController2D::OnEvent(Event& e) {
 
 		VI_PROFILE_FUNCTION();
 
 
 		EventDispatcher dispatcher(e);
-		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(CameraController::OnKeyPressed));
-		dispatcher.Dispatch<KeyReleasedEvent>(VI_BINDEVENT(CameraController::OnKeyReleased));
-		dispatcher.Dispatch<MouseScrolledEvent>(VI_BINDEVENT(CameraController::OnMouseScrolled));
-		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(CameraController::OnMouseButtonPressed));
-		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(CameraController::OnMouseButtonReleased));
-		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(CameraController::OnWindowResized));
-		dispatcher.Dispatch<MouseMovedEvent>(VI_BINDEVENT(CameraController::OnMouseMoved));
+		dispatcher.Dispatch<KeyPressedEvent>(VI_BINDEVENT(CameraController2D::OnKeyPressed));
+		dispatcher.Dispatch<KeyReleasedEvent>(VI_BINDEVENT(CameraController2D::OnKeyReleased));
+		dispatcher.Dispatch<MouseScrolledEvent>(VI_BINDEVENT(CameraController2D::OnMouseScrolled));
+		dispatcher.Dispatch<MouseButtonPressedEvent>(VI_BINDEVENT(CameraController2D::OnMouseButtonPressed));
+		dispatcher.Dispatch<MouseButtonReleasedEvent>(VI_BINDEVENT(CameraController2D::OnMouseButtonReleased));
+		dispatcher.Dispatch<WindowResizeEvent>(VI_BINDEVENT(CameraController2D::OnWindowResized));
+		dispatcher.Dispatch<MouseMovedEvent>(VI_BINDEVENT(CameraController2D::OnMouseMoved));
 
 	}
 
-	bool CameraController::OnKeyPressed(KeyPressedEvent& e) {
+	bool CameraController2D::OnKeyPressed(KeyPressedEvent& e) {
 		VI_PROFILE_FUNCTION();
 		bool IsLocallyControlled = true;
-	#if IMGUI == 1
-		IsLocallyControlled = !Application::Get( ).GetImGuiLayer( )->m_CapturingKeyboard;
-	#endif
+#if IMGUI == 1
+		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingKeyboard;
+#endif
 
-		if ( IsLocallyControlled ) {
+		if (IsLocallyControlled) {
 
 			if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
 				m_BoostFactor = 12;
@@ -130,7 +143,7 @@ namespace Vi {
 		return false;
 	}
 
-	bool CameraController::OnKeyReleased(KeyReleasedEvent& e) {
+	bool CameraController2D::OnKeyReleased(KeyReleasedEvent& e) {
 		VI_PROFILE_FUNCTION();
 
 		if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
@@ -139,32 +152,30 @@ namespace Vi {
 		return false;
 	}
 
-	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e) {
+	bool CameraController2D::OnMouseScrolled(MouseScrolledEvent& e) {
 		bool IsLocallyControlled = true;
-	#if IMGUI == 1
-		IsLocallyControlled = !Application::Get( ).GetImGuiLayer( )->m_CapturingMouse;
-	#endif
+#if IMGUI == 1
+		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingMouse;
+#endif
 
-		if ( IsLocallyControlled ) {
+		if (IsLocallyControlled) {
 
 			if (!m_MouseRightButtonPressed) {
 				m_Camera.AddLocalOffset(e.GetYOffset() * m_MouseScrollSensitivityMove);
 			}
 			else {
-				//	float fovOffset = - e.GetYOffset() * 5.0f;			
-				m_Camera.AddFOV(e.GetYOffset() * m_MouseScrollSensitivityFov * (-1.0f));
 			}
 		}
 		return false;
 	}
 
-	bool CameraController::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
+	bool CameraController2D::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
 		bool IsLocallyControlled = true;
-	#if IMGUI == 1
-		IsLocallyControlled = !Application::Get( ).GetImGuiLayer( )->m_CapturingMouse;
-	#endif
+#if IMGUI == 1
+		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingMouse;
+#endif
 
-		if ( IsLocallyControlled ) {
+		if (IsLocallyControlled) {
 
 			if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) {
 				LastMiddleMouseXPos = Vi::Input::GetMousePosition().first;
@@ -178,8 +189,7 @@ namespace Vi {
 			if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) {
 				LastRightMouseXPos = Vi::Input::GetMousePosition().first;
 				LastRightMouseYPos = Vi::Input::GetMousePosition().second;
-				m_MouseRightButtonPressed = true;
-				m_FOVCache = m_Camera.GetFOV();
+				m_MouseRightButtonPressed = true; 
 
 				/*m_MouseMiddleButtonPressed = false;
 				m_MouseLeftButtonPressed = false;*/
@@ -198,26 +208,26 @@ namespace Vi {
 		return false;
 	}
 
-	bool CameraController::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
+	bool CameraController2D::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) { m_MouseMiddleButtonPressed = false; }
-		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) { m_MouseRightButtonPressed = false;		m_Camera.SetFOV(m_FOVCache); }
+		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) { m_MouseRightButtonPressed = false; }
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_LEFT) { m_MouseLeftButtonPressed = false; }
 		return false;
 	}
 
-	bool CameraController::OnWindowResized(WindowResizeEvent& e) {
-	//	m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-	//	m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+	bool CameraController2D::OnWindowResized(WindowResizeEvent& e) {
+		//	m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+		//	m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
 		return false;
 	}
 
-	bool CameraController::OnMouseMoved(MouseMovedEvent& e)
+	bool CameraController2D::OnMouseMoved(MouseMovedEvent& e)
 	{
-	#if IMGUI == 1
+#if IMGUI == 1
 		if (!Application::Get().GetImGuiLayer()->m_CapturingMouse) {
 			// Do logic
 		}
-	#endif
+#endif
 		return false;
 	}
 

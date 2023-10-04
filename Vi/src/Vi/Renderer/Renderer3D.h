@@ -1,5 +1,5 @@
 #pragma once
-#include "Camera.h"
+#include "Camera3D.h"
 #include "Texture.h"
 
 
@@ -13,7 +13,7 @@ namespace Vi {
 		static void Init();
 		static void Shutdown();
 
-		static void BeginScene(const Camera& camera);
+		static void BeginScene(const Camera3D& camera); 
 		static void EndScene();
 		static void Flush();
 

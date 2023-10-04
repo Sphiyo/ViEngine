@@ -1,6 +1,5 @@
 #pragma once
-#include "RenderCommand.h"
-#include "Camera.h"
+#include "RenderCommand.h" 
 #include "Shader.h"
 
 namespace Vi {

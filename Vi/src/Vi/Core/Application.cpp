@@ -2,8 +2,6 @@
 #include "Application.h"
 
 #include "Vi/Renderer/Renderer.h"
-#include "Vi/Miscs/CameraController.h"
-#include "Vi/Renderer/Renderer3D.h"
 #include <imgui.h>
 #include <imgui_internal.h>
 #include <GLFW/glfw3.h>
@@ -180,9 +178,9 @@ namespace Vi {
 					//if (layer == m_ImGuiLayer) continue;
 				//	if(layer)		
 					
-					Renderer3D::BeginScene(  CameraController::Get( ).GetCamera( ) );
+					//Renderer3D::BeginScene(  CameraController::Get( ).GetCamera( ) );
 					layer->OnUpdate( timestep );
-					Renderer3D::EndScene( );
+					//Renderer3D::EndScene( );
 				}
 			
 			}
@@ -403,14 +401,17 @@ namespace Vi {
 
 	bool Application::OnMouseButtonPressed( MouseButtonPressedEvent& e ) {
 
+		
+
 		bool IsLocallyControlled = true;
 
 	#if IMGUI == 1
 		IsLocallyControlled = !m_ImGuiLayer->m_CapturingMouse;
 	#endif
 
-		if ( IsLocallyControlled ) {
+		if ( IsLocallyControlled && !OnMouseFirstPressed) {
 			m_Window->SetCursor( CursorState::DISABLED );
+			OnMouseFirstPressed = true;
 		}
 		return false;
 	}
@@ -431,7 +432,7 @@ namespace Vi {
 	}
 
 	bool Application::OnMouseButtonReleased( MouseButtonReleasedEvent& e ) {
-
+		OnMouseFirstPressed = false;
 		bool IsLocallyControlled = true;
 
 	#if IMGUI == 1

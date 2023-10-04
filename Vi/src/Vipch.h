@@ -19,6 +19,7 @@
 #include "Vi/Core/Input.h"              // test 
 #include "Vi/Core/Experimental/VThread.h"              // test 
 
+#include "Vi/Math/VUtils.h"	
 
 #ifdef VI_PLATFORM_WINDOWS
 	#include <Windows.h>

@@ -1,11 +1,12 @@
 #include "Vipch.h"
-#include "Camera.h"
+#include "Camera3D.h"
+
 
 
 
 namespace Vi {
 
-	Camera::Camera(const glm::vec3& worldLocation, const glm::vec3& rotation) {
+	Camera3D::Camera3D(const VTransform& Transform, const Camera3DProperties& CamProperties) {
 		VI_PROFILE_FUNCTION();
 
 		m_ProjectionMatrix = glm::perspective(glm::radians(90.0f), 1.7778f, 0.01f, 4000.f);
@@ -16,57 +17,60 @@ namespace Vi {
 		m_WorldUpVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
 		
-		m_WorldLocation = worldLocation;
+		m_WorldLocation = Transform.Location;
 		m_RightVector = m_WorldRightVector;
 		m_UpVector = m_WorldUpVector;
 
-		SetWorldRotation(rotation);
+		SetWorldRotation(Transform.Rotation);
 		
 
-		m_FOV = 90.0f;
+		m_CamProperties.FOV = CamProperties.FOV;
 		CheckFOV();
 
 		RecalculateViewMatrix();
+
 	}
 
-	void Camera::SetProjection(float fovy, float aspectratio, float nearPlane, float farPlane) {
+	void Camera3D::SetProjection(const Camera3DProperties& CamProperties) {
 		
 		VI_PROFILE_FUNCTION();
-
-		m_FOV = fovy;
+		 
 		CheckFOV();
-		m_ProjectionMatrix = glm::perspective(glm::radians(m_FOV), aspectratio, nearPlane, farPlane);
-		m_ViewProjectionMatrix3D = m_ProjectionMatrix * m_ViewMatrix;
+
+		m_ProjectionMatrix = glm::perspective(glm::radians(CamProperties.FOV), CamProperties.AspectRatio, 
+			CamProperties.ZNear, CamProperties.ZFar);
+
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 
 	}
 
 	
-	void Camera::SetWorldLocation(float x, float y, float z)
+	void Camera3D::SetWorldLocation(float x, float y, float z)
 	{
 		m_WorldLocation = glm::vec3(x, y, z);
 
 		RecalculateViewMatrix();
 	}
 
-	void Camera::AddLocalOffset(const glm::vec3& locationToAdd) {
+	void Camera3D::AddLocalOffset(const glm::vec3& locationToAdd) {
 
 		m_WorldLocation += m_ForwardVector * locationToAdd.x + m_RightVector * locationToAdd.y + m_UpVector * locationToAdd.z;
 		RecalculateViewMatrix();
 	}
 
-	void Camera::AddWorldLocationOffset(float x, float y, float z) {
+	void Camera3D::AddWorldLocationOffset(float x, float y, float z) {
 
 		m_WorldLocation += m_WorldForwardVector * x + m_WorldRightVector * y + m_WorldUpVector * z;
 		RecalculateViewMatrix();
 	}
 
 
-	void Camera::SetWorldRotation(float pitch, float yaw, float roll) {
+	void Camera3D::SetWorldRotation(float pitch, float yaw, float roll) {
 
 		m_WorldRotation = { pitch,yaw - 90.0f, roll }; RecalculateViewMatrix();
 	}
 
-	void Camera::AddLocalRotation(const float& offsetYaw, const float& offsetPitch, const float& offsetRoll) {
+	void Camera3D::AddLocalRotation(const float& offsetYaw, const float& offsetPitch, const float& offsetRoll) {
 
 		m_WorldRotation = { m_WorldRotation.x - offsetPitch, m_WorldRotation.y + offsetYaw , m_WorldRotation.z + offsetRoll };
 		m_WorldRotation.x = glm::clamp<float>(m_WorldRotation.x, -89.0f, 89.0f);
@@ -78,52 +82,57 @@ namespace Vi {
 		RecalculateViewMatrix();
 	}
 
-	const glm::vec3& Camera::GetForwardVector() const {
+	const glm::vec3& Camera3D::GetForwardVector() const {
 		return m_ForwardVector;
 	}
 
-	const glm::vec3& Camera::GetWorldForwardVector() const {
+	const glm::vec3& Camera3D::GetWorldForwardVector() const {
 		return m_WorldForwardVector;
 	}
 
-	const glm::vec3& Camera::GetRightVector() const {
+	const glm::vec3& Camera3D::GetRightVector() const {
 		return m_RightVector;
 	}
 
-	const glm::vec3& Camera::GetWorldRightVector() const {
+	const glm::vec3& Camera3D::GetWorldRightVector() const {
 		return m_WorldRightVector;
 	}
-	const glm::vec3& Camera::GetUpVector() const {
+	const glm::vec3& Camera3D::GetUpVector() const {
 		return m_UpVector;
 	}
 
-	const glm::vec3& Camera::GetWorldUpVector() const {
+	const glm::vec3& Camera3D::GetWorldUpVector() const {
 		return m_WorldUpVector;
 	}
 
-	const float Camera::GetFOV() const {
-		return m_FOV;
+	const float Camera3D::GetFOV() const {
+		return m_CamProperties.FOV;
 	}
 
-	void Camera::AddFOV(float fovToAdd) {
+	void Camera3D::AddFOV(float fovToAdd) {
 
-		m_FOV += fovToAdd;
-		SetProjection(m_FOV);
+		m_CamProperties.FOV += fovToAdd;
+		SetProjection(m_CamProperties);
 	}
 
-	void Camera::SetFOV(float fov) {
+	void Camera3D::SetFOV(float fov) {
 
-		m_FOV = fov;
-		SetProjection(m_FOV);
+		m_CamProperties.FOV = fov;
+		SetProjection(m_CamProperties);
 	}
 
-	void Camera::CheckFOV() {
+	void Camera3D::CheckFOV() {
 
-		m_FOV = glm::clamp<float>(m_FOV, m_MinFOV, m_MaxFOV);
+		m_CamProperties.FOV = glm::clamp<float>(m_CamProperties.FOV, m_MinFOV, m_MaxFOV);
 	}
 
-	const glm::mat4& Camera::GetProjectionMatrix() const {
+	const glm::mat4& Camera3D::GetProjectionMatrix() const {
 		return m_ProjectionMatrix;
+	} 
+	 
+	
+	const glm::mat4& Camera3D::GetViewProjectionMatrix() const {
+		return m_ViewProjectionMatrix;
 	}
 
 	const glm::mat4& Camera::GetViewProjectionMatrix3D() const {
@@ -157,7 +166,7 @@ namespace Vi {
 		m_WorldUpVector = glm::normalize(glm::cross(m_WorldRightVector, m_WorldForwardVector));
 
 		m_ViewMatrix = glm::lookAt(m_WorldLocation, m_WorldLocation + m_ForwardVector, m_UpVector);
-		m_ViewProjectionMatrix3D = m_ProjectionMatrix * m_ViewMatrix;
+		m_ViewProjectionMatrix = m_ProjectionMatrix * m_ViewMatrix;
 	}
-
+	
 }

@@ -1,5 +1,5 @@
 #pragma once
-#include "Vi/Renderer/Camera.h"
+#include "Vi/Renderer/Camera3D.h"
 #include "Vi/Core/Timestep.h"
 #include "Vi/Events/ApplicationEvent.h"
 #include "Vi/Events/KeyEvent.h"
@@ -9,21 +9,21 @@
 
 namespace Vi {
 
-	class CameraController {
+	class CameraController3D {
 
 	public:
-		CameraController(const glm::vec3& worldLocation = { 0.0f,0.0f,0.0f }, const glm::vec3& worldRotation = { 0.0f,0.0f,0.0f });
+		CameraController3D(const glm::vec3& worldLocation = { 0.0f,0.0f,0.0f }, const glm::vec3& worldRotation = { 0.0f,0.0f,0.0f });
 
 		void OnUpdate(Timestep ts);
 		void OnEvent(Event& e);
 
-		static CameraController& Get( ) {
-			return *s_CameraController;
+		static CameraController3D& Get( ) {
+			return *s_CameraController3D;
 		}
 
-		Camera& GetCamera() { return m_Camera; }
-		const Camera& GetCamera() const { return m_Camera; }
-		static CameraController* s_CameraController;
+		Camera3D& GetCamera() { return m_Camera; }
+		const Camera3D& GetCamera() const { return m_Camera; }
+		static CameraController3D* s_CameraController3D;
 	private:
 
 		bool OnKeyPressed(KeyPressedEvent& e);
@@ -36,7 +36,7 @@ namespace Vi {
 
 	private:
 
-		Camera m_Camera;
+		Camera3D m_Camera;
 
 		float m_CameraTranslationSpeed = 100.0f, m_CameraRotationSpeed = 180.0f;
 		float m_MouseXSensitivityLook = 1.0f, m_MouseYSensitivityLook = 1.0f;

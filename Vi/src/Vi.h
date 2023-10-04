@@ -12,7 +12,9 @@
 #include "Vi/Core/Input.h"
 #include "Vi/Core/KeyCodes.h"
 #include "Vi/Core/MouseButtonCodes.h"
-#include "Vi/Miscs/CameraController.h"
+
+#include "Vi/Miscs/CameraController3D.h"
+#include "Vi/Miscs/CameraController2D.h"
 
 #include "Vi/ImGui/ImGuiLayer.h"
 
@@ -20,6 +22,7 @@
 
 #include "Vi/Renderer/Renderer.h"
 #include "Vi/Renderer/Renderer3D.h"
+#include "Vi/Renderer/Renderer2D.h"
 #include "Vi/Renderer/RenderCommand.h"
 
 #include "Vi/Renderer/Buffer.h"
@@ -27,7 +30,8 @@
 #include "Vi/Renderer/Texture.h"
 #include "Vi/Renderer/VertexArray.h"
 
-#include "Vi/Renderer/Camera.h"
+#include "Vi/Renderer/Camera3D.h"
+#include "Vi/Renderer/Camera2D.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 

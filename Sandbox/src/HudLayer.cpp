@@ -7,7 +7,7 @@ HudLayer::HudLayer( ) :
 	Layer( "HudLayer" )  {
 
 	VI_PROFILE_FUNCTION( );
-	
+	Vi::CameraController2D::Get().GetCamera().SetWorldLocation(0.0f, 0.0f, 0.0f);
 }
 
 void HudLayer::OnAttach( ) {
@@ -25,7 +25,7 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 
 	{
 		VI_PROFILE_SCOPE( "CameraController::OnUpdate" );
-		Vi::CameraController::Get().OnUpdate( ts );
+		Vi::CameraController2D::Get().OnUpdate( ts );
 
 	}
 
@@ -38,7 +38,7 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 	
 	//Vi::Renderer3D::BeginScene( s_CameraController.GetCamera( ) );
 
-
+	float dist = 30;
 	{
 		VI_PROFILE_SCOPE( "Renderer Draw" );
 	
@@ -46,38 +46,36 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 		//Vi::Renderer2D::DrawCanvas( s_CameraController.GetCamera( ), { 0.0f ,0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
 
 		//Vi::Renderer3D::DrawCube( { 0.0f , 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-		float dist = 3000;
-		for(int i =0;i< m_PlaneCount;i++ )
-			Vi::Renderer3D::DrawPlane( { 0.0f  ,i * 30 ,i * 3 }, { 0.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.2f,0.2f, 1.0f } );
 	
 	//	Vi::Renderer3D::DrawPlane( { 0.0f  , dist /2  ,   0.0f   }, {  0.0f, 0.0f, 180.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
 	//	Vi::Renderer3D::DrawPlane( { 0.0f  ,   0.0f   ,  dist /2 }, { 90.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
 	//	Vi::Renderer3D::DrawPlane( { 0.0f  ,   0.0f   , -dist /2 }, { 90.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
 	//	Vi::Renderer3D::DrawPlane( { 0.0f  ,-dist / 2 ,   0.0f   }, { 0.0f ,90.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
-		for ( int i = 0; i < m_CubeCount; i++ )
-		Vi::Renderer3D::DrawCube( { 0.0f  ,i*8  ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.15f,0.1f,0.1f, 1.0f } );
+		////for ( int i = 0; i < m_CubeCount; i++ )
+		//	//Vi::Renderer3D::DrawCube( { 0.0f  ,i*8  ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.15f,0.1f,0.1f, 1.0f } );
 		
 		
-		Vi::Renderer3D::DrawCubeInversed( { 0.0f  ,0.0f  ,0.0f }, { 0.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
+		//Vi::Renderer3D::DrawCubeInversed( { 0.0f  ,0.0f  ,0.0f }, { 0.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f } );
 	}
+
+
 	//Vi::Renderer3D::EndScene( );
 
-//	Vi::Renderer3D::BeginScene( s_CameraController.GetCamera( ) );
-//	
-//	
-//	{
-//		VI_PROFILE_SCOPE( "Renderer Draw" );
-//	
-//		//Vi::Renderer2D::DrawCanvas( s_CameraController.GetCamera( ), { 0.0f ,0.0f, -10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//		//Vi::Renderer2D::DrawCanvas( s_CameraController.GetCamera( ), { 0.0f ,0.0f, 10.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//		//Vi::Renderer2D::DrawCanvas( s_CameraController.GetCamera( ), { 0.0f ,0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//		Vi::Renderer3D::DrawCube( { 0.0f ,0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f, 1.0f, 1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//	
-//		//Vi::Renderer2D::DrawPlane( { 0.0f ,0.0f, 0.0f }, { 0.0f, 0.0f, 90.0f }, { 100.0f,0.0f,100.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//		//Vi::Renderer3D::DrawCube( { 0.0f , 0.0f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, { 1.0f,0.0f,1.0f, 1.0f } );
-//	
-//	}
-//	Vi::Renderer3D::EndScene( );
+	Vi::Renderer2D::BeginScene(Vi::CameraController2D::s_CameraController2D->GetCamera( ) );
+	
+	
+	{
+		VI_PROFILE_SCOPE( "Renderer Draw" );
+	
+		//Vi::Renderer2D::DrawPlaneTwoSided({ 0.0f  ,0.0f  ,0.0f }, { 0.0f, 0.0f, 0.0f }, { dist,dist,dist }, { 0.2f,0.5f,0.8f, 1.0f });
+	
+		//for (int i = 0; i < m_PlaneCount; i++) {
+			//Vi::Renderer2D::DrawCanvas({ 0.0f  , i * 0.3f ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.2f, 0.2f, 0.2f, 0.2f });
+		//}
+		//Vi::Renderer2D::DrawCanvas({ 0.0f, 0.0f ,1.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.2f,0.2f,0.2f, 1.0f });
+		Vi::Renderer2D::DrawCanvas( m_PlanePosition , m_PlaneRotation, m_PlaneScale , { 0.2f, 0.2f, 0.2f, 0.2f });
+	}
+	Vi::Renderer2D::EndScene( );
 
 
 }
@@ -85,20 +83,13 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 void HudLayer::OnImGuiRender( ) {
 	ImGui::Begin( "Settings" );														 // temp
 	
-
-
-	float tempPosition[3];
-
+	 
 	{
-		// m_Cube1Position
-		tempPosition[0] = m_PlanePosition.x;
-		tempPosition[1] = m_PlanePosition.y;
-		tempPosition[2] = m_PlanePosition.z;
+	
+		ImGui::DragFloat3( "HUD Location", glm::value_ptr(m_PlanePosition), 0.01f );
+		ImGui::DragFloat3( "HUD Rotation", glm::value_ptr(m_PlaneRotation), 0.01f );
+		ImGui::DragFloat3( "HUD Scale", glm::value_ptr(m_PlaneScale), 0.01f );
 
-		ImGui::DragFloat3( "Cube1Position", tempPosition, 0.01f );
-		m_PlanePosition.x = tempPosition[0];
-		m_PlanePosition.y = tempPosition[1];
-		m_PlanePosition.z = tempPosition[2];
 
 
 	}	
@@ -111,7 +102,7 @@ void HudLayer::OnImGuiRender( ) {
 }
 
 void HudLayer::OnEvent( Vi::Event& e ) {
-	Vi::CameraController::Get( ).OnEvent( e );
+	Vi::CameraController2D::Get( ).OnEvent( e );
 	Vi::EventDispatcher dispacher( e );
 	dispacher.Dispatch<Vi::KeyPressedEvent>( VI_BINDEVENT( HudLayer::OnKeyPressed ) );
 }

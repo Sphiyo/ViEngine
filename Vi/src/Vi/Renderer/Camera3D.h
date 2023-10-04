@@ -1,0 +1,115 @@
+#pragma once
+#include "Vi/Core/Core.h"
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
+
+
+struct Camera3DProperties {
+
+	Camera3DProperties(float aspectRatio = 1920.0f / 1080.0f, float fov = 90.0f, float zNear =0.001f, float zFar = 100000.0f) :
+		AspectRatio(aspectRatio), FOV(fov), ZNear(zNear), ZFar(zFar) {}
+	float AspectRatio = 1920.0f / 1080.0f;
+	float FOV = 90.0f;
+	float ZNear = 0.001f;
+	float ZFar = 100000.0f;
+
+};
+
+namespace Vi {
+
+	class Camera3D
+	{
+	public:
+		
+		Camera3D(const VTransform& Transform = VTransform(), const Camera3DProperties& CamProperties = Camera3DProperties());
+	
+		~Camera3D() {}
+		
+		void SetProjection( const Camera3DProperties& CamProperties = Camera3DProperties());
+
+
+		const glm::vec3& GetWorldLocation() const { return m_WorldLocation; }
+		// (pitch, yaw, roll)
+		const glm::vec3& GetWorldRotation() const { return m_WorldRotation; }
+
+
+		void SetWorldLocation(const glm::vec3& worldLocation) { SetWorldLocation(worldLocation.x, worldLocation.y, worldLocation.z); }
+		void SetWorldLocation(float pitch, float yaw, float roll);
+
+
+		void AddLocalOffset(float x = 0.0f, float y = 0.0f, float z = 0.0f) { AddLocalOffset({ x, y, z }); }
+		void AddLocalOffset(const glm::vec3& locationToAdd);
+		
+
+		// Offset Location Ignoring Rotation
+		void AddWorldLocationOffset(const glm::vec3& locationToAdd) { AddWorldLocationOffset(locationToAdd.x, locationToAdd.y, locationToAdd.z); }
+		void AddWorldLocationOffset(float x, float y, float z);
+
+
+		void SetWorldRotation(const glm::vec3& worldRotation) { SetWorldRotation(worldRotation.x, worldRotation.y, worldRotation.z); }
+		void SetWorldRotation(float pitch, float yaw, float roll);
+
+
+		void AddLocalRotation( const glm::vec3& offsetRotation = glm::vec3(0.0f)) { AddLocalRotation(offsetRotation.x, offsetRotation.y, offsetRotation.z); }
+		void AddLocalRotation( const float& offsetYaw = 0.0f, const float& offsetPitch = 0.0f, const float& offsetRoll = 0.0f);
+		
+
+		// World Directions
+		const glm::vec3& GetWorldForwardVector() const;
+		const glm::vec3& GetWorldRightVector() const;
+		const glm::vec3& GetWorldUpVector() const;
+
+		// Relative Directions
+		const glm::vec3& GetForwardVector() const;
+		const glm::vec3& GetRightVector() const;
+		const glm::vec3& GetUpVector() const;
+
+		
+		// FOV  
+		const float GetFOV() const;
+		void AddFOV(float fovToAdd);
+		void SetFOV(float fov);
+		void CheckFOV();
+
+		// Matrix s 
+		const glm::mat4& GetProjectionMatrix() const;
+		const glm::mat4& GetViewProjectionMatrix() const;
+		const glm::mat4& GetViewMatrix() const;
+		const glm::mat4& GetViewProjectionMatrix3D() const;
+		
+		const glm::mat4& GetViewProjectionMatrix() const;
+
+		const Camera3DProperties& GetCameraProperties() const { return m_CamProperties; }
+		Camera3DProperties& GetCameraProperties() { return m_CamProperties; }
+		
+
+	private:
+
+		void RecalculateViewMatrix();
+
+	private:
+		glm::mat4 m_ProjectionMatrix;
+		glm::mat4 m_ViewMatrix;
+		glm::mat4 m_ViewProjectionMatrix;
+
+
+		glm::vec3 m_WorldLocation;
+		// m_WorldRotation(pitch, yaw, roll)
+		glm::vec3 m_WorldRotation;
+		
+
+		glm::vec3 m_ForwardVector;
+		glm::vec3 m_RightVector;
+		glm::vec3 m_UpVector;
+
+
+		glm::vec3 m_WorldForwardVector;
+		glm::vec3 m_WorldRightVector;
+		glm::vec3 m_WorldUpVector;
+		 
+		const float m_MinFOV = 1.0f;
+		const float m_MaxFOV = 179.0f;
+
+		Camera3DProperties m_CamProperties;
+	};	
+}	
