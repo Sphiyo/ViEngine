@@ -7,7 +7,8 @@ HudLayer::HudLayer( ) :
 	Layer( "HudLayer" )  {
 
 	VI_PROFILE_FUNCTION( );
-	Vi::CameraController2D::Get().GetCamera().SetWorldLocation(0.0f, 0.0f, 0.0f);
+	Vi::CameraController2D::Get().GetCamera().SetMovementState(EMovementState::Static);
+
 }
 
 void HudLayer::OnAttach( ) {
@@ -25,7 +26,7 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 
 	{
 		VI_PROFILE_SCOPE( "CameraController::OnUpdate" );
-		Vi::CameraController2D::Get().OnUpdate( ts );
+		//Vi::CameraController2D::Get().OnUpdate( ts );
 
 	}
 
@@ -61,7 +62,7 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 
 	//Vi::Renderer3D::EndScene( );
 
-	Vi::Renderer2D::BeginScene(Vi::CameraController2D::s_CameraController2D->GetCamera( ) );
+	Vi::RendererUI::BeginScene(Vi::CameraController2D::s_CameraController2D->GetCamera( ) );
 	
 	
 	{
@@ -73,9 +74,9 @@ void HudLayer::OnUpdate( Vi::Timestep ts ) {
 			//Vi::Renderer2D::DrawCanvas({ 0.0f  , i * 0.3f ,0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.2f, 0.2f, 0.2f, 0.2f });
 		//}
 		//Vi::Renderer2D::DrawCanvas({ 0.0f, 0.0f ,1.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, { 0.2f,0.2f,0.2f, 1.0f });
-		Vi::Renderer2D::DrawCanvas( m_PlanePosition , m_PlaneRotation, m_PlaneScale , { 0.2f, 0.2f, 0.2f, 0.2f });
+		Vi::RendererUI::DrawCanvas( m_PlanePosition , m_PlaneRotation, m_PlaneScale , { 0.2f, 0.2f, 0.2f, 0.2f });
 	}
-	Vi::Renderer2D::EndScene( );
+	Vi::RendererUI::EndScene( );
 
 
 }

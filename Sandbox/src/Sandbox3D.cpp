@@ -108,6 +108,7 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	#endif
 
 		Vi::Renderer3D::DrawCube({ 0.0f  , -0.1f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f}, m_CubeColor);
+		Vi::Renderer3D::DrawPlane({ 0.0f  , 0.8f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f}, m_CubeColor);
 	}
 	auto dir = m_CameraController.GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();

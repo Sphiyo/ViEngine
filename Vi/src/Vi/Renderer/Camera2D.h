@@ -6,16 +6,27 @@
 
 #include <Vi/Math/VUtils.h>
 
+enum class EMovementState : uint8_t {
 
+	Static,
+	Dynamic
+};
 
 struct Camera2DProperties { 
 
-	Camera2DProperties(float aspectRatio = 1920.0f / 1080.0f, float zoomLevel = 1.0f, float zNear = 0.0001f, float zFar = 10.0f) :
-		AspectRatio(aspectRatio), ZoomLevel(zoomLevel), ZNear(zNear), ZFar(zFar) {}
+	Camera2DProperties(float aspectRatio = 1920.0f / 1080.0f, float zoomLevel = 1.0f,
+		float zNear = -10.0f, float zFar = 10.0f,
+		EMovementState movementState = EMovementState::Static)
+		: AspectRatio(aspectRatio), ZoomLevel(zoomLevel),
+		ZNear(zNear), ZFar(zFar), MovementState(movementState) {
+	}
+
+
 	float AspectRatio = 1920.0f / 1080.0f;
 	float ZoomLevel = 1.0f;
-	float ZNear = 0.0001f;
+	float ZNear = -10.0f;
 	float ZFar = 10.0f;
+	EMovementState MovementState = EMovementState::Static;
 };
 
 namespace Vi {
@@ -79,6 +90,9 @@ namespace Vi {
 		const Camera2DProperties& GetCameraProperties() const { return m_CamProperties; }
 		Camera2DProperties& GetCameraProperties() { return m_CamProperties; }
 
+		void SetMovementState(EMovementState movementState) {
+			m_CamProperties.MovementState = movementState;
+		}
 
 	private:
 		

@@ -2,6 +2,7 @@
 #include "Camera2D.h"
  
 
+
 namespace Vi {
 
 	Camera2D::Camera2D(const VTransform& Transform, const Camera2DProperties& CamProperties) {

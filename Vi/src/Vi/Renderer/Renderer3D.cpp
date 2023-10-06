@@ -13,7 +13,7 @@
 
 namespace Vi {
 
-	struct CubeVertex {
+	struct Vertex {
 
 		glm::vec3 Position;
 		glm::vec4 Color;
@@ -23,29 +23,44 @@ namespace Vi {
 	};
 
 	struct Renderer3DData {
-		const uint32_t CubeVertices = 4 * 6;
-		const uint32_t PlaneVertices = 4 ;
-		const uint32_t CubeIndices = 6 * 6;
-		const uint32_t PlaneIndices = 6 ;
+		static const uint32_t CubeVertices = 4 * 6;
+		static const uint32_t CubeIndices = 6 * 6;
 
-		const uint32_t MaxCubes = 80'000;
-		const uint32_t MaxVertices = MaxCubes * CubeVertices;
-		const uint32_t MaxIndices = MaxCubes * CubeIndices;
-		static const uint32_t MaxTextureSlots = 32;
+		const uint32_t MaxCubes = 5'000;
+		const uint32_t MaxCubeVertices = MaxCubes * CubeVertices;
+		const uint32_t MaxCubeIndices = MaxCubes * CubeIndices;
 		
 		Ref<VertexArray> CubeVertexArray;
 		Ref<VertexBuffer> CubeVertexBuffer;
 		Ref<IndexBuffer> CubeIndexBuffer;
 
-		Ref<VertexArray> PlaneVertexArray; 
+
+		static const uint32_t PlaneVertices = 4 ;
+		static const uint32_t PlaneIndices = 6 ;
+
+		const uint32_t MaxPlanes = 10'000;
+		const uint32_t MaxPlaneVertices = MaxPlanes * PlaneVertices;
+		const uint32_t MaxPlaneIndices = MaxPlanes * PlaneIndices;
+		
+		Ref<VertexArray>  PlaneVertexArray;
+		Ref<VertexBuffer> PlaneVertexBuffer;
+		Ref<IndexBuffer>  PlaneIndexBuffer;
+
+
+		static const uint32_t MaxTextureSlots = 32;
+		
 		Ref<Shader> TextureShader;
 		Ref<Shader> SppotlightShader;
 		Ref<Texture2D> WhiteTexture;
 
 		uint32_t CubeIndexCount = 0;
 		uint32_t PlaneIndexCount = 0;
-		CubeVertex* CubeVertexBufferBase = nullptr;
-		CubeVertex* CubeVertexBufferPtr = nullptr;
+
+		Vertex* CubeVertexBufferBase = nullptr;
+		Vertex* CubeVertexBufferPtr = nullptr;
+		
+		Vertex* PlaneVertexBufferBase = nullptr;
+		Vertex* PlaneVertexBufferPtr = nullptr;
 
 		std::array<uint32_t, MaxTextureSlots> TextureSlot;
 		uint32_t TextureSlotIndex = 1; // 0 for white texture
@@ -55,9 +70,9 @@ namespace Vi {
 
 
 	void Renderer3D::Init() {
-
 		VI_PROFILE_FUNCTION();
 
+		//Cube memory buffer setup
 		s_Data3D.CubeVertexArray = VertexArray::Create();
 
 		//// Square VertexBuffer 
@@ -161,20 +176,21 @@ namespace Vi {
 		s_Data3D.CubeVertexBuffer = VertexBuffer::Create(s_Data3D.MaxVertices * sizeof(CubeVertex));
 		
 
+		s_Data3D.CubeVertexBuffer = VertexBuffer::Create(s_Data3D.MaxCubeVertices * sizeof(Vertex));
 		s_Data3D.CubeVertexBuffer->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float4, "a_Color" },    // TODO
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		});
+
 		s_Data3D.CubeVertexArray->AddVertexBuffer(s_Data3D.CubeVertexBuffer);
 
-
-		s_Data3D.CubeVertexBufferBase = new CubeVertex[s_Data3D.MaxVertices];
+		s_Data3D.CubeVertexBufferBase = new Vertex[s_Data3D.MaxCubeVertices];
 
 		// to do make ref count for thread safety if the func got cued for longer time 
-		uint32_t* cubeIndices = new uint32_t[s_Data3D.MaxIndices];
-		 
-		uint32_t Indices[6 * 6] = {
+		uint32_t* cubeIndices = new uint32_t[s_Data3D.MaxCubeIndices];
+	
+		uint32_t CIndices[s_Data3D.CubeIndices] = {
 
 			0  ,  1  , 2   ,  2   , 3   , 0   ,
 			4  ,  5  , 6   ,  6   , 7   , 4   ,
@@ -187,21 +203,26 @@ namespace Vi {
 		uint32_t offset = 0;
 
 		// i = indices
-		for ( uint32_t i = 0; i < s_Data3D.MaxIndices; i ++) {
+		for ( uint32_t i = 0; i < s_Data3D.MaxCubeIndices; i ++) {
 			uint32_t DynamicIndices = i % s_Data3D.CubeIndices;
-				cubeIndices[i ] = offset + Indices[DynamicIndices];
+				cubeIndices[i ] = offset + CIndices[DynamicIndices];
 				if ( (DynamicIndices +1) == s_Data3D.CubeIndices )
 					offset += s_Data3D.CubeVertices;	
 		}	
 		
-		s_Data3D.CubeIndexBuffer = IndexBuffer::Create(cubeIndices, s_Data3D.MaxIndices);
+		s_Data3D.CubeIndexBuffer = IndexBuffer::Create(cubeIndices, s_Data3D.MaxCubeIndices);
 //		Ref<IndexBuffer> cubeIB = IndexBuffer::Create(cubeIndices, s_Data3D.MaxIndices);
 		s_Data3D.CubeVertexArray->SetIndexBuffer(s_Data3D.CubeIndexBuffer);
 		
 		delete[] cubeIndices;
-		// Good From Above ////////////////////////////////////////////////////////////////////////////////////// batch render
+		
+		s_Data3D.CubeVertexArray->Unbind(); 
+		s_Data3D.CubeVertexBuffer->Unbind();
+		s_Data3D.CubeIndexBuffer->Unbind();
+		
 
-		/*s_Data3D.PlaneVertexArray = VertexArray::Create();
+		//Plane Mem Creation Buffer
+		s_Data3D.PlaneVertexArray = VertexArray::Create();
 
 		// Square VertexBuffer 
 		float planeVertices[8 * 4] = {
@@ -217,19 +238,45 @@ namespace Vi {
 		planeVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
 			{ ShaderDataType::Float3, "a_Normal" },
+		s_Data3D.PlaneVertexBuffer = VertexBuffer::Create(s_Data3D.MaxPlaneVertices * sizeof(Vertex));
+		s_Data3D.PlaneVertexBuffer->SetLayout({
+			{ ShaderDataType::Float3, "a_Position" },
+			{ ShaderDataType::Float4, "a_Color" },    // TODO
 			{ ShaderDataType::Float2, "a_TexCoord" }
 			});
-		s_Data3D.PlaneVertexArray->AddVertexBuffer(planeVB);
+		s_Data3D.PlaneVertexArray->AddVertexBuffer(s_Data3D.PlaneVertexBuffer);
 
-		// Plane IndexBuffer 
-		uint32_t planeIndices[6] = { 0,1,2,2,3,0 };
+		s_Data3D.PlaneVertexBufferBase = new Vertex[s_Data3D.MaxPlaneVertices];
 
-		Ref<IndexBuffer> planeIB = IndexBuffer::Create(planeIndices, sizeof(planeIndices) / sizeof(uint32_t));
-		s_Data3D.PlaneVertexArray->SetIndexBuffer(planeIB);*/
+		// to do make ref count for thread safety if the func got cued for longer time 
+		uint32_t* planeIndices = new uint32_t[s_Data3D.MaxPlaneIndices];
+
+		uint32_t PIndices[s_Data3D.PlaneIndices] = { 0, 1, 2, 2, 3, 0 };
+
+		offset = 0;
+
+		// i = indices
+		for (uint32_t i = 0; i < s_Data3D.MaxPlaneIndices; i++) {
+			uint32_t DynamicIndices = i % s_Data3D.PlaneIndices;
+			planeIndices[i] = offset + PIndices[DynamicIndices];
+			if ((DynamicIndices + 1) == s_Data3D.PlaneIndices)
+				offset += s_Data3D.PlaneVertices;
+		}
+
+		s_Data3D.PlaneIndexBuffer = IndexBuffer::Create(planeIndices, s_Data3D.MaxPlaneIndices);
+		s_Data3D.PlaneVertexArray->SetIndexBuffer(s_Data3D.PlaneIndexBuffer);
+
+		delete[] planeIndices;
+
+		s_Data3D.PlaneVertexArray->Unbind(); 
+		s_Data3D.PlaneVertexBuffer->Unbind();
+		s_Data3D.PlaneIndexBuffer->Unbind();
+
 
 		s_Data3D.WhiteTexture = Texture2D::Create(1, 1);
 		uint32_t whiteTextureData = 0xffffffff;
-		s_Data3D.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t));
+		// set to unit 0 and bind it
+		s_Data3D.WhiteTexture->SetData(&whiteTextureData, sizeof(uint32_t),0);
 
 		// Create And Compile Shaders  
 		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
@@ -247,9 +294,6 @@ namespace Vi {
 		s_Data3D.TextureShader->SetInt("u_Texture", 0);
 
 
-		s_Data3D.CubeVertexArray->Unbind(); 
-		s_Data3D.CubeVertexBuffer->Unbind();
-		s_Data3D.CubeIndexBuffer->Unbind();
 
 		s_Data3D.TextureShader->Unbind();
 		
@@ -277,24 +321,38 @@ namespace Vi {
 		s_Data3D.CubeVertexBuffer->Bind();
 		s_Data3D.CubeIndexBuffer->Bind();
 		s_Data3D.TextureShader->Bind();
+		//s_Data3D.CubeVertexArray->Bind();
+		//s_Data3D.CubeVertexBuffer->Bind();
+		//s_Data3D.CubeIndexBuffer->Bind();
 
+		//s_Data3D.PlaneVertexBuffer->Bind();
+		//s_Data3D.PlaneIndexBuffer->Bind();
+
+		s_Data3D.TextureShader->Bind();
 		s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		int CubeInstanceCount = s_Data3D.CubeIndexCount - s_Data3D.PlaneIndexCount;
-		CubeInstanceCount /= s_Data3D.CubeIndices;
+		//s_Data3D.PlaneVertexArray->Bind();
+		//
+		//s_Data3D.TextureShader->Bind();
+		//s_Data3D.TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
+		
+
+
+		int CubeInstanceCount = s_Data3D.CubeIndexCount / s_Data3D.CubeIndices;
 		int PlaneInstanceCount = s_Data3D.PlaneIndexCount / s_Data3D.PlaneIndices;
 
 		VI_CORE_INFO( "Cube Instance Count : {}", CubeInstanceCount );
 		VI_CORE_INFO( "Plane Instance Count : {}", PlaneInstanceCount );
-		VI_CORE_INFO( "Cube Face Count : {}", CubeInstanceCount * 6 );
-		VI_CORE_INFO( "Plane Face Count : {}", ( s_Data3D.PlaneIndexCount / s_Data3D.PlaneIndices ));
-		VI_CORE_INFO( "Total Indices Count : {}", ( s_Data3D.CubeIndexCount ));
-	//	VI_CORE_INFO( "Total Vertex Count : {}", ( s_Data3D.PlaneIndexCount / s_Data3D.PlaneIndices ));
+		VI_CORE_INFO( "Total Cube Indices Count : {}", ( s_Data3D.CubeIndexCount ));
+		VI_CORE_INFO( "Total Plane Indices Count : {}", ( s_Data3D.PlaneIndexCount ));
+		VI_CORE_INFO( "Total Cube Vertex Count : {}", (CubeInstanceCount * s_Data3D.CubeIndices ));
+		VI_CORE_INFO( "Total Plane Vertex Count : {}", (PlaneInstanceCount * s_Data3D.PlaneIndices ));
 	//	s_Data3D.PlaneIndexCount %= s_Data3D.CubeIndices;
 		s_Data3D.CubeIndexCount = 0;
 		s_Data3D.PlaneIndexCount = 0;
 	
 		s_Data3D.CubeVertexBufferPtr = s_Data3D.CubeVertexBufferBase;
+		s_Data3D.PlaneVertexBufferPtr = s_Data3D.PlaneVertexBufferBase;
 
 		s_Data->SppotlightShader->Bind();
 		s_Data->SppotlightShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
@@ -311,20 +369,32 @@ namespace Vi {
 	//	s_Data3D.CubeIndexBuffer->Bind();
 
 
-		uint32_t datasize = ( uint32_t )((uint8_t*)s_Data3D.CubeVertexBufferPtr - (uint8_t*)s_Data3D.CubeVertexBufferBase);
-		s_Data3D.CubeVertexBuffer->SetData(s_Data3D.CubeVertexBufferBase, datasize);
 
 		Flush();
 	}
 
 	void Renderer3D::Flush() {
 		//VI_PROFILE_FUNCTION();
-	//	s_Data3D.TextureShader->Bind();
+	
+		s_Data3D.CubeVertexArray->Bind();
+		uint32_t CubeDataSize = ( uint32_t )((uint8_t*)s_Data3D.CubeVertexBufferPtr - (uint8_t*)s_Data3D.CubeVertexBufferBase);
+		s_Data3D.CubeVertexBuffer->SetData(s_Data3D.CubeVertexBufferBase, CubeDataSize);
+
 		RenderCommand::DrawIndexed(s_Data3D.CubeVertexArray, s_Data3D.CubeIndexCount);
 	
-		s_Data3D.CubeVertexArray->Unbind();
-		s_Data3D.CubeVertexBuffer->Unbind();
-		s_Data3D.CubeIndexBuffer->Unbind();
+		s_Data3D.PlaneVertexArray->Bind();
+		uint32_t PlaneDataSize = ( uint32_t )((uint8_t*)s_Data3D.PlaneVertexBufferPtr - (uint8_t*)s_Data3D.PlaneVertexBufferBase);
+		s_Data3D.PlaneVertexBuffer->SetData(s_Data3D.PlaneVertexBufferBase, PlaneDataSize);
+
+		RenderCommand::DrawIndexed(s_Data3D.PlaneVertexArray, s_Data3D.PlaneIndexCount);
+	
+		//s_Data3D.CubeVertexArray->Unbind();
+		//s_Data3D.CubeVertexBuffer->Unbind();
+		//s_Data3D.CubeIndexBuffer->Unbind();
+		//
+		//s_Data3D.PlaneVertexArray->Unbind();
+		//s_Data3D.PlaneVertexBuffer->Unbind();
+		//s_Data3D.PlaneIndexBuffer->Unbind();
 
 		s_Data3D.TextureShader->Unbind();
 		VI_CORE_INFO( "RendererAPI::GetDrawCallsCount = {}", RendererAPI::GetDrawCallsCount( ) );
@@ -340,8 +410,8 @@ namespace Vi {
 		s_Data->SppotlightShader->SetFloat("maxDistance", 10.0f);			// test
 
 		s_Data3D.TextureShader->SetFloat4( "u_Color", color );
-
-		constexpr glm::vec3 Positions[4 * 6] =
+		
+		 glm::vec3 Positions[s_Data3D.CubeVertices] =
 		{
 
 			// face 1	
@@ -385,7 +455,7 @@ namespace Vi {
 			{  -0.5f,  0.5f,  0.5f   }
 
 		};
-		const glm::vec2 textureCoords[4 * 6] =
+		const glm::vec2 textureCoords[s_Data3D.CubeVertices] =
 		{
 
 			{  0.0f, 0.0f  },
@@ -426,7 +496,6 @@ namespace Vi {
 
 		};
 
-		const size_t cubeVertexCount = 4 * 6;
 
 		glm::mat4 transform = glm::translate( glm::mat4( 1.0f ), position ) *
 			glm::rotate( glm::mat4( 1.0f ), glm::radians( rotation.x ), { 1.0f,0.0f,0.0f } ) *
@@ -684,14 +753,13 @@ namespace Vi {
 		for ( size_t i = 0; i < s_Data3D.PlaneVertices; i++ ) {
 			pos = transform * glm::vec4{ Positions[i], 0.0f };
 		//	s_Data3D.CubeVertexBufferPtr->Position =  Offset + Positions[i] ; // working
-			s_Data3D.CubeVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z};
-			s_Data3D.CubeVertexBufferPtr->Color = color;
-			s_Data3D.CubeVertexBufferPtr->TexCoord = textureCoords[i];
-		//	s_Data3D.CubeVertexBufferPtr->TexIndex = textureIndex;
-		//	s_Data3D.CubeVertexBufferPtr->TilingFactor = tilingFactor;
-			s_Data3D.CubeVertexBufferPtr++;
+			s_Data3D.PlaneVertexBufferPtr->Position = position + glm::vec3{pos.x, pos.y, pos.z};
+			s_Data3D.PlaneVertexBufferPtr->Color = color;
+			s_Data3D.PlaneVertexBufferPtr->TexCoord = textureCoords[i];
+		//	s_Data3D.PlaneVertexBufferPtr->TexIndex = textureIndex;
+		//	s_Data3D.PlaneVertexBufferPtr->TilingFactor = tilingFactor;
+			s_Data3D.PlaneVertexBufferPtr++;
 		}
-		s_Data3D.CubeIndexCount += s_Data3D.PlaneIndices;
 		s_Data3D.PlaneIndexCount += s_Data3D.PlaneIndices;
 	}
 

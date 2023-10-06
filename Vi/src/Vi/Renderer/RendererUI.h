@@ -5,7 +5,7 @@
 
 namespace Vi {
 
-	class Renderer2D
+	class RendererUI
 	{
 	public:
 		static void Init();

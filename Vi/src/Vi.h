@@ -22,7 +22,7 @@
 
 #include "Vi/Renderer/Renderer.h"
 #include "Vi/Renderer/Renderer3D.h"
-#include "Vi/Renderer/Renderer2D.h"
+#include "Vi/Renderer/RendererUI.h"
 #include "Vi/Renderer/RenderCommand.h"
 
 #include "Vi/Renderer/Buffer.h"

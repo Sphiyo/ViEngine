@@ -22,6 +22,12 @@ namespace Vi {
 
 	void CameraController2D::OnUpdate(Timestep ts) {
 		VI_PROFILE_FUNCTION();
+
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnUpdate Doesn't Run; Camera Movement State Is Set To Static");
+			return;
+		}
+
 		bool ShouldUpdate = false;
 		//	VI_CORE_INFO("(CameraController2DCpp) TimeStep = {}", ts);
 		glm::vec3 locationOffsetWorld(0.0f);
@@ -129,6 +135,12 @@ namespace Vi {
 
 	bool CameraController2D::OnKeyPressed(KeyPressedEvent& e) {
 		VI_PROFILE_FUNCTION();
+
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnKeyPressed Can't Run; Camera Movement State Is Set To Static");
+			return false;
+		}
+		
 		bool IsLocallyControlled = true;
 #if IMGUI == 1
 		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingKeyboard;
@@ -146,6 +158,11 @@ namespace Vi {
 	bool CameraController2D::OnKeyReleased(KeyReleasedEvent& e) {
 		VI_PROFILE_FUNCTION();
 
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnKeyReleased Can't Run; Camera Movement State Is Set To Static");
+			return false;
+		}
+
 		if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
 			m_BoostFactor = 1;
 		}
@@ -153,6 +170,13 @@ namespace Vi {
 	}
 
 	bool CameraController2D::OnMouseScrolled(MouseScrolledEvent& e) {
+		VI_PROFILE_FUNCTION();
+
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnMouseScrolled Can't Run; Camera Movement State Is Set To Static");
+			return false;
+		}
+
 		bool IsLocallyControlled = true;
 #if IMGUI == 1
 		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingMouse;
@@ -170,6 +194,13 @@ namespace Vi {
 	}
 
 	bool CameraController2D::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
+		VI_PROFILE_FUNCTION();
+
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnMouseButtonPressed Can't Run; Camera Movement State Is Set To Static");
+			return false;
+		}
+
 		bool IsLocallyControlled = true;
 #if IMGUI == 1
 		IsLocallyControlled = !Application::Get().GetImGuiLayer()->m_CapturingMouse;
@@ -209,6 +240,13 @@ namespace Vi {
 	}
 
 	bool CameraController2D::OnMouseButtonReleased(MouseButtonReleasedEvent& e) {
+		VI_PROFILE_FUNCTION();
+
+		if (m_Camera.GetCameraProperties().MovementState == EMovementState::Static) {
+			VI_CORE_WARN("CameraController2D::OnMouseButtonReleased Can't Run; Camera Movement State Is Set To Static");
+			return false;
+		}
+
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) { m_MouseMiddleButtonPressed = false; }
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_RIGHT) { m_MouseRightButtonPressed = false; }
 		if (e.GetMouseButton() == VI_MOUSE_BUTTON_LEFT) { m_MouseLeftButtonPressed = false; }
@@ -216,8 +254,13 @@ namespace Vi {
 	}
 
 	bool CameraController2D::OnWindowResized(WindowResizeEvent& e) {
-		//	m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
-		//	m_Camera.SetProjection(-m_AspectRatio * m_ZoomLevel, m_AspectRatio * m_ZoomLevel, -m_ZoomLevel, m_ZoomLevel);
+			float m_AspectRatio = (float)e.GetWidth() / (float)e.GetHeight();
+			m_Camera.SetProjection(Camera2DProperties(m_AspectRatio,
+									m_Camera.GetCameraProperties().ZoomLevel,
+									m_Camera.GetCameraProperties().ZNear,
+									m_Camera.GetCameraProperties().ZFar,
+									m_Camera.GetCameraProperties().MovementState
+								   ));
 		return false;
 	}
 

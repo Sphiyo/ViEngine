@@ -1452,7 +1452,7 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Renderer\Renderer2D.h" />
+    <ClInclude Include="src\Vi\Renderer\RendererUI.h" />
     <ClInclude Include="src\Vi\Renderer\Camera2D.h" />
     <ClInclude Include="src\Vi\Math\VUtils.h" />
     <ClInclude Include="src\Vi\Miscs\CameraController2D.h" />
@@ -1566,7 +1566,7 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Renderer\Renderer2D.cpp" />
+    <ClCompile Include="src\Vi\Renderer\RendererUI.cpp" />
     <ClCompile Include="src\Vi\Renderer\Camera2D.cpp" />
     <ClCompile Include="src\Vi\Miscs\CameraController2D.cpp" />
   </ItemGroup>
