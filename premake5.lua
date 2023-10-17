@@ -19,10 +19,12 @@ IncludeDir["Glad"] = "Vi/vendor/Glad/include"
 IncludeDir["ImGui"] = "Vi/vendor/imgui"
 IncludeDir["glm"] = "Vi/vendor/glm"
 IncludeDir["stb_image"] = "Vi/vendor/stb_image"
+IncludeDir["PhysX"] = "Vi/vendor/PhysX/physx"
 
 include "Vi/vendor/GLFW/"
 include "Vi/vendor/Glad/"
 include "Vi/vendor/ImGui/"
+include "Vi/vendor/PhysX/physx"
 
 project "Vi"
 	location "Vi"
@@ -45,7 +47,7 @@ project "Vi"
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
 		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp",
+		"%{prj.name}/vendor/stb_image/**.cpp", 
 
 	}
 
@@ -61,7 +63,13 @@ project "Vi"
 		"%{IncludeDir.Glad}",
 		"%{IncludeDir.ImGui}",
 		"%{IncludeDir.glm}",
-		"%{IncludeDir.stb_image}"
+		"%{IncludeDir.stb_image}",
+		"%{IncludeDir.PhysX}/include",
+		"%{IncludeDir.PhysX}/source",
+		"%{IncludeDir.PhysX}/include/**",
+		"%{IncludeDir.PhysX}/source/**",
+		"%{IncludeDir.PhysX}/pvdruntime/include",
+		"%{IncludeDir.PhysX}/pvdruntime/src",
 
 	}
 

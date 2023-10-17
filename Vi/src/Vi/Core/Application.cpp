@@ -4,6 +4,8 @@
 #include "Vi/Renderer/Renderer.h"
 
 
+#include "PxConfig.h"
+#include "PxPhysicsAPI.h"
 
 
 namespace Vi {
