@@ -1,11 +1,29 @@
 #include "Sandbox3D.h"
 #include "Vi/Debug/Timer.h"
+#include <glm/gtx/quaternion.hpp>
 
 float Sandbox3D::deltaTime = 0.016f;
 
+//////////////////////////////////
+
+// Function to convert a PhysX quaternion to an OpenGL quaternion
+glm::quat convertPhysXToOpenGLQuaternion(const physx::PxQuat& physxQuaternion) {
+	// Convert the PhysX quaternion to a glm::quat (OpenGL's coordinate system)
+	return glm::quat(physxQuaternion.w, physxQuaternion.x, physxQuaternion.y, physxQuaternion.z);
+}
+
+// Function to convert an OpenGL quaternion to Euler angles (in degrees)
+glm::vec3 quaternionToEulerAngles(const glm::quat& quaternion) {
+	glm::mat4 rotationMatrix = glm::toMat4(quaternion);
+	return glm::eulerAngles(quaternion) * glm::degrees(1.0f);
+}
+
+ 
+
+///////////////////////////////////
 
 Sandbox3D::Sandbox3D() 
-	: Layer("Sandbox3D"), m_CameraController({0.0f,5.0f,2.0f}) {
+	: Layer("Sandbox3D"), m_CameraController({0.0f,4.0f,8.0f}) {
 	VI_PROFILE_FUNCTION();
 }
 
@@ -59,22 +77,74 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 			
 			for (int y = 0; y < columns ; y++) {
 
-				Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
+				//Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
 			}
 		}
 
 	//	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor);
 	//	Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
 	}
-	
-	
+	auto dir = m_CameraController.GetCamera().GetForwardVector();
+	glm::quat quatstat = glm::quat();
+	for (auto& actor : Vi::Physics::VPhysicsRigidActor::GetRigidDynamic()) {
 
+		auto tr = actor->getGlobalPose();
+		
+		physx::PxQuat rot = tr.q;
+	
+		// Convert the PhysX quaternion to an OpenGL quaternion
+		glm::quat openglQuaternion = convertPhysXToOpenGLQuaternion(rot);
+
+		// Convert the OpenGL quaternion to Euler angles (in degrees)
+		glm::vec3 eulerAngles = quaternionToEulerAngles(openglQuaternion);
+	
+		
+		glm::quat quat;
+		quat.x = openglQuaternion.x;
+		quat.y = openglQuaternion.y;
+		quat.z = openglQuaternion.z;
+		quat.w = openglQuaternion.w;
+		
+		
+		Vi::Renderer3D::DrawCube(m_CameraController.GetCamera().GetWorldLocation(), dir , {tr.p.x , tr.p.y, tr.p.z}, quat, {2.0f,2.0f,2.0f}, {0.0f,0.0f,1.0f,1.0f});
+	}
+	Vi::Renderer3D::DrawCube(m_CameraController.GetCamera().GetWorldLocation(), dir, { 0.0f , 10.0f, 0.0f }, quatstat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
 
 	Vi::Renderer3D::EndScene();
 
-
 	fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
 }
+
+void Sandbox3D::OnFixedUpdate(Vi::Timestep ts)
+{
+	
+}
+
+void Sandbox3D::OnEvent(Vi::Event& e) {
+
+	m_CameraController.OnEvent(e);
+
+	Vi::EventDispatcher Dispatcher(e);
+	Dispatcher.Dispatch<Vi::KeyPressedEvent>(VI_BINDEVENT(Sandbox3D::OnKeyPressed));
+}
+
+bool Sandbox3D::OnKeyPressed(Vi::KeyPressedEvent& e) {
+
+	if (e.GetKeyCode() == VI_KEY_SPACE) {
+
+		m_CubeCountPx++;
+		//Vi::Physics::VRigidDynamic Actor;
+		physx::PxVec3 Position = physx::PxVec3(m_CubeCountPx * 2.0f, 10.0f, 0.0f);
+		physx::PxVec3 Rotation = physx::PxVec3(40.f, 45.f, 0.0f);
+		//Vi::Physics::VPhysicsMaterial Mat;
+		Vi::Physics::VPhysicsRigidActor::Get().CreateRigidDynamic(Position, Rotation, physx::PxBoxGeometry(1.0f, 1.0f, 1.0f)/*, Mat*/);
+		//m_CubeCount++;
+	}
+	 
+
+	return false;
+}
+
 
 void Sandbox3D::OnImGuiRender() {
 
@@ -254,9 +324,4 @@ void Sandbox3D::OnImGuiRender() {
 
 
 	ImGui::End();
-}
-
-void Sandbox3D::OnEvent(Vi::Event& e) {
-
-	m_CameraController.OnEvent(e);
 }
