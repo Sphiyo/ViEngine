@@ -3,7 +3,7 @@
 
 #include "imgui/imgui.h"
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp>
+#include <glm/gtc/type_ptr.hpp> 
 
 class Sandbox3D : public Vi::Layer {
 	
@@ -15,8 +15,11 @@ public:
 	virtual void OnAttach()override;
 	virtual void OnDetach()override;
 	void OnUpdate(Vi::Timestep ts) override;
+	void OnFixedUpdate(Vi::Timestep ts) override;
 	virtual void OnImGuiRender() override;
 	void OnEvent(Vi::Event& e) override;
+
+	bool OnKeyPressed(Vi::KeyPressedEvent& e);
 
 private:
 	Vi::CameraController m_CameraController;
@@ -35,7 +38,8 @@ private:
 	glm::vec2 m_GridOffset = { 2.0f,2.0f };
 
 	
-
+	uint32_t m_CubeCountPx = 1;
+	uint32_t m_CubeCount = 1;
 
 	glm::vec3 m_Cube1Position = glm::vec3(0.0f);
 	glm::vec3 m_GroundLocation = glm::vec3(0.0f);

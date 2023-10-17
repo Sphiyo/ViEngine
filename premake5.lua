@@ -19,12 +19,13 @@ IncludeDir["Glad"] = "Vi/vendor/Glad/include"
 IncludeDir["ImGui"] = "Vi/vendor/imgui"
 IncludeDir["glm"] = "Vi/vendor/glm"
 IncludeDir["stb_image"] = "Vi/vendor/stb_image"
-IncludeDir["PhysX"] = "Vi/vendor/PhysX/physx"
+IncludeDir["PhysX"] = "Vi/vendor/PhysX/PhysX"
 
 include "Vi/vendor/GLFW/"
 include "Vi/vendor/Glad/"
 include "Vi/vendor/ImGui/"
-include "Vi/vendor/PhysX/physx"
+--include "Vi/vendor/PhysX/physx/compiler/vc17win64/sdk_source_bin/"
+
 
 project "Vi"
 	location "Vi"
@@ -44,15 +45,27 @@ project "Vi"
 	{
 		"%{prj.name}/src/**.h",
 		"%{prj.name}/src/**.cpp",
+
 		"%{prj.name}/vendor/glm/glm/**.hpp",
 		"%{prj.name}/vendor/glm/glm/**.inl",
-		"%{prj.name}/vendor/stb_image/**.h",
-		"%{prj.name}/vendor/stb_image/**.cpp", 
 
+		"%{prj.name}/vendor/stb_image/**.h",
+		"%{prj.name}/vendor/stb_image/**.cpp",
+
+		"%{prj.name}/vendor/PhysX/PhysX/include/**.h",
+		"%{prj.name}/vendor/PhysX/PhysX/include/**.hpp", 
+
+		"%{prj.name}/vendor/PhysX/PhysX/source/**.h",
+		"%{prj.name}/vendor/PhysX/PhysX/source/**.hpp",
+
+		"%{prj.name}/vendor/PhysX/PhysX/pvdruntime/**.h",
+		"%{prj.name}/vendor/PhysX/PhysX/pvdruntime/**.hpp"
+		
 	}
 
 	defines
 	{
+		"PX_PHYSX_STATIC_LIB",
 		"_CRT_SECURE_NO_WARNINGS"
 	}
 	includedirs
@@ -66,10 +79,7 @@ project "Vi"
 		"%{IncludeDir.stb_image}",
 		"%{IncludeDir.PhysX}/include",
 		"%{IncludeDir.PhysX}/source",
-		"%{IncludeDir.PhysX}/include/**",
-		"%{IncludeDir.PhysX}/source/**",
-		"%{IncludeDir.PhysX}/pvdruntime/include",
-		"%{IncludeDir.PhysX}/pvdruntime/src",
+		"%{IncludeDir.PhysX}/pvdruntime",
 
 	}
 
@@ -78,18 +88,25 @@ project "Vi"
 		"GLFW",
 		"Glad",
 		"ImGui",
-		"opengl32.lib"
+		"opengl32.lib",
+		"PhysX_static_64.lib",
+		"PhysXExtensions_static_64.lib",
+		"PhysXFoundation_static_64.lib",
+		"PhysXCooking_static_64.lib",
+		"PhysXCommon_static_64.lib",
+		"PhysXPvdSDK_static_64.lib",
+		"PVDRuntime_64.lib"
+		
 	}
-
+	
+	
 	
 
 	filter "system:windows"
 		
 		systemversion "latest"
-	 
 		defines
 		{
-
 			"VI_PLATFORM_WINDOWS",
 			"VI_BUILD_DLL",
 			"GLFW_INCLUDE_NONE"
@@ -97,17 +114,35 @@ project "Vi"
 	
 	
 	filter "configurations:Debug"
-		defines "VI_DEBUG"
+
+		libdirs { "%{prj.name}/vendor/PhysX/PhysX/libs/debug" }
+		defines 
+		{
+			"VI_DEBUG",
+			"_DEBUG"
+		}
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "VI_RELEASE"
+
+		libdirs { "%{prj.name}/vendor/PhysX/PhysX/libs/checked" }
+		defines 
+		{ 
+			"VI_RELEASE",
+			"NDEBUG"
+		}
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "VI_DIST"
+
+		libdirs { "%{prj.name}/vendor/PhysX/PhysX/libs/release" }
+		defines 
+		{ 
+			"VI_DIST",
+			"NDEBUG"
+		}
 		runtime "Release"
 		optimize "on"
 		symbols "off"
@@ -135,7 +170,10 @@ project "Sandbox"
 		"Vi/vendor/spdlog/include",
 		"Vi/src",
 		"Vi/vendor",
-		"%{IncludeDir.glm}"
+		"%{IncludeDir.glm}",
+		"%{IncludeDir.PhysX}/include",
+		"%{IncludeDir.PhysX}/source",
+		"%{IncludeDir.PhysX}/pvdruntime"
 
 	}
 
@@ -159,17 +197,29 @@ project "Sandbox"
 
 
 	filter "configurations:Debug"
-		defines "VI_DEBUG"
+		defines 
+		{
+			"VI_DEBUG",
+			"_DEBUG"
+		}
 		runtime "Debug"
 		symbols "on"
 
 	filter "configurations:Release"
-		defines "VI_RELEASE"
+		defines
+		{ 
+			"VI_RELEASE",
+			"NDEBUG"
+		}
 		runtime "Release"
 		optimize "on"
 
 	filter "configurations:Dist"
-		defines "VI_DIST"
+		defines 
+		{ 
+			"VI_DIST",
+			"NDEBUG"
+		}
 		runtime "Release"
 		optimize "on"
 		symbols "off"
