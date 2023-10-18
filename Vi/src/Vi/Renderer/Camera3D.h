@@ -4,17 +4,27 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 
+struct Camera3DProperties {
+
+	Camera3DProperties(float aspectRatio = 1920.0f / 1080.0f, float fov = 90.0f, float zNear = 0.001f, float zFar = 100000.0f) :
+		AspectRatio(aspectRatio), FOV(fov), ZNear(zNear), ZFar(zFar) {}
+	float AspectRatio = 1920.0f / 1080.0f;
+	float FOV = 90.0f;
+	float ZNear = 0.001f;
+	float ZFar = 100000.0f;
+
+};
 
 namespace Vi {
 
-	class Camera
+	class Camera3D
 	{
 	public:
-		Camera(const glm::vec3& worldLocation = glm::vec3(0.0f, 0.0f, 0.0f), const glm::vec3& rotation = glm::vec3(0.0f, 0.0f, 0.0f));
-	
-		~Camera() {}
+		Camera3D(const VTransform& Transform = VTransform(), const Camera3DProperties& CamProperties = Camera3DProperties());
+
+		~Camera3D() {}
 		
-		void SetProjection(float fovy = 90.0f, float aspectratio = 1.77778, float nearPlane = 0.01f, float farPlane = 4000.0f);
+		void SetProjection(const Camera3DProperties& CamProperties = Camera3DProperties());
 
 
 		const glm::vec3& GetWorldLocation() const { return m_WorldLocation; }
@@ -65,6 +75,9 @@ namespace Vi {
 		const glm::mat4& GetViewProjectionMatrix() const;
 		const glm::mat4& GetViewMatrix() const;
 		
+		const Camera3DProperties& GetCameraProperties() const { return m_CamProperties; }
+		Camera3DProperties& GetCameraProperties() { return m_CamProperties; }
+
 	private:
 		void RecalculateViewMatrix();
 
@@ -88,9 +101,10 @@ namespace Vi {
 		glm::vec3 m_WorldRightVector;
 		glm::vec3 m_WorldUpVector;
 
-		float m_FOV = 90.0f;
-		float m_MinFOV = 1.0f;
-		float m_MaxFOV = 179.0f;
+		const float m_MinFOV = 1.0f;
+		const float m_MaxFOV = 179.0f;
+
+		Camera3DProperties m_CamProperties;
 
 	};	
 }	

@@ -1,3 +1,7 @@
+
+
+
+
 #include <Vi.h>
 #include <Vi/Core/EntryPoint.h>
 
@@ -6,7 +10,9 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Sandbox3D.h"
-#if 0
+#include "HudLayer.h"
+
+#if EXAMPLELAYER == 1
 class ExampleLayer : public Vi::Layer {
 
 public:
@@ -417,6 +423,7 @@ public:
 	{
 		//	PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox3D());
+		//PushLayer(new HudLayer());
 	}
 	~Sandbox()
 	{

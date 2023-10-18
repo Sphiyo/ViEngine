@@ -15,16 +15,18 @@
 
 #include "Vi/Core/Log.h"	
 #include "Vi/Debug/Instrumentor.h"	
-#include "Vi/Debug/Timer.h"
+//#include "Vi/Debug/Timer.h"
 #include "Vi/Core/Input.h"              // test 
+#include "Vi/Core/Experimental/VThread.h"              // test 
 
+#include "Vi/Math/VUtils.h"	
 
 #ifdef VI_PLATFORM_WINDOWS
-	#include <Windows.h>
+#include <Windows.h>
 #endif
 
 /*
-////////////////////////////				// temp 
+////////////////////////////				// temp
 
 #include <thread>
 #include <atomic>
@@ -32,12 +34,12 @@
 #include <shared_mutex>
 #include <future>
 
-////////////////////////////				// temp 
+////////////////////////////				// temp
 
 // for srand() and rand()
 #include <stdlib.h>
 #include <time.h>
 #include <chrono>
 
-////////////////////////////				// temp 
+////////////////////////////				// temp
 */

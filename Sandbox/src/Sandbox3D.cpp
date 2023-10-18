@@ -22,9 +22,12 @@ glm::vec3 quaternionToEulerAngles(const glm::quat& quaternion) {
 
 ///////////////////////////////////
 
-Sandbox3D::Sandbox3D()
-	: Layer("Sandbox3D"), m_CameraController({ 0.0f,4.0f,8.0f }) {
+
+Sandbox3D::Sandbox3D() :
+	Layer("Sandbox3D") {
+
 	VI_PROFILE_FUNCTION();
+	Vi::CameraController3D::Get().GetCamera().SetWorldLocation(0.0f, 4.0f, 8.0f);
 }
 
 void Sandbox3D::OnAttach() {
@@ -34,6 +37,7 @@ void Sandbox3D::OnAttach() {
 	//Construct And Buffer Texture To Memory
 	m_Texture = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
 	m_TransparentTexture = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
+	m_CheckerTexture = Vi::Texture2D::Create("assets/textures/Checkerboard.png", 0);
 
 }
 
@@ -42,29 +46,30 @@ void Sandbox3D::OnDetach() {
 }
 
 void Sandbox3D::OnUpdate(Vi::Timestep ts) {
-
+	deltaTime = ts.GetMilliSeconds();										//temp
 	VI_PROFILE_FUNCTION();
-	PROFILE_SCOPE("Sandbox3D::OnUpdate");
+	VI_CORE_WARN("Sandbox3D.cpp: OnUpdate(): Timestep is {} : FPS = {}", deltaTime, 1000 / deltaTime);
+	//PROFILE_SCOPE("Sandbox3D::OnUpdate");
 	// Update 
-	Sandbox3D::deltaTime = ts;										//temp
+										//temp
 	{
 		VI_PROFILE_SCOPE("CameraController::OnUpdate");
-		m_CameraController.OnUpdate(ts);
+		Vi::CameraController3D::Get().OnUpdate(ts);
 	}
 	// Render 
 
 	// Set Background Color And Clear It 
-	{
-		VI_PROFILE_SCOPE("Renderer Prep");
-		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
-		Vi::RenderCommand::Clear();
-	}
+	///////////////////////////{
+	///////////////////////////	VI_PROFILE_SCOPE("Renderer Prep");
+	///////////////////////////	Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+	///////////////////////////	Vi::RenderCommand::Clear();
+	///////////////////////////}
 
-	Vi::Renderer3D::BeginScene(m_CameraController.GetCamera());
+	Vi::Renderer3D::BeginScene(Vi::CameraController3D::Get().GetCamera());
 
 	{
 		VI_PROFILE_SCOPE("Renderer Draw");
-
+	#if 0
 		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_GroundColor);
 		Vi::Renderer3D::DrawPlane(m_GroundLocation, { 0.0f,0.0f,0.0f }, { 100.0f,100.0f,100.0f }, m_TransparentTexture, { 1.0f,0.0f,0.0f,1.0f });
 
@@ -80,12 +85,13 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 				//Vi::Renderer3D::DrawCube({ m_CubeGridLocation.x + y * offsetY ,m_CubeGridLocation.y + 0.5f,m_CubeGridLocation.z + x * offsetX }, { 0.0f, 0.0f, 0.0f }, { 1.0f,3.0f,1.0f }, m_CubeColor);
 			}
 		}
-
-		//	Vi::Renderer3D::DrawCube(m_Cube1Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_CubeColor);
-		//	Vi::Renderer3D::DrawCube(m_Cube3Position, { 0.0f,0.0f,0.0f }, { 0.5f,0.5f,0.5f }, m_Texture, { 0.0f,0.0f,1.0f,1.0f });
+		Vi::Renderer3D::DrawCube({ 0.0f  , -0.1f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, m_CubeColor);
+		Vi::Renderer3D::DrawPlane({ 0.0f  , 0.8f, 0.0f }, { 0.0f, 0.0f, 0.0f }, { 1.0f,1.0f,1.0f }, m_CubeColor);
+	#endif
 	}
-	auto dir = m_CameraController.GetCamera().GetForwardVector();
+	auto dir = Vi::CameraController3D::Get().GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();
+	VI_INFO("RIGIDDYNAMIC count {}", Vi::Physics::VPhysicsRigidActor::GetRigidDynamic().size());
 	for (auto& actor : Vi::Physics::VPhysicsRigidActor::GetRigidDynamic()) {
 
 		auto tr = actor->getGlobalPose();
@@ -106,9 +112,9 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		quat.w = openglQuaternion.w;
 
 
-		Vi::Renderer3D::DrawCube(m_CameraController.GetCamera().GetWorldLocation(), dir, { tr.p.x , tr.p.y, tr.p.z }, quat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
+		Vi::Renderer3D::DrawCube(Vi::CameraController3D::Get().GetCamera().GetWorldLocation(), dir, { tr.p.x , tr.p.y, tr.p.z }, quat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
 	}
-	Vi::Renderer3D::DrawCube(m_CameraController.GetCamera().GetWorldLocation(), dir, { 0.0f , 10.0f, 0.0f }, quatstat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
+	Vi::Renderer3D::DrawCube(Vi::CameraController3D::Get().GetCamera().GetWorldLocation(), dir, { 0.0f , 10.0f, 0.0f }, quatstat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
 
 	Vi::Renderer3D::EndScene();
 
@@ -122,8 +128,8 @@ void Sandbox3D::OnFixedUpdate(Vi::Timestep ts)
 
 void Sandbox3D::OnEvent(Vi::Event& e) {
 
-	m_CameraController.OnEvent(e);
-
+	Vi::CameraController3D::Get().OnEvent(e);
+	//m_CameraController2D.OnEvent(e);
 	Vi::EventDispatcher Dispatcher(e);
 	Dispatcher.Dispatch<Vi::KeyPressedEvent>(VI_BINDEVENT(Sandbox3D::OnKeyPressed));
 }
@@ -158,48 +164,11 @@ void Sandbox3D::OnImGuiRender() {
 	ImGui::DragFloat2("Row Offset", (float*)&m_GridOffset, 0.1f, 0.0f, 1000.0f, "%4.2f");
 	ImGui::End();																   // temp
 
-	float tempPosition[3];
-
 	{
-		// m_Cube1Position
-		tempPosition[0] = m_Cube1Position.x;
-		tempPosition[1] = m_Cube1Position.y;
-		tempPosition[2] = m_Cube1Position.z;
-
-		ImGui::DragFloat3("Cube1Position", tempPosition, 0.01f);
-		m_Cube1Position.x = tempPosition[0];
-		m_Cube1Position.y = tempPosition[1];
-		m_Cube1Position.z = tempPosition[2];
-
-		// m_Cube2Position
-		tempPosition[0] = m_GroundLocation.x;
-		tempPosition[1] = m_GroundLocation.y;
-		tempPosition[2] = m_GroundLocation.z;
-
-		ImGui::DragFloat3("m_GroundLocation", tempPosition, 0.01f);
-		m_GroundLocation.x = tempPosition[0];
-		m_GroundLocation.y = tempPosition[1];
-		m_GroundLocation.z = tempPosition[2];
-
-		// m_Cube3Position
-		tempPosition[0] = m_CubeGridLocation.x;
-		tempPosition[1] = m_CubeGridLocation.y;
-		tempPosition[2] = m_CubeGridLocation.z;
-
-		ImGui::DragFloat3("m_CubeGridLocation", tempPosition, 0.01f);
-		m_CubeGridLocation.x = tempPosition[0];
-		m_CubeGridLocation.y = tempPosition[1];
-		m_CubeGridLocation.z = tempPosition[2];
-
-		// m_Cube4Position
-		tempPosition[0] = m_Cube4Position.x;
-		tempPosition[1] = m_Cube4Position.y;
-		tempPosition[2] = m_Cube4Position.z;
-
-		ImGui::DragFloat3("Cube4Position", tempPosition, 0.01f);
-		m_Cube4Position.x = tempPosition[0];
-		m_Cube4Position.y = tempPosition[1];
-		m_Cube4Position.z = tempPosition[2];
+		ImGui::DragFloat3("Cube1Position", glm::value_ptr(m_Cube1Position), 0.01f);
+		ImGui::DragFloat3("m_GroundLocation", glm::value_ptr(m_GroundLocation), 0.01f);
+		ImGui::DragFloat3("m_CubeGridLocation", glm::value_ptr(m_CubeGridLocation), 0.01f);
+		ImGui::DragFloat3("Cube4Position", glm::value_ptr(m_Cube4Position), 0.01f); 
 	}
 
 	ImGui::Begin("Stats");														   // temp 
@@ -207,19 +176,19 @@ void Sandbox3D::OnImGuiRender() {
 	ImGui::Text("ts  %.3fms", Sandbox3D::deltaTime);
 	ImGui::End();
 
-	ImGui::Begin("Profiler");
-
-	// remove delete to do to fix
-	for (auto& result : ProfileResults::m_ProfileResults) {
-
-		char label[50];
-		strcpy_s(label, "%.3fms  ");
-		strcat_s(label, result.Name);
-		ImGui::Text(label, result.Time);
-	}
-	ProfileResults::Get().clear();
-
-	ImGui::End();
+//	ImGui::Begin("Profiler");
+//
+//	// remove delete to do to fix
+//	for (auto& result : ProfileResults::m_ProfileResults) {
+//
+//		char label[50];
+//		strcpy_s(label, "%.3fms  ");
+//		strcat_s(label, result.Name);
+//		ImGui::Text(label, result.Time);
+//	}
+//	ProfileResults::Get().clear();
+//
+//	ImGui::End();
 
 	ImGui::Begin("GraphicsSetting");
 	ImGui::Checkbox("Vsync", &vSync);

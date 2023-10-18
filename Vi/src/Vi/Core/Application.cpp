@@ -2,21 +2,13 @@
 #include "Application.h"
 
 #include "Vi/Renderer/Renderer.h"
-
-
+#include <imgui.h>
+#include <imgui_internal.h>
+#include <GLFW/glfw3.h>
 #include "Vi/Physics/VPhysicsLayer.h"
+//#include "Vi/Debug/Timer.h"
 
 //#define PX_GENERATE_STATIC_LIBRARIES
-
-//#include "PxPhysics.h" 
-//#include "PxPhysicsAPI.h"
-//#include "../snippets/snippetcommon/SnippetPVD.h"
-
-
-
-
-//static physx::PxReal stackZ = 10.0f;
-
 
 namespace Vi {
 
@@ -32,16 +24,48 @@ namespace Vi {
 		m_Window = Window::Create();
 		m_Window->SetEventCallback(VI_BINDEVENT(Application::OnEvent));
 		Renderer::Init();
-		m_ImGuiLayer = new ImGuiLayer();
-		PushOverlay(m_ImGuiLayer);
+	//	m_ImGuiLayer = new ImGuiLayer();
+	//	PushOverlay(m_ImGuiLayer);
 		m_PhysicsLayer = new Physics::VPhysicsLayer();
 		PushOverlay(m_PhysicsLayer);
+
+#if IMGUI == 1
+
+
+#if IMGUITHREADED == 0
+		m_ImGuiLayer = new ImGuiLayer();
+		PushOverlay(m_ImGuiLayer);
+#endif
+
+
+#if  IMGUITHREADED == 1
+		m_ImGuiThread.AddFunction([&] {
+			m_ImGuiLayer = new ImGuiLayer();
+			PushOverlay(m_ImGuiLayer);
+			});
+		m_ImGuiThread.Run();
+#endif
+
+#endif //  IMGUI == 1
+
+
 	}
 
 	Application::~Application() {
 		VI_PROFILE_FUNCTION();
 		m_PhysicsLayer->OnDetach();
 		Renderer::Shutdown();
+
+#if IMGUI == 1
+
+#if IMGUITHREADED == 1
+		m_ImGuiThread.AddFunction([&] {
+			m_ImGuiLayer->OnDetach();
+			});
+		m_ImGuiThread.Shutdown();
+#endif
+
+#endif // IMGUI == 1
 	}
 
 	void Application::PushLayer(Layer* layer) {
@@ -56,6 +80,13 @@ namespace Vi {
 
 		m_LayerStack.PushOverlay(overlay);
 		overlay->OnAttach();
+	}
+
+	void Application::PopOverlay(Layer* overlay) {
+		VI_PROFILE_FUNCTION();
+
+		m_LayerStack.PopOverlay(overlay);
+
 	}
 
 
@@ -84,62 +115,125 @@ namespace Vi {
 		const float fixedTimeStep = 1.0f / 250.0f;
 		float accumulator = 0.0f;
 
-		while (m_Running) {
+		while (m_Running) 
+		{
 			VI_PROFILE_SCOPE("RunLoop");
+
+			RendererAPI::ClearDrawCallCounts();
 
 			Timestep timestep = Time::GetTime() - m_LastFrameTime;
 			m_LastFrameTime = Time::GetTime();
 
-			if(!m_Minimized) {
+			if(!m_Minimized)
+			{
 
 				VI_PROFILE_SCOPE("LayerStack OnUpdate");
-
-				for (Layer* layer : m_LayerStack) 
-				{
-					layer->OnUpdate(timestep);
-
-			#define FixedTick 1
-
-			#if FixedTick == 1
-
-					accumulator += timestep;
-
-					while (accumulator >= fixedTimeStep) {
-						m_PhysicsLayer->BeginPhysics(fixedTimeStep);
-						layer->OnFixedUpdate(fixedTimeStep);
-
-						accumulator -= fixedTimeStep;
-					}
-			#elif FixedTick == 0
-
-					m_PhysicsLayer->BeginPhysics(timestep);
-					layer->OnFixedUpdate(timestep);
-
-			#endif // FixedTick 
-
-				}
-
-			}
-
-
-
-
-
-			m_ImGuiLayer->Begin();	
-			{
-				VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
-		
-				for (Layer* layer : m_LayerStack) 
-					layer->OnImGuiRender();
 				
+				if (!IsRenderingPaused)
+				{
+					
+					
+
+					{
+						VI_PROFILE_SCOPE("Renderer Prep");
+						RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
+						RenderCommand::Clear();
+					}
+				
+					for (Layer* layer : m_LayerStack)
+					{
+						layer->OnUpdate(timestep);
+
+
+				// Begin and Update Physics 
+				#define FixedTick 1		
+				#if FixedTick == 1
+
+						accumulator += timestep;
+
+						while (accumulator >= fixedTimeStep) {
+							m_PhysicsLayer->BeginPhysics(fixedTimeStep);
+							layer->OnFixedUpdate(fixedTimeStep);
+
+							accumulator -= fixedTimeStep;
+						}
+				#elif FixedTick == 0
+
+						m_PhysicsLayer->BeginPhysics(timestep);
+						layer->OnFixedUpdate(timestep);
+
+				#endif // FixedTick 
+
+					}
+
+					m_PhysicsLayer->EndPhysics();
+					
+				#if IMGUI == 1
+
+					#if IMGUITHREADED == 1
+
+
+					m_ImGuiThread.AddFunction([&] {
+
+						m_ImGuiLayer->Begin();
+						{
+
+
+							for (Layer* layer : m_LayerStack)																															   //
+								layer->OnImGuiRender();																																	   //
+
+						}
+						m_ImGuiLayer->End();
+
+						});
+
+					#endif
+
+
+					#if IMGUITHREADED == 0
+
+					m_ImGuiLayer->Begin();
+					{
+						VI_PROFILE_SCOPE("LayerStack OnImGuiRender");
+
+						for (Layer* layer : m_LayerStack)
+							layer->OnImGuiRender();
+						VI_CORE_WARN("ImGUIRender For Each LAyer In App.cpp");
+					}
+					m_ImGuiLayer->End();
+
+					#endif
+
+				#endif // IMGUI == 1
+
+				m_Window->OnUpdate();
+				}
+				// Render ImGui if window is not minimized
+
+			
 			}
-			m_ImGuiLayer->End();
 
-
-			m_Window->OnUpdate();
-
-			m_PhysicsLayer->EndPhysics();
 		};
+
+		// Pop m_ImGuiLayer if !m_Running
+		#if IMGUI == 1
+#if IMGUITHREADED == 0
+
+		PopOverlay(m_ImGuiLayer);
+
+#endif
+
+#if IMGUITHREADED == 1
+
+		m_ImGuiThread.AddFunction([&] {
+			PopOverlay(m_ImGuiLayer);
+
+			});
+
+#endif
+
+		#endif // IMGUI == 1
+
 	}
 
 	bool Application::OnWindowClosed(WindowCloseEvent& e) {
@@ -183,22 +277,40 @@ namespace Vi {
 
 			m_Window->SetFullScreen(true, 1);
 		};
+		
+		if (e.GetKeyCode() == VI_KEY_V) {
+
+			m_Window->ToggleVSync();
+		};
 		////////////////////////////////////////
 
 
 		return false;
 	}
-	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e)
-	{
-		if (true) {
+	bool Application::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
 
+
+		bool IsLocallyControlled = true;
+
+#if IMGUI == 1
+		IsLocallyControlled = !m_ImGuiLayer->m_CapturingMouse;
+#endif
+
+		if (IsLocallyControlled && !OnMouseFirstPressed) {
 			m_Window->SetCursor(CursorState::DISABLED);
+			OnMouseFirstPressed = true;
 		}
 		return false;
 	}
 	bool Application::OnMouseMoved(MouseMovedEvent& e)
 	{
-		if (true) {
+		bool IsLocallyControlled = true;
+
+#if IMGUI == 1
+		IsLocallyControlled = !m_ImGuiLayer->m_CapturingMouse;
+#endif
+
+		if (IsLocallyControlled) {
 
 
 		}
@@ -206,7 +318,14 @@ namespace Vi {
 	}
 	bool Application::OnMouseButtonReleased(MouseButtonReleasedEvent& e)
 	{
-		if (true) {
+		OnMouseFirstPressed = false;
+		bool IsLocallyControlled = true;
+
+#if IMGUI == 1
+		IsLocallyControlled = !m_ImGuiLayer->m_CapturingMouse;
+#endif
+
+		if (IsLocallyControlled) {
 
 			if (Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_LEFT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_RIGHT) || Input::IsMouseButtonPressed(VI_MOUSE_BUTTON_MIDDLE)) {
 				//	m_Window->SetCursor(CursorState::DISABLED); 

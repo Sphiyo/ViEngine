@@ -9,7 +9,7 @@ struct ProfileResult {
 
 class ProfileResults {
 public:
-	static std::vector<ProfileResult>& Get() {	return m_ProfileResults; }
+	static std::vector<ProfileResult>& Get() { return m_ProfileResults; }
 
 	static std::vector<ProfileResult> m_ProfileResults;
 
@@ -21,31 +21,11 @@ template<typename Fn>
 class Timer {
 
 public:
-	Timer(const char* name, Fn&& func) : m_Name(name), m_Func(func), m_Stopped(false) {
+	Timer(const char* name, Fn&& func);
 
-		m_StartTimepoint = std::chrono::high_resolution_clock::now();
+	~Timer();
 
-	}
-
-	~Timer() {
-
-		if (!m_Stopped)
-			Stop();
-	}
-
-	void Stop() {
-
-		auto endTimepoint = std::chrono::high_resolution_clock::now();
-
-		long long start = std::chrono::time_point_cast<std::chrono::milliseconds>(m_StartTimepoint).time_since_epoch().count();
-
-		long long end = std::chrono::time_point_cast<std::chrono::milliseconds>(endTimepoint).time_since_epoch().count();
-
-		m_Stopped = true;
-
-		float duration = (end - start) / 1000.0f;
-		m_Func({ m_Name, duration });
-	}
+	void Stop();
 
 
 private:
@@ -55,4 +35,6 @@ private:
 	Fn m_Func;
 };
 
-#define PROFILE_SCOPE(name) Timer timer##__LINE__(name, [&](ProfileResult profileResult) { ProfileResults::Get().push_back(profileResult); })
+#define PROFILE_SCOPE(name) Timer Customtimer##__LINE__(name, [&](ProfileResult profileResult) { ProfileResults::Get().push_back(profileResult); })
+
+

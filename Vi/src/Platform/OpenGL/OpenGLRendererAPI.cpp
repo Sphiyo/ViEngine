@@ -31,13 +31,17 @@ namespace Vi {
 
 		// Calls OpenGLCommands 
 		glEnable(GL_MULTISAMPLE);
-		glDisable(GL_CULL_FACE);
+		glEnable(GL_CULL_FACE);
+		glFrontFace(GL_CW);
+		glCullFace(GL_BACK);
+
 		glEnable(GL_DEPTH_TEST);
 		glDepthFunc(GL_LEQUAL);
 		glEnable(GL_BLEND);
 		glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
-
-
+		int texture_units = 0;
+		glGetIntegerv(GL_MAX_COMBINED_TEXTURE_IMAGE_UNITS, &texture_units);
+		VI_CORE_INFO("(OGLRendererAPI) MAX_COMBINED_TEXTURE_IMAGE_UNITS = {}", texture_units);
 #ifdef VI_DEBUG
 		glEnable(GL_DEBUG_OUTPUT);
 		glEnable(GL_DEBUG_OUTPUT_SYNCHRONOUS);
@@ -55,6 +59,7 @@ namespace Vi {
 
 	void OpenGLRendererAPI::SetClearColor(const glm::vec4& color) 
 	{
+		VI_CORE_WARN("SetClearColor OGL_R_API");
 		glClearColor(color.r, color.g, color.b, color.a);
 	}
 
@@ -63,9 +68,11 @@ namespace Vi {
 		glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	}
 
-	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray)
+	void OpenGLRendererAPI::DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount)
 	{
-		glDrawElements(GL_TRIANGLES, vertexArray->GetIndexBuffer()->GetCount(), GL_UNSIGNED_INT, nullptr);
+		uint32_t count = indexCount ? indexCount : vertexArray->GetIndexBuffer()->GetCount();
+		glDrawElements(GL_TRIANGLES, indexCount, GL_UNSIGNED_INT, nullptr);
+		RendererAPI::IncrementDrawCalls();
 		glBindTexture(GL_TEXTURE_2D, 0);
 	}
 

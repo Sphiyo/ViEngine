@@ -13,7 +13,7 @@ namespace Vi {
 
 
 
-		VPhysicsLayer::VPhysicsLayer()
+		VPhysicsLayer::VPhysicsLayer() : Layer("PhysicsLayer")
 		{
 
 			VPhysicsWorld::Get().initialize();

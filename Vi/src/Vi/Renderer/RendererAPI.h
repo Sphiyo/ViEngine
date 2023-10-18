@@ -23,13 +23,17 @@ namespace Vi {
 		virtual void SetClearColor(const glm::vec4& color) = 0;
 		virtual void Clear() = 0;
 
-		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray) = 0;
+		virtual void DrawIndexed(const Ref<VertexArray>& vertexArray, uint32_t indexCount = 0) = 0;
 
 		inline static API GetAPI() { return s_API; }
+		inline static uint32_t GetDrawCallsCount() { return s_DrawCalls; }
+		inline static void IncrementDrawCalls() { s_DrawCalls++; }
+		inline static void ClearDrawCallCounts() { s_DrawCalls = 0; }
 		static Scope<RendererAPI> Create();
 
 	private:
 		static API s_API;
+		static uint32_t s_DrawCalls;
 
 	};
 

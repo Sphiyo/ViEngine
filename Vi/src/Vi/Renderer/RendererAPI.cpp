@@ -6,6 +6,7 @@
 namespace Vi {
 
 	RendererAPI::API RendererAPI::s_API = RendererAPI::API::OpenGL;
+	uint32_t RendererAPI::s_DrawCalls = 0;
 
 	Scope<RendererAPI> RendererAPI::Create()
 	{

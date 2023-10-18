@@ -38,12 +38,14 @@ namespace Vi {
 		// Window attributes
 		virtual void SetEventCallback(const EventCallbackFn& callback) = 0;
 		virtual void SetVSync(bool enabled) = 0;
+		virtual bool ToggleVSync() = 0;
 		virtual bool IsVSync() const = 0;
+
 		virtual void* GetNativeWindow() const = 0;
 		static Scope<Window> Create(const WindowProps& props = WindowProps());
 
 		virtual const CursorState& GetCursor() const = 0;
-		virtual void SetCursor(CursorState cursorState, bool center = false) = 0;
+		virtual void SetCursor(CursorState cursorState, bool center = true) = 0;
 		virtual void ToggleCursor() = 0;
 		virtual void SetCursorPosition(double x, double y) = 0;
 		
