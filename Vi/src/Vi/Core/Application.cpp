@@ -3,6 +3,7 @@
 
 #include "Vi/Renderer/Renderer.h"
 
+#include "Vi/Debug/Timer.h"
 
 #include "Vi/Physics/VPhysicsLayer.h"
 
