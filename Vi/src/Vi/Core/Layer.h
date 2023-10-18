@@ -14,6 +14,7 @@ namespace Vi {
 		virtual void OnAttach() {}
 		virtual void OnDetach() {}
 		virtual void OnUpdate(Timestep ts) {}
+		virtual void OnFixedUpdate(Timestep ts) {}
 		virtual void OnImGuiRender() {}
 		virtual void OnEvent(Event& event) {}
 
@@ -21,7 +22,7 @@ namespace Vi {
 
 	protected:
 		std::string m_DebugName;
-		
+
 	};
 
 }
