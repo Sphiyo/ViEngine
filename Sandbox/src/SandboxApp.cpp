@@ -6,16 +6,16 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Sandbox3D.h"
-
+#if 0
 class ExampleLayer : public Vi::Layer {
 
 public:
 	ExampleLayer()
-		: Layer("Example") , m_CameraControllerEX() {
+		: Layer("Example"), m_CameraControllerEX() {
 
 
 
-	
+
 		// VertexArray 
 		m_VertexArray = Vi::VertexArray::Create();
 
@@ -35,25 +35,25 @@ public:
 		m_VertexArray->AddVertexBuffer(vertexBuffer);
 
 		// IndexBuffer 
-		
+
 		uint32_t indices[6] = { 0,1,2,2,3,0 };
 		Vi::Ref<Vi::IndexBuffer> indexBuffer = Vi::IndexBuffer::Create(indices, sizeof(indices) / sizeof(uint32_t));
 		m_VertexArray->SetIndexBuffer(indexBuffer);
-		
+
 		// Square VertexArray 
 		m_CubeVA = Vi::VertexArray::Create();
-		
+
 		// Square VertexBuffer 
 		float squareVertices[5 * 4 * 2] = {
 		-0.5f, -0.5f, -0.5f,  0.0f,  0.0f,
 		-0.5f,  0.5f, -0.5f,  0.0f,  1.0f,
 		 0.5f,  0.5f, -0.5f,  1.0f,  1.0f,
 		 0.5f, -0.5f, -0.5f,  1.0f,  0.0f,
-					  
+
 		-0.5f, -0.5f,  0.5f,  0.0f,  0.0f,
 		-0.5f,  0.5f,  0.5f,  0.0f,  1.0f,
 		 0.5f,  0.5f,  0.5f,  1.0f,  1.0f,
-		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f					  
+		 0.5f, -0.5f,  0.5f,  1.0f,  0.0f
 		};
 		Vi::Ref<Vi::VertexBuffer> squareVB = Vi::VertexBuffer::Create(squareVertices, sizeof(squareVertices));
 		squareVB->SetLayout({
@@ -61,10 +61,10 @@ public:
 			{ Vi::ShaderDataType::Float2, "a_TexCoord" }
 			});
 		m_CubeVA->AddVertexBuffer(squareVB);
-		
+
 		// Square IndexBuffer 
-		
-		uint32_t squareIndices[6*6] = {
+
+		uint32_t squareIndices[6 * 6] = {
 			0,1,2,2,3,0,
 			0,4,7,7,3,0,
 			4,5,6,6,7,4,
@@ -110,7 +110,7 @@ public:
 				color = v_Color;
 			}
 		)";
-	
+
 		// Create And Compile Shader 
 		m_Shader = Vi::Shader::Create("VertexPosColor", vertexSrc, fragmentSrc);
 
@@ -150,11 +150,11 @@ public:
 		)";
 
 		// Create And Compile flat Shader 
-		m_FlatColorShader = Vi::Shader::Create("FlatColorShader",flatColorVertexSrc, flatColorFragmentSrc);
+		m_FlatColorShader = Vi::Shader::Create("FlatColorShader", flatColorVertexSrc, flatColorFragmentSrc);
 
 		// Create And Compile texture Shader 
 		auto textureShader = m_ShaderLibrary.Load("assets/shaders/Texture.glsl");
-		
+
 		//Construct And Buffer Texture To Memory
 		m_TextureEX = Vi::Texture2D::Create("assets/textures/Cat03.jpg", 0);
 		m_TransparentTextureEX = Vi::Texture2D::Create("assets/textures/RGBA.png", 0);
@@ -162,17 +162,17 @@ public:
 		// bind texture Shader And Set Uniform
 		textureShader->Bind();
 		textureShader->SetInt("u_Texture", 0);
-	//	Vi::Application::Get().GetWindow().SetResolution(1600, 900);
+		//	Vi::Application::Get().GetWindow().SetResolution(1600, 900);
 
-		
+
 	}
 
-	virtual void OnUpdate(Vi::Timestep ts) override	{
-		
-	
+	virtual void OnUpdate(Vi::Timestep ts) override {
 
-		
-		
+
+
+
+
 
 		ExampleLayer::deltaTime = ts;										//temp
 		m_CameraControllerEX.OnUpdate(ts);
@@ -180,7 +180,7 @@ public:
 		// Set Background Color And Clear It 
 		Vi::RenderCommand::SetClearColor({ 0.1f, 0.1f, 0.1f, 1 });
 		Vi::RenderCommand::Clear();
-			
+
 		Vi::Renderer::BeginScene(m_CameraControllerEX.GetCamera());
 
 		//Vi::MaterialRef material = new Vi::Material(m_FlatColorShader);        				// todo 
@@ -196,70 +196,70 @@ public:
 
 
 		const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(20.0f, 0.5f, 1.5f));
-		
+
 		for (int x = 0; x < 5; x++) {
-				
-				const glm::vec3 pos( 1.5f, 1.0f /2.0f + x,- x * 1.5f);
-				const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
-				m_TextureEX->Bind();
-				Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
-			
+
+			const glm::vec3 pos(1.5f, 1.0f / 2.0f + x, -x * 1.5f);
+			const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
+			m_TextureEX->Bind();
+			Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
+
 		}
-	 
-	//	Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);									// todo 
-	//	Vi::Renderer::Submit(mi, m_CubeVA, transform);												// todo  
+
+		//	Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);									// todo 
+		//	Vi::Renderer::Submit(mi, m_CubeVA, transform);												// todo  
 		auto textureShader = m_ShaderLibrary.Get("Texture");
-	
+
 		// Draw Cube With Texture 
 		m_TextureEX->Bind();
 		Vi::Renderer::Submit(textureShader, m_CubeVA);
-		
+
 		// Draw Cube With Alpha Blend Texture 
 		m_TransparentTextureEX->Bind();
 		Vi::Renderer::Submit(textureShader, m_CubeVA);
-	
+
 		{
 			const glm::mat4 scale = glm::scale(glm::mat4(1.0f), glm::vec3(1000.0f, 0.0f, 1000.0f));
-			
+
 			const glm::vec3 pos(15.f, 0.0f, 15.f);
 
 			const glm::mat4 transform = glm::translate(glm::mat4(1.0f), pos) * scale;
 
 			m_FlatColorShader->Bind();
 			m_FlatColorShader->SetFloat4("u_Color", m_GroundColorEX);
-			
-		//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
-		//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColorEX);
+
+			//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->Bind();
+			//	std::dynamic_pointer_cast<Vi::OpenGLShader>(m_FlatColorShader)->UploadUniformFloat4("u_Color", m_GroundColorEX);
 			Vi::Renderer::Submit(m_FlatColorShader, m_CubeVA, transform);
 		}
-		
-		
+
+
 		Vi::Renderer::EndScene();
 		fullScreen = Vi::Application::Get().GetWindow().IsFullScreen();		// temp 
 
-		
+
 	}
 
 	virtual void OnImGuiRender() override {
 
 
 
-		
+
 		auto& window = Vi::Application::Get().GetWindow();
 		ImGui::Begin("SettingsEX");														 // temp
 		ImGui::ColorEdit4("ColorShaderEX", (float*)&m_CubeColorEX);
 		ImGui::ColorEdit4("GroundShaderEX", (float*)&m_GroundColorEX);
 		ImGui::End();																   // temp
-		
-		
+
+
 
 
 		ImGui::Begin("StatsEX");														   // temp 
-		ImGui::Text("Fps  %.0fFps", 1/ ExampleLayer::deltaTime);
-		ImGui::Text("ts  %.3fms" , ExampleLayer::deltaTime);
+		ImGui::Text("Fps  %.0fFps", 1 / ExampleLayer::deltaTime);
+		ImGui::Text("ts  %.3fms", ExampleLayer::deltaTime);
 		ImGui::End();
 
-		ImGui::Begin("GraphicsSettingEX");		
+		ImGui::Begin("GraphicsSettingEX");
 		ImGui::Checkbox("VsyncEX", &vSync);
 		window.SetVSync(vSync);
 		bool fullscreen = window.IsFullScreen();
@@ -272,15 +272,15 @@ public:
 				window.SetFullScreen(false);
 			}
 		}
-		const char* items[] = { 
+		const char* items[] = {
 			"800x600","1024x768","1128x634","1152x864","1280x600",
 			"1280x720","1280x768","1280x960","1280x1024","1360x768",
 			"1366x768","1440x900","1600x900","1600x1200","1680x1050",
-			"1760x990","1920x1080","1920x1200", "2560x1440"};
+			"1760x990","1920x1080","1920x1200", "2560x1440" };
 		static const char* current_item = NULL;
 		int temporary = -1;
 		if (ImGui::BeginCombo("##ResolutionEX", current_item))
-		{			
+		{
 			for (int n = 0; n < IM_ARRAYSIZE(items); n++)
 			{
 				bool is_selected = (current_item == items[n]);
@@ -292,8 +292,8 @@ public:
 				if (is_selected)
 				{
 					ImGui::SetItemDefaultFocus();
-					
-					
+
+
 				}
 			}
 			ImGui::EndCombo();
@@ -361,18 +361,18 @@ public:
 			}
 		}
 
-		
-		ImGui::End(); 
-		
+
+		ImGui::End();
+
 	}
 
 	void OnEvent(Vi::Event& e) override {
 
 		m_CameraControllerEX.OnEvent(e);
 
-	
+
 	}
-	
+
 
 private:
 
@@ -408,23 +408,24 @@ private:
 
 };
 float ExampleLayer::deltaTime = 0.016f;
+#endif
 
 class Sandbox : public Vi::Application
 {
 public:
 	Sandbox()
 	{
-	//	PushLayer(new ExampleLayer());
+		//	PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox3D());
 	}
 	~Sandbox()
 	{
-		
+
 	}
 };
 
 
 Vi::Application* Vi::CreateApplication() {
-	
+
 	return new Sandbox();
 }
