@@ -130,6 +130,11 @@ namespace Vi {
 		return m_ViewProjectionMatrix;
 	}
 
+	const glm::mat4& Camera::GetViewMatrix() const
+	{
+		return m_ViewMatrix;
+	}
+
 	void Camera::RecalculateViewMatrix() {
 		VI_PROFILE_FUNCTION();
 
