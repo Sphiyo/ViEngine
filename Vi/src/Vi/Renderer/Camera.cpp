@@ -15,13 +15,13 @@ namespace Vi {
 		m_WorldRightVector = glm::vec3(1.0f, 0.0f, 0.0f);
 		m_WorldUpVector = glm::vec3(0.0f, 1.0f, 0.0f);
 
-		
+
 		m_WorldLocation = worldLocation;
 		m_RightVector = m_WorldRightVector;
 		m_UpVector = m_WorldUpVector;
 
 		SetWorldRotation(rotation);
-		
+
 
 		m_FOV = 90.0f;
 		CheckFOV();
@@ -30,7 +30,7 @@ namespace Vi {
 	}
 
 	void Camera::SetProjection(float fovy, float aspectratio, float nearPlane, float farPlane) {
-		
+
 		VI_PROFILE_FUNCTION();
 
 		m_FOV = fovy;
@@ -40,7 +40,7 @@ namespace Vi {
 
 	}
 
-	
+
 	void Camera::SetWorldLocation(float x, float y, float z)
 	{
 		m_WorldLocation = glm::vec3(x, y, z);
@@ -128,6 +128,11 @@ namespace Vi {
 
 	const glm::mat4& Camera::GetViewProjectionMatrix() const {
 		return m_ViewProjectionMatrix;
+	}
+
+	const glm::mat4& Camera::GetViewMatrix() const
+	{
+		return m_ViewMatrix;
 	}
 
 	void Camera::RecalculateViewMatrix() {
