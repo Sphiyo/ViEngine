@@ -50,14 +50,14 @@ namespace Vi {
 
 			float XOffset = Vi::Input::GetMouseX() - LastLeftMouseXPos;
 			float YOffset = LastLeftMouseYPos - Vi::Input::GetMouseY();
-			
-			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivityMove, 0.0f, 0.0f);					
+
+			locationOffsetWorld += glm::vec3(YOffset * m_CameraTranslationSpeed * m_MouseYSensitivityMove, 0.0f, 0.0f);
 			rotationOffsetLocal += glm::vec3(XOffset * m_MouseXSensitivityLook * m_CameraRotationSpeed, 0.0f, 0.0f);
 
-			LastLeftMouseXPos  = Vi::Input::GetMouseX();
-			LastLeftMouseYPos  = Vi::Input::GetMouseY();
+			LastLeftMouseXPos = Vi::Input::GetMouseX();
+			LastLeftMouseYPos = Vi::Input::GetMouseY();
 		}
-		if (!Application::Get().GetImGuiLayer()->m_CapturingKeyboard) {
+		if (true) {
 
 			if (Input::IsKeyPressed(VI_KEY_W) || Input::IsKeyPressed(VI_KEY_UP)) {
 				locationOffsetLocal += glm::vec3(1.0f, 0.0f, 0.0f) * glm::vec3(m_CameraTranslationSpeed * m_BoostFactor * ts);
@@ -107,10 +107,10 @@ namespace Vi {
 	bool CameraController::OnKeyPressed(KeyPressedEvent& e) {
 		VI_PROFILE_FUNCTION();
 
-		if (!Application::Get().GetImGuiLayer()->m_CapturingKeyboard) {
+		if (true) {
 
 			if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-				m_BoostFactor = 3;
+				m_BoostFactor = 300;
 			}
 		}
 		return false;
@@ -120,13 +120,13 @@ namespace Vi {
 		VI_PROFILE_FUNCTION();
 
 		if (e.GetKeyCode() == VI_KEY_LEFT_SHIFT) {
-			m_BoostFactor = 1;
+			m_BoostFactor = 100;
 		}
 		return false;
 	}
 
 	bool CameraController::OnMouseScrolled(MouseScrolledEvent& e) {
-		if (!Application::Get().GetImGuiLayer()->m_CapturingMouse) {
+		if (true) {
 
 			if (!m_MouseRightButtonPressed) {
 				m_Camera.AddLocalOffset(e.GetYOffset() * m_MouseScrollSensitivityMove);
@@ -141,7 +141,7 @@ namespace Vi {
 
 	bool CameraController::OnMouseButtonPressed(MouseButtonPressedEvent& e) {
 			
-		if (!Application::Get().GetImGuiLayer()->m_CapturingMouse) {
+		if (true) {
 
 			if (e.GetMouseButton() == VI_MOUSE_BUTTON_MIDDLE) {
 				LastMiddleMouseXPos = Vi::Input::GetMousePosition().first;
@@ -190,7 +190,7 @@ namespace Vi {
 
 	bool CameraController::OnMouseMoved(MouseMovedEvent& e)
 	{
-		if (!Application::Get().GetImGuiLayer()->m_CapturingMouse) {
+		if (true) {
 			// Do logic
 		}
 		return false;

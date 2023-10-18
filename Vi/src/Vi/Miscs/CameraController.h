@@ -36,20 +36,20 @@ namespace Vi {
 		float m_MouseXSensitivityLook = 1.0f, m_MouseYSensitivityLook = 1.0f;
 		float m_MouseXSensitivityMove = 0.01f, m_MouseYSensitivityMove = 0.01f;
 		float m_MouseScrollSensitivityMove = 0.05f, m_MouseScrollSensitivityFov = 5.0f;
-		
-		int m_BoostFactor = 1;
+
+		int m_BoostFactor = 100;
 
 		float m_FOVCache = 90.0;
 
 		float LastLeftMouseXPos = 0.0f;
 		float LastLeftMouseYPos = 0.0f;
-		
+
 		float LastRightMouseXPos = 0.0f;
 		float LastRightMouseYPos = 0.0f;
-		
+
 		float LastMiddleMouseXPos = 0.0f;
 		float LastMiddleMouseYPos = 0.0f;
-		
+
 		bool m_MouseRightButtonPressed = false;
 		bool m_MouseLeftButtonPressed = false;
 		bool m_MouseMiddleButtonPressed = false;
