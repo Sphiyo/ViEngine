@@ -125,7 +125,7 @@ namespace Vi {
 }
 
 #define VI_PROFILE 0
-#if VI_PROFILE
+#if VI_PROFILE == 1
     #define VI_PROFILE_BEGIN_SESSION(name, filepath) ::Vi::Instrumentor::Get().BeginSession(name, filepath)
     #define VI_PROFILE_END_SESSION() ::Vi::Instrumentor::Get().EndSession()
     #define VI_PROFILE_SCOPE(name) ::Vi::InstrumentationTimer timer##__LINE__(name);
