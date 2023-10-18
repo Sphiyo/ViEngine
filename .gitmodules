@@ -12,4 +12,4 @@
 	url = https://github.com/gnwarel123/glm
 [submodule "Vi/vendor/PhysX"]
 	path = Vi/vendor/PhysX
-	url = https://github.com/Sphiyo/PhysXLinking.git
+	url = https://github.com/Sphiyo/PhysXLinking
