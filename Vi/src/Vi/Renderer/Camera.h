@@ -63,7 +63,6 @@ namespace Vi {
 		// Matrix s 
 		const glm::mat4& GetProjectionMatrix() const;
 		const glm::mat4& GetViewProjectionMatrix() const;
-		const glm::mat4& GetViewMatrix() const;
 		
 	private:
 		void RecalculateViewMatrix();

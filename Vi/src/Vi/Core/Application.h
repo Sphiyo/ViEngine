@@ -6,7 +6,6 @@
 #include "Vi/Events/ApplicationEvent.h"
 #include "Vi/Core/Timestep.h"
 #include "Vi/ImGui/ImGuiLayer.h"
-#include "Vi/Physics/VPhysicsLayer.h"
 
 int main(int argc, char** argv);
 
@@ -25,7 +24,6 @@ namespace Vi {
 		inline static Application& Get() { return *s_Instance; }
 		inline void CloseWindow() { m_Running = false; }
 		inline ImGuiLayer* GetImGuiLayer()const { return m_ImGuiLayer; }
-		inline Physics::VPhysicsLayer* GetPhysicsLayer()const { return m_PhysicsLayer; }
 	private:
 
 		void Run();
@@ -43,7 +41,6 @@ namespace Vi {
 
 		std::unique_ptr<Window> m_Window;
 		ImGuiLayer* m_ImGuiLayer;
-		Physics::VPhysicsLayer* m_PhysicsLayer;
 		bool m_Running = true, m_Minimized = false;
 		LayerStack m_LayerStack;
 		float m_LastFrameTime = 0.0f;

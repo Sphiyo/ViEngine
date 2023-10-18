@@ -6,7 +6,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 
 #include "Sandbox3D.h"
-#if 0
+
 class ExampleLayer : public Vi::Layer {
 
 public:
@@ -408,7 +408,6 @@ private:
 
 };
 float ExampleLayer::deltaTime = 0.016f;
-#endif
 
 class Sandbox : public Vi::Application
 {

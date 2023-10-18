@@ -1,12 +1,11 @@
 #pragma once
-#include "Vi/Core/Core.h" 
+#include "Vi/Core/Core.h"
 
 #ifdef VI_PLATFORM_WINDOWS
 
 	extern Vi::Application* Vi::CreateApplication();
 
 	int main(int argc, char** argv) {
-		 
 
 		Vi::Log::Init();
 		

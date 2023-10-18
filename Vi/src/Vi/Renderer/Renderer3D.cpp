@@ -5,11 +5,8 @@
 #include "Shader.h"
 #include "RenderCommand.h"
 
-#include <glm/glm.hpp>
-#include <glm/gtc/quaternion.hpp>
+
 #include <glm/gtc/matrix_transform.hpp>
-#include <glm/gtc/type_ptr.hpp> 
-#include <glm/gtx/quaternion.hpp>
 
 namespace Vi {
 
@@ -18,7 +15,6 @@ namespace Vi {
 		Ref<VertexArray> CubeVertexArray;
 		Ref<VertexArray> PlaneVertexArray; 
 		Ref<Shader> TextureShader;
-		Ref<Shader> SppotlightShader;
 		Ref<Texture2D> WhiteTexture;
 	};
 
@@ -44,48 +40,47 @@ namespace Vi {
 		//};
 		
 		// Square VertexBuffer 
-		float cubeVertices[ 8 * 4 * 6] = {
-			// Front face
-			-0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f,  0.5f,  0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
+		float cubeVertices[ 5 * 4 * 6 ] = {
+			// face 1
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 
-			// Back face
-			-0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,  0.0f, 0.0f, -1.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f, 1.0f, 1.0f,
-			-0.5f,  0.5f, -0.5f,  0.0f, 0.0f, -1.0f, 0.0f, 1.0f,
+			// face 2
+		-0.5f,  0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f,  0.5f, -0.5f,  1.0f, 0.0f,
 
-			// Right face
-			 0.5f, -0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			 0.5f, -0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			 0.5f,  0.5f, -0.5f,  1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			 0.5f,  0.5f,  0.5f,  1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			// face 3
+		-0.5f, -0.5f,  0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f,  0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
 
-			 // Left face
-			 -0.5f, -0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
-			 -0.5f, -0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-			 -0.5f,  0.5f, -0.5f, -1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-			 -0.5f,  0.5f,  0.5f, -1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
+			// face 4
+		 0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		 0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		 0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
 
-			 // Top face
-			 -0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			  0.5f,  0.5f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-			  0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 1.0f,
-			 -0.5f,  0.5f, -0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
+			// face 5
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f, -0.5f,  0.5f,  0.0f, 1.0f,
+		 0.5f, -0.5f,  0.5f,  1.0f, 1.0f,
+		 0.5f, -0.5f, -0.5f,  1.0f, 0.0f,
 
-			 // Bottom face
-			 -0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f, 0.0f, 0.0f,
-			  0.5f, -0.5f,  0.5f,  0.0f, -1.0f, 0.0f, 1.0f, 0.0f,
-			  0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f, 1.0f, 1.0f,
-			 -0.5f, -0.5f, -0.5f,  0.0f, -1.0f, 0.0f, 0.0f, 1.0f,
+			// face 6
+		-0.5f, -0.5f, -0.5f,  0.0f, 0.0f,
+		-0.5f,  0.5f, -0.5f,  0.0f, 1.0f,
+		-0.5f,  0.5f,  0.5f,  1.0f, 1.0f,
+		-0.5f, -0.5f,  0.5f,  1.0f, 0.0f,
+
 		};
-
 		Ref<VertexBuffer> cubeVB = VertexBuffer::Create(cubeVertices, sizeof(cubeVertices));
 		cubeVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 		});
 		s_Data->CubeVertexArray->AddVertexBuffer(cubeVB);
@@ -110,19 +105,16 @@ namespace Vi {
 		s_Data->PlaneVertexArray = VertexArray::Create();
 
 		// Square VertexBuffer 
-		float planeVertices[8 * 4] = {
-			
-			 // Top face
-			-0.5f,  0.0f, -0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 1.0f,
-			-0.5f,  0.0f,  0.5f,  0.0f, 1.0f, 0.0f, 0.0f, 0.0f,
-			 0.5f,  0.0f,  0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 0.0f,
-			 0.5f,  0.0f, -0.5f,  0.0f, 1.0f, 0.0f, 1.0f, 1.0f
+		float planeVertices[5 * 4] = {
+			-0.5f, 0.0f, -0.5f, 0.0f, 0.0f,
+			-0.5f, 0.0f,  0.5f, 0.0f, 1.0f,
+			 0.5f, 0.0f,  0.5f,	1.0f, 1.0f,
+			 0.5f, 0.0f, -0.5f,	1.0f, 0.0f
 		};
 
 		Ref<VertexBuffer> planeVB = VertexBuffer::Create(planeVertices, sizeof(planeVertices));
 		planeVB->SetLayout({
 			{ ShaderDataType::Float3, "a_Position" },
-			{ ShaderDataType::Float3, "a_Normal" },
 			{ ShaderDataType::Float2, "a_TexCoord" }
 			});
 		s_Data->PlaneVertexArray->AddVertexBuffer(planeVB);
@@ -141,11 +133,7 @@ namespace Vi {
 		s_Data->TextureShader = Shader::Create("assets/shaders/Texture.glsl");
 		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetInt("u_Texture", 0);
-		s_Data->TextureShader->Unbind();
-		s_Data->SppotlightShader = Shader::Create("assets/shaders/SpotLightShader.glsl");
-		s_Data->SppotlightShader->Bind();
-		s_Data->SppotlightShader->SetInt("u_Texture", 0);
-		s_Data->SppotlightShader->Unbind();
+		 
 				
 	}
 	void Renderer3D::Shutdown() {
@@ -158,109 +146,40 @@ namespace Vi {
 		VI_PROFILE_FUNCTION();
 
 		s_Data->TextureShader->Bind();
-		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix()); 		
-		s_Data->TextureShader->SetMat4("projection", camera.GetProjectionMatrix());
-		s_Data->TextureShader->SetMat4("view", camera.GetViewMatrix());  // for spotlight
-		s_Data->TextureShader->Unbind();
+		s_Data->TextureShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
 
-		s_Data->SppotlightShader->Bind();
-		s_Data->SppotlightShader->SetMat4("u_ViewProjection", camera.GetViewProjectionMatrix());
-		s_Data->SppotlightShader->SetMat4("projection", camera.GetProjectionMatrix());
-		s_Data->SppotlightShader->SetMat4("view", camera.GetViewMatrix());  // for spotlight
-		s_Data->SppotlightShader->Unbind();
 	}
 
 	void Renderer3D::EndScene() {
 		VI_PROFILE_FUNCTION();
 
 	}
-	void Renderer3D::DrawCube(const glm::vec3& camPosition, const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
+	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
 		VI_PROFILE_FUNCTION();
 
-		s_Data->SppotlightShader->Bind();
-		s_Data->SppotlightShader->SetFloat4("u_Color", color);
-		s_Data->SppotlightShader->SetFloat("u_TilingFactor", tilingFactor);
-
-		s_Data->SppotlightShader->SetFloat3("cameraPos", camPosition);			// test
-		s_Data->SppotlightShader->SetFloat("maxDistance", 10.0f);			// test
+		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		s_Data->WhiteTexture->Bind();
 
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) * 
+		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
 							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.x), { 1.0f,0.0f,0.0f }) *
 							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.y), { 0.0f,1.0f,0.0f }) *
 							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
 							  glm::scale(glm::mat4(1.0f), scale);
 
-		
-		s_Data->SppotlightShader->SetMat4("model", transform);
+
+		s_Data->TextureShader->SetMat4("u_Transform", transform);
 
 		s_Data->CubeVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->CubeVertexArray);
-		s_Data->SppotlightShader->Unbind();
-	}
-	void Renderer3D::DrawCube(const glm::vec3& camPosition, const glm::vec3& camDirection, const glm::vec3& position, const glm::quat& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
-		VI_PROFILE_FUNCTION();
-
-		s_Data->SppotlightShader->Bind();
-
-		glm::mat4 transform = glm::translate(glm::mat4(1.0f), position) *
-			glm::toMat4(rotation) *
-			glm::scale(glm::mat4(1.0f), scale);
-
-		s_Data->SppotlightShader->SetFloat4("u_Color", color);
-		s_Data->SppotlightShader->SetFloat("u_TilingFactor", tilingFactor);
-		// local vecs
-		glm::vec3 m_ForwardVector;
-		glm::vec3 m_RightVector;
-		glm::vec3 m_UpVector;
-
-		auto rot = glm::eulerAngles(rotation);
-		m_ForwardVector.x = cos(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-		m_ForwardVector.y = sin(glm::radians(rot.x));
-		m_ForwardVector.z = sin(glm::radians(rot.y)) * cos(glm::radians(rot.x));
-
-		m_ForwardVector = glm::normalize(m_ForwardVector);
-		m_RightVector = glm::normalize(glm::cross(m_ForwardVector, glm::vec3(0.0f, 1.0f, 0.0f)));
-
-		m_UpVector = glm::normalize(glm::cross(m_RightVector, m_ForwardVector)); 
-		auto posLight = position;
-		posLight.y -= 1.0f;
-		auto dirlight = glm::vec3(0.5f, -1.0f, 0.0f);
-		glm::normalize(dirlight);
-		s_Data->SppotlightShader->SetFloat3("lightPos", posLight);				// test
-		s_Data->SppotlightShader->SetFloat3("lightDir", dirlight);				// test
-		s_Data->SppotlightShader->SetFloat("cosInnerCone", glm::cos(glm::radians(30.0f)));	// test
-		s_Data->SppotlightShader->SetFloat("cosOuterCone", glm::cos(glm::radians(45.0f)));	// test
-		s_Data->SppotlightShader->SetFloat("maxDistance", 1000.0f);					// test
-		s_Data->SppotlightShader->SetFloat("innerConstantAttenuation", 1.0f);					// test
-		s_Data->SppotlightShader->SetFloat("outerConstantAttenuation", 1.0f);					// test
-		s_Data->SppotlightShader->SetFloat("innerLinearAttenuation", 0.1f);					// test
-		s_Data->SppotlightShader->SetFloat("outerLinearAttenuation", 0.1f);					// test
-		s_Data->SppotlightShader->SetFloat("innerQuadraticAttenuation", 0.031f);					// test
-		s_Data->SppotlightShader->SetFloat("outerQuadraticAttenuation", 0.031f);					// test
-		s_Data->SppotlightShader->SetFloat("shininess", 300.0f);					// test
-		s_Data->SppotlightShader->SetFloat3("lightColor", { 1.0f, 1.0f, 1.0f });
-	//	s_Data->SppotlightShader->SetFloat3("lightColor", color.xyz);					// test
-		s_Data->SppotlightShader->SetFloat3("specularColor", {0.2f, 0.0f, 1.0f});					// test
-
-		s_Data->WhiteTexture->Bind();
-	
-	
-		
-		//s_Data->TextureShader->SetMat4("u_Transform", transform);
-		s_Data->SppotlightShader->SetMat4("model", transform);
-
-		s_Data->CubeVertexArray->Bind();
-		RenderCommand::DrawIndexed(s_Data->CubeVertexArray);
-		s_Data->SppotlightShader->Unbind();
 	}
 
 	void Renderer3D::DrawCube(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& color, float tilingFactor) {
 		VI_PROFILE_FUNCTION();
 
-		s_Data->SppotlightShader->SetFloat4("u_Color", color);
-		s_Data->SppotlightShader->SetFloat("u_TilingFactor", tilingFactor);
+		s_Data->TextureShader->SetFloat4("u_Color", color);
+		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
 		texture->Bind();
 
@@ -270,9 +189,8 @@ namespace Vi {
 							  glm::rotate(glm::mat4(1.0f), glm::radians(rotation.z), { 0.0f,0.0f,1.0f }) *
 							  glm::scale(glm::mat4(1.0f), scale);
 
-		s_Data->SppotlightShader->SetMat4("u_Transform", transform);
+		s_Data->TextureShader->SetMat4("u_Transform", transform);
 
-		s_Data->SppotlightShader->SetMat4("model", transform);
 
 		s_Data->CubeVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->CubeVertexArray);
@@ -282,7 +200,6 @@ namespace Vi {
 	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const glm::vec4& color, float tilingFactor) {
 		VI_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetFloat4("u_Color", color);
 		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 
@@ -296,17 +213,14 @@ namespace Vi {
 
 		s_Data->TextureShader->SetMat4("u_Transform", transform);
 
-		//s_Data->TextureShader->SetMat4("model", transform);
 
 		s_Data->PlaneVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->PlaneVertexArray);
-		s_Data->TextureShader->Unbind();
 	}
 
 	void Renderer3D::DrawPlane(const glm::vec3& position, const glm::vec3& rotation, const glm::vec3& scale, const Ref<Texture2D>& texture, const glm::vec4& tint, float tilingFactor) {
 		VI_PROFILE_FUNCTION();
 
-		s_Data->TextureShader->Bind();
 		s_Data->TextureShader->SetFloat4("u_Color", tint);
 		s_Data->TextureShader->SetFloat("u_TilingFactor", tilingFactor);
 		texture->Bind();
@@ -322,7 +236,7 @@ namespace Vi {
 
 		s_Data->PlaneVertexArray->Bind();
 		RenderCommand::DrawIndexed(s_Data->PlaneVertexArray);
-		s_Data->TextureShader->Unbind();
+					
 	}
 
 }

@@ -37,7 +37,7 @@ namespace Vi {
 		float m_MouseXSensitivityMove = 0.01f, m_MouseYSensitivityMove = 0.01f;
 		float m_MouseScrollSensitivityMove = 0.05f, m_MouseScrollSensitivityFov = 5.0f;
 		
-		int m_BoostFactor = 100;
+		int m_BoostFactor = 1;
 
 		float m_FOVCache = 90.0;
 
