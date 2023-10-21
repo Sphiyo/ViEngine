@@ -92,6 +92,8 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 	auto dir = Vi::CameraController3D::Get().GetCamera().GetForwardVector();
 	glm::quat quatstat = glm::quat();
 	VI_INFO("RIGIDDYNAMIC count {}", Vi::Physics::VPhysicsRigidActor::GetRigidDynamic().size());
+
+	int i = 0;
 	for (auto& actor : Vi::Physics::VPhysicsRigidActor::GetRigidDynamic()) {
 
 		auto tr = actor->getGlobalPose();
@@ -112,9 +114,35 @@ void Sandbox3D::OnUpdate(Vi::Timestep ts) {
 		quat.w = openglQuaternion.w;
 
 
-		Vi::Renderer3D::DrawCube(Vi::CameraController3D::Get().GetCamera().GetWorldLocation(), dir, { tr.p.x , tr.p.y, tr.p.z }, quat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
+		Vi::Renderer3D::DrawCube({ tr.p.x , tr.p.y, tr.p.z }, quat, { 2.0f,2.0f,2.0f }, { (float)i/3.0f,0.0f,1.0f,1.0f });
+		
+		i++;
 	}
-	Vi::Renderer3D::DrawCube(Vi::CameraController3D::Get().GetCamera().GetWorldLocation(), dir, { 0.0f , 10.0f, 0.0f }, quatstat, { 2.0f,2.0f,2.0f }, { 0.0f,0.0f,1.0f,1.0f });
+	for (auto& actor : Vi::Physics::VPhysicsRigidActor::GetRigidDynamic()) {
+
+		auto tr = actor->getGlobalPose();
+
+		physx::PxQuat rot = tr.q;
+
+		// Convert the PhysX quaternion to an OpenGL quaternion
+		glm::quat openglQuaternion = convertPhysXToOpenGLQuaternion(rot);
+
+		// Convert the OpenGL quaternion to Euler angles (in degrees)
+		glm::vec3 eulerAngles = quaternionToEulerAngles(openglQuaternion);
+
+
+		glm::quat quat;
+		quat.x = openglQuaternion.x;
+		quat.y = openglQuaternion.y;
+		quat.z = openglQuaternion.z;
+		quat.w = openglQuaternion.w;
+
+
+		Vi::Renderer3D::DrawPlane({ 0.0f,0.0f,0.0f }, glm::quat(), {100.0f,100.0f,100.0f}, {1.0f,0.0f,1.0f,1.0f});
+
+		
+	}
+	//Vi::Renderer3D::DrawCube(Vi::CameraController3D::Get().GetCamera().GetWorldLocation(), dir, { 0.0f , 10.0f, 0.0f }, quatstat, { 2.0f,2.0f,2.0f }, {1.0f,0.0f,1.0f,1.0f });
 
 	Vi::Renderer3D::EndScene();
 
@@ -172,7 +200,7 @@ void Sandbox3D::OnImGuiRender() {
 	}
 
 	ImGui::Begin("Stats");														   // temp 
-	ImGui::Text("Fps  %.0fFps", 1 / Sandbox3D::deltaTime);
+	ImGui::Text("Fps  %.0fFps", 1000 / Sandbox3D::deltaTime);
 	ImGui::Text("ts  %.3fms", Sandbox3D::deltaTime);
 	ImGui::End();
 

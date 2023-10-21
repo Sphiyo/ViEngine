@@ -25,6 +25,9 @@
     <Filter Include="src\Vi\Core">
       <UniqueIdentifier>{B3D470E1-1F8A-E9D6-A87E-E3AD1433E0DA}</UniqueIdentifier>
     </Filter>
+    <Filter Include="src\Vi\Core\Experimental">
+      <UniqueIdentifier>{908EE123-7CB3-30A4-A5FE-153491822FC2}</UniqueIdentifier>
+    </Filter>
     <Filter Include="src\Vi\Debug">
       <UniqueIdentifier>{31C6970F-1D29-27B4-C6AE-5F6AB2F0F236}</UniqueIdentifier>
     </Filter>
@@ -33,6 +36,9 @@
     </Filter>
     <Filter Include="src\Vi\ImGui">
       <UniqueIdentifier>{E530F60F-D193-85B4-7A19-BE6A665B5137}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src\Vi\Math">
+      <UniqueIdentifier>{341576E1-A0CA-EED6-29BF-E8AD9573E5DA}</UniqueIdentifier>
     </Filter>
     <Filter Include="src\Vi\Miscs">
       <UniqueIdentifier>{491A3D10-357D-CCB4-DE02-056BCA449837}</UniqueIdentifier>
@@ -492,6 +498,9 @@
     <ClInclude Include="src\Vi\Core\EntryPoint.h">
       <Filter>src\Vi\Core</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Core\Experimental\VThread.h">
+      <Filter>src\Vi\Core\Experimental</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Core\Input.h">
       <Filter>src\Vi\Core</Filter>
     </ClInclude>
@@ -537,6 +546,12 @@
     <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h">
       <Filter>src\Vi\ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Math\VUtils.h">
+      <Filter>src\Vi\Math</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\Miscs\CameraController2D.h">
+      <Filter>src\Vi\Miscs</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Miscs\CameraController3D.h">
       <Filter>src\Vi\Miscs</Filter>
     </ClInclude>
@@ -564,6 +579,9 @@
     <ClInclude Include="src\Vi\Renderer\Buffer.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\Camera2D.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Camera3D.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
@@ -582,6 +600,9 @@
     <ClInclude Include="src\Vi\Renderer\RendererAPI.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
+    <ClInclude Include="src\Vi\Renderer\RendererUI.h">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
     <ClInclude Include="src\Vi\Renderer\Shader.h">
       <Filter>src\Vi\Renderer</Filter>
     </ClInclude>
@@ -590,6 +611,9 @@
     </ClInclude>
     <ClInclude Include="src\Vi\Renderer\VertexArray.h">
       <Filter>src\Vi\Renderer</Filter>
+    </ClInclude>
+    <ClInclude Include="src\Vi\ViTypes.h">
+      <Filter>src\Vi</Filter>
     </ClInclude>
     <ClInclude Include="src\Vipch.h">
       <Filter>src</Filter>
@@ -4872,12 +4896,6 @@
     <ClInclude Include="vendor\stb_image\stb_image.h">
       <Filter>vendor\stb_image</Filter>
     </ClInclude>
-    <ClInclude Include="src\Vi\Core\Experimental\VThread.h" />
-    <ClInclude Include="src\Vi\Math\VUtils.h" />
-    <ClInclude Include="src\Vi\ViTypes.h" />
-    <ClInclude Include="src\Vi\Miscs\CameraController2D.h" />
-    <ClInclude Include="src\Vi\Renderer\Camera2D.h" />
-    <ClInclude Include="src\Vi\Renderer\RendererUI.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\Platform\D3D12\D3D12Buffer.cpp">
@@ -4919,6 +4937,9 @@
     <ClCompile Include="src\Vi\Core\Application.cpp">
       <Filter>src\Vi\Core</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Core\Experimental\VThread.cpp">
+      <Filter>src\Vi\Core\Experimental</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vi\Core\Input.cpp">
       <Filter>src\Vi\Core</Filter>
     </ClCompile>
@@ -4946,6 +4967,9 @@
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp">
       <Filter>src\Vi\ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Miscs\CameraController2D.cpp">
+      <Filter>src\Vi\Miscs</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vi\Miscs\CameraController3D.cpp">
       <Filter>src\Vi\Miscs</Filter>
     </ClCompile>
@@ -4962,6 +4986,9 @@
       <Filter>src\Vi\Physics</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\Camera2D.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Camera3D.cpp">
@@ -4982,6 +5009,9 @@
     <ClCompile Include="src\Vi\Renderer\RendererAPI.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
+    <ClCompile Include="src\Vi\Renderer\RendererUI.cpp">
+      <Filter>src\Vi\Renderer</Filter>
+    </ClCompile>
     <ClCompile Include="src\Vi\Renderer\Shader.cpp">
       <Filter>src\Vi\Renderer</Filter>
     </ClCompile>
@@ -4997,12 +5027,5 @@
     <ClCompile Include="vendor\stb_image\stb_image.cpp">
       <Filter>vendor\stb_image</Filter>
     </ClCompile>
-    <ClCompile Include="src\Vi\Core\Experimental\VThread.cpp" />
-    <ClCompile Include="src\Vi\Miscs\CameraController2D.cpp" />
-    <ClCompile Include="src\Vi\Renderer\Camera2D.cpp" />
-    <ClCompile Include="src\Vi\Renderer\RendererUI.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\ToDo.txt" />
   </ItemGroup>
 </Project>

@@ -181,8 +181,8 @@
     <ClInclude Include="src\Vi\Events\MouseEvent.h" />
     <ClInclude Include="src\Vi\ImGui\ImGuiLayer.h" />
     <ClInclude Include="src\Vi\Math\VUtils.h" />
-    <ClInclude Include="src\Vi\Miscs\CameraController3D.h" />
     <ClInclude Include="src\Vi\Miscs\CameraController2D.h" />
+    <ClInclude Include="src\Vi\Miscs\CameraController3D.h" />
     <ClInclude Include="src\Vi\Physics\VPhysicsActor.h" />
     <ClInclude Include="src\Vi\Physics\VPhysicsLayer.h" />
     <ClInclude Include="src\Vi\Physics\VPhysicsMaterial.h" />
@@ -191,8 +191,8 @@
     <ClInclude Include="src\Vi\Physics\VPhysicsUtils.h" />
     <ClInclude Include="src\Vi\Physics\VPhysicsWorld.h" />
     <ClInclude Include="src\Vi\Renderer\Buffer.h" />
-    <ClInclude Include="src\Vi\Renderer\Camera3D.h" />
     <ClInclude Include="src\Vi\Renderer\Camera2D.h" />
+    <ClInclude Include="src\Vi\Renderer\Camera3D.h" />
     <ClInclude Include="src\Vi\Renderer\GraphicsContext.h" />
     <ClInclude Include="src\Vi\Renderer\RenderCommand.h" />
     <ClInclude Include="src\Vi\Renderer\Renderer.h" />
@@ -202,8 +202,8 @@
     <ClInclude Include="src\Vi\Renderer\Shader.h" />
     <ClInclude Include="src\Vi\Renderer\Texture.h" />
     <ClInclude Include="src\Vi\Renderer\VertexArray.h" />
-    <ClInclude Include="src\Vipch.h" />
     <ClInclude Include="src\Vi\ViTypes.h" />
+    <ClInclude Include="src\Vipch.h" />
     <ClInclude Include="vendor\PhysX\PhysX\include\PxActor.h" />
     <ClInclude Include="vendor\PhysX\PhysX\include\PxActorData.h" />
     <ClInclude Include="vendor\PhysX\PhysX\include\PxAggregate.h" />
@@ -1655,15 +1655,15 @@
     <ClCompile Include="src\Vi\Debug\Timer.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiBuild.cpp" />
     <ClCompile Include="src\Vi\ImGui\ImGuiLayer.cpp" />
-    <ClCompile Include="src\Vi\Miscs\CameraController3D.cpp" />
     <ClCompile Include="src\Vi\Miscs\CameraController2D.cpp" />
+    <ClCompile Include="src\Vi\Miscs\CameraController3D.cpp" />
     <ClCompile Include="src\Vi\Physics\VPhysicsActor.cpp" />
     <ClCompile Include="src\Vi\Physics\VPhysicsLayer.cpp" />
     <ClCompile Include="src\Vi\Physics\VPhysicsScene.cpp" />
     <ClCompile Include="src\Vi\Physics\VPhysicsWorld.cpp" />
     <ClCompile Include="src\Vi\Renderer\Buffer.cpp" />
-    <ClCompile Include="src\Vi\Renderer\Camera3D.cpp" />
     <ClCompile Include="src\Vi\Renderer\Camera2D.cpp" />
+    <ClCompile Include="src\Vi\Renderer\Camera3D.cpp" />
     <ClCompile Include="src\Vi\Renderer\GraphicsContext.cpp" />
     <ClCompile Include="src\Vi\Renderer\RenderCommand.cpp" />
     <ClCompile Include="src\Vi\Renderer\Renderer.cpp" />
@@ -1688,9 +1688,6 @@
     <ProjectReference Include="vendor\ImGui\ImGui.vcxproj">
       <Project>{C0FF640D-2C14-8DBE-F595-301E616989EF}</Project>
     </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="src\ToDo.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

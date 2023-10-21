@@ -423,7 +423,7 @@ public:
 	{
 		//	PushLayer(new ExampleLayer());
 		PushLayer(new Sandbox3D());
-		//PushLayer(new HudLayer());
+		PushLayer(new HudLayer());
 	}
 	~Sandbox()
 	{
